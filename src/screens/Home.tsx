@@ -63,14 +63,14 @@ function StickerCard({ metaLeft, metaRight, title, sub, onClick, children, guide
 }) {
   return (
     <motion.button {...rise(index)} whileTap={{ scale: 0.98 }} whileHover="lift" onClick={onClick} data-guide={guide}
-      className={`relative flex h-[218px] w-full flex-col justify-start overflow-hidden rounded-[28px] ${tone} px-4 pt-3.5 text-center`}>
+      className={`relative flex min-h-[218px] w-full flex-col justify-start overflow-hidden rounded-[28px] ${tone} px-4 pt-3.5 text-center`}>
       <span className="flex items-center justify-between text-[0.88rem] text-mute">
         <span className="flex items-center gap-1.5">{metaLeft}</span>
         <span className="flex items-center gap-1.5">{metaRight}</span>
       </span>
       <span className="title-tight mt-2 block text-[1.55rem] leading-tight font-bold">{title}</span>
       {sub && <span className="mt-1 block text-[0.95rem] text-mute">{sub}</span>}
-      <motion.span className="absolute inset-x-0 -bottom-6 flex items-end justify-center gap-1" variants={{ lift: { y: -10 } }} transition={{ type: "spring", stiffness: 260, damping: 18 }}>
+      <motion.span className="relative -mb-6 mt-auto flex items-end justify-center gap-1 pt-3" variants={{ lift: { y: -10 } }} transition={{ type: "spring", stiffness: 260, damping: 18 }}>
         {children}
       </motion.span>
     </motion.button>
@@ -313,10 +313,10 @@ function HelpCards() {
           : { id: "ask", to: "ask", guide: "home-ask", art: <span className="block rotate-6"><CatArt id="home" className="h-20 w-20" /></span>, en: "Ask Mummy", hi: "मम्मी से माँगें", subEn: "For a document", subHi: "कोई कागज़" },
       ].map((x, i) => (
         <motion.button key={x.id} {...rise(i)} whileTap={{ scale: 0.97 }} whileHover="lift" onClick={() => go(x.to)} data-guide={x.guide}
-          className="relative flex h-48 flex-col justify-start overflow-hidden rounded-[26px] bg-card px-3 pt-3 text-left">
+          className="relative flex min-h-48 flex-col justify-start overflow-hidden rounded-[26px] bg-card px-3 pt-3 text-left">
           <span className="title-tight block text-[1.2rem] leading-tight font-bold">{hi ? x.hi : x.en}</span>
           <span className="mt-0.5 block text-[0.85rem] text-mute">{hi ? x.subHi : x.subEn}</span>
-          <motion.span className="sticker absolute -bottom-3 left-1/2 block -translate-x-1/2" variants={{ lift: { y: -8, rotate: -4 } }}>{x.art}</motion.span>
+          <motion.span className="sticker relative -mb-3 mt-auto block self-center pt-2" variants={{ lift: { y: -8, rotate: -4 } }}>{x.art}</motion.span>
         </motion.button>
       ))}
     </div>

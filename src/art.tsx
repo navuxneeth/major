@@ -30,7 +30,7 @@ export function DocArt({ doc, masked = false, ownerName = "", className = "" }: 
 export function renderArt(doc: Doc, masked: boolean, ownerName: string) {
   const name = ownerName || "";
   const sample = (
-    <text x="300" y="200" textAnchor="end" fontSize="9" fontFamily="Hind, sans-serif" fill="#9A9488" letterSpacing="1">SAMPLE</text>
+    <text x="300" y="200" textAnchor="end" fontSize="9" fontFamily="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif" fill="#9A9488" letterSpacing="1">SAMPLE</text>
   );
   const photo = (x: number, y: number, c = "#C9C2B4") => (
     <g>
@@ -45,7 +45,7 @@ export function renderArt(doc: Doc, masked: boolean, ownerName: string) {
   switch (doc.art) {
     case "aadhaar":
       return (
-        <g fontFamily="Hind, sans-serif">
+        <g fontFamily="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif">
           <rect width="320" height="210" rx="14" fill="#FFFDF8" stroke="#E2DACB" />
           <rect width="320" height="10" rx="5" fill="#E89A3C" />
           <rect y="200" width="320" height="10" rx="5" fill="#3E8E5A" />
@@ -60,7 +60,7 @@ export function renderArt(doc: Doc, masked: boolean, ownerName: string) {
       );
     case "pan":
       return (
-        <g fontFamily="Hind, sans-serif">
+        <g fontFamily="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif">
           <rect width="320" height="210" rx="14" fill="#EAF1FA" stroke="#C9D8EC" />
           <text x="20" y="36" fontSize="17" fontWeight="700" fill="#24477A">PAN</text>
           <text x="20" y="52" fontSize="10" fill="#5A6B85">Permanent account number (sample)</text>
@@ -76,7 +76,7 @@ export function renderArt(doc: Doc, masked: boolean, ownerName: string) {
     case "card":
     case "licence":
       return (
-        <g fontFamily="Hind, sans-serif">
+        <g fontFamily="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif">
           <rect width="320" height="210" rx="14" fill={doc.art === "licence" ? "#F2F7EC" : doc.art === "voter" ? "#F6EEF7" : "#FBF3E6"} stroke="#E2DACB" />
           <rect x="0" y="0" width="320" height="46" rx="14" fill={doc.art === "licence" ? "#5E8D4E" : doc.art === "voter" ? "#7C5A93" : "#B8742F"} />
           <rect x="0" y="30" width="320" height="16" fill={doc.art === "licence" ? "#5E8D4E" : doc.art === "voter" ? "#7C5A93" : "#B8742F"} />
@@ -89,7 +89,7 @@ export function renderArt(doc: Doc, masked: boolean, ownerName: string) {
       );
     case "passport":
       return (
-        <g fontFamily="Hind, sans-serif">
+        <g fontFamily="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif">
           <rect x="70" y="0" width="180" height="210" rx="10" fill="#22325A" />
           <circle cx="160" cy="92" r="30" fill="none" stroke="#D9B65C" strokeWidth="2" />
           <circle cx="160" cy="92" r="18" fill="none" stroke="#D9B65C" strokeWidth="1.5" />
@@ -100,7 +100,7 @@ export function renderArt(doc: Doc, masked: boolean, ownerName: string) {
       );
     case "passbook":
       return (
-        <g fontFamily="Hind, sans-serif">
+        <g fontFamily="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif">
           <rect x="40" y="6" width="240" height="198" rx="10" fill={doc.category === "home" ? "#C25B3C" : "#2F6B4E"} />
           <rect x="52" y="18" width="216" height="174" rx="6" fill="none" stroke="rgba(255,255,255,0.35)" />
           <text x="160" y="92" textAnchor="middle" fontSize="20" fontWeight="700" fill="#fff">{doc.title.length > 22 ? doc.title.slice(0, 22) + "…" : doc.title}</text>
@@ -112,7 +112,7 @@ export function renderArt(doc: Doc, masked: boolean, ownerName: string) {
       // paper-like: report, prescription, policy, paper, photo
       const head = doc.art === "report" ? "#C94F4F" : doc.art === "prescription" ? "#3F6FB0" : doc.art === "policy" ? "#2F6B4E" : "#7A6A55";
       return (
-        <g fontFamily="Hind, sans-serif">
+        <g fontFamily="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif">
           <rect x="70" y="2" width="180" height="206" rx="6" fill="#FFFFFF" stroke="#E2DACB" />
           <rect x="70" y="2" width="180" height="34" rx="6" fill={head} />
           <rect x="70" y="26" width="180" height="10" fill={head} />
@@ -175,11 +175,11 @@ export function PlaceView({ place, files, highlight, onPickSpot, onPickFile, com
     return (
       <svg viewBox="0 0 300 200" className={compact ? "h-28 w-full" : "h-52 w-full"}>
         <circle cx="150" cy="80" r="46" fill={person?.color ?? "#1E5B4F"} />
-        <text x="150" y="96" textAnchor="middle" fontSize="44" fontWeight="700" fill="#fff" fontFamily="Hind, sans-serif">{(person?.name ?? "?")[0]}</text>
+        <text x="150" y="96" textAnchor="middle" fontSize="44" fontWeight="700" fill="#fff" fontFamily="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif">{(person?.name ?? "?")[0]}</text>
         <rect x="190" y="104" width="54" height="40" rx="5" fill={hl?.color ?? "#1E5B4F"} stroke={INK} strokeWidth="2" />
         <path d="M190 112 h54" stroke="rgba(255,255,255,0.6)" strokeWidth="2" />
         <circle cx="217" cy="124" r="26" fill="#E8A33D" opacity="0.3" className="pulse-ring" />
-        <text x="150" y="170" textAnchor="middle" fontSize="15" fill="#5F5A52" fontFamily="Hind, sans-serif">{person ? `${person.city}` : ""}</text>
+        <text x="150" y="170" textAnchor="middle" fontSize="15" fill="#5F5A52" fontFamily="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif">{person ? `${person.city}` : ""}</text>
       </svg>
     );
   }

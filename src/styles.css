@@ -21,7 +21,7 @@
   --color-lilac: #E6E0F5;
   --color-clay: #F3D9C4;
   --color-teal: #D7EEF0;
-  --font-sans: "Inter Tight", "Hind", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", "Inter Tight", "Kohinoor Devanagari", "Noto Sans Devanagari", system-ui, "Segoe UI", Roboto, sans-serif;
   --font-serif: "Instrument Serif", Georgia, serif;
 }
 
@@ -59,6 +59,7 @@ input, textarea, select { font-family: inherit; }
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 18px 34px -22px rgba(0, 0, 0, 0.35);
 }
 .title-tight { letter-spacing: -0.035em; }
+html[lang="hi"] .title-tight { letter-spacing: 0; }
 .no-scrollbar { scrollbar-width: none; }
 
 :focus-visible { outline: 3px solid #111111; outline-offset: 2px; }

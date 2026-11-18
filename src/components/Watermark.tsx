@@ -16,7 +16,7 @@ export function WatermarkPreview({ doc, stamp, masked, ownerName }: { doc: Doc; 
       <svg className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden>
         <defs>
           <pattern id="wm" width="230" height="90" patternUnits="userSpaceOnUse" patternTransform="rotate(-24)">
-            <text x="0" y="40" fontSize="15" fontWeight="700" fill="rgba(179,65,46,0.32)" fontFamily="Hind, sans-serif">{stamp}</text>
+            <text x="0" y="40" fontSize="15" fontWeight="700" fill="rgba(179,65,46,0.32)" fontFamily="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif">{stamp}</text>
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#wm)" />
@@ -38,14 +38,14 @@ export async function makeStampedImage(doc: Doc, stamp: string, masked: boolean,
     ? `<image href="${doc.image}" x="40" y="40" width="880" height="560" preserveAspectRatio="xMidYMid meet" />`
     : `<g transform="translate(40 40) scale(2.75)">${renderToStaticMarkup(<>{renderArt(doc, masked, ownerName)}</>)}</g>`;
   const marks = Array.from({ length: 8 }, (_, r) =>
-    Array.from({ length: 3 }, (_, c) => `<text x="${c * 600 - 260 + (r % 2) * 260}" y="${r * 110}" font-size="30" font-weight="700" fill="rgba(179,65,46,0.30)" font-family="Hind, Arial, sans-serif">${esc(stamp)}</text>`).join(""),
+    Array.from({ length: 3 }, (_, c) => `<text x="${c * 600 - 260 + (r % 2) * 260}" y="${r * 110}" font-size="30" font-weight="700" fill="rgba(179,65,46,0.30)" font-family="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif">${esc(stamp)}</text>`).join(""),
   ).join("");
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     <rect width="${W}" height="${H}" fill="#FFFFFF"/>
     ${inner}
     <g transform="rotate(-20 480 330)">${marks}</g>
     <rect x="0" y="${H - 90}" width="${W}" height="90" fill="#B3412E"/>
-    <text x="${W / 2}" y="${H - 36}" text-anchor="middle" font-size="34" font-weight="700" fill="#FFFFFF" font-family="Hind, Arial, sans-serif">${esc(stamp)}</text>
+    <text x="${W / 2}" y="${H - 36}" text-anchor="middle" font-size="34" font-weight="700" fill="#FFFFFF" font-family="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif">${esc(stamp)}</text>
   </svg>`;
   const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
   const img = new Image();
