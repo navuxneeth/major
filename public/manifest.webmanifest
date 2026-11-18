@@ -1,0 +1,9 @@
+{
+  "name": "Almari",
+  "short_name": "Almari",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FAF7F1",
+  "theme_color": "#1E5B4F",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
