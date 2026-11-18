@@ -250,3 +250,50 @@ export function Blobs({ className = "" }: { className?: string }) {
     </svg>
   );
 }
+
+/* ---------- A real-looking file folder, in the same colour as the family's almirah files ---------- */
+export const FOLDER_COLOR: Record<CategoryId, { body: string; tab: string; text: string }> = {
+  identity: { body: "#E39A45", tab: "#C97E2A", text: "#2A1A08" },
+  health: { body: "#4673B3", tab: "#3F6FB0", text: "#FFFFFF" },
+  money: { body: "#3F8A5A", tab: "#3E8E5A", text: "#FFFFFF" },
+  home: { body: "#B9524A", tab: "#B8473B", text: "#FFFFFF" },
+  vehicle: { body: "#7A7784", tab: "#7D7D7D", text: "#FFFFFF" },
+  work: { body: "#E4C254", tab: "#D8B23A", text: "#2A2208" },
+  travel: { body: "#2F8790", tab: "#3F9AA6", text: "#FFFFFF" },
+};
+
+export function FolderTile({ id, label, count, onClick, index = 0 }: { id: CategoryId; label: string; count: string; onClick: () => void; index?: number }) {
+  const c = FOLDER_COLOR[id];
+  return (
+    <motion.button
+      onClick={onClick}
+      initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 * index, type: "spring", stiffness: 260, damping: 22 }}
+      whileTap="open" whileHover="open"
+      className="relative block h-32 w-full text-left"
+      aria-label={`${label}, ${count}`}
+      style={{ perspective: 600 }}
+    >
+      {/* back of the folder with its tab */}
+      <span className="absolute top-0 left-0 h-6 w-[46%] rounded-t-xl" style={{ background: c.tab }} />
+      <span className="absolute inset-x-0 top-4 bottom-0 rounded-2xl rounded-tl-none" style={{ background: c.tab }} />
+      {/* papers inside, they rise when touched */}
+      <motion.span className="absolute inset-x-3 top-6 h-16 rounded-lg border border-black/10 bg-white" variants={{ open: { y: -10, rotate: -2 } }} transition={{ type: "spring", stiffness: 300, damping: 18 }}>
+        <span className="absolute top-2.5 left-3 h-1.5 w-16 rounded-full bg-hair" />
+        <span className="absolute top-5 left-3 h-1.5 w-10 rounded-full bg-hair" />
+      </motion.span>
+      <motion.span className="absolute inset-x-5 top-8 h-14 rounded-lg border border-black/10 bg-[#FFFDF6]" variants={{ open: { y: -16, rotate: 3 } }} transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.03 }} />
+      {/* front flap tilts open */}
+      <motion.span
+        className="absolute inset-x-0 bottom-0 flex h-[72%] origin-bottom flex-col justify-between rounded-2xl px-3 py-2.5 shadow-[0_-4px_12px_-6px_rgba(0,0,0,0.25)]"
+        style={{ background: c.body, color: c.text }}
+        variants={{ open: { rotateX: 14 } }} transition={{ type: "spring", stiffness: 260, damping: 18 }}
+      >
+        <span className="text-[1.05rem] leading-tight font-semibold">{label}</span>
+        <span className="flex items-center justify-between">
+          <span className="text-[0.88rem] opacity-85">{count}</span>
+          <span className="h-2 w-8 rounded-full" style={{ background: "rgba(255,255,255,0.45)" }} />
+        </span>
+      </motion.span>
+    </motion.button>
+  );
+}

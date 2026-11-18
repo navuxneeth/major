@@ -7,7 +7,7 @@ import { Button, Card, MicButton, SectionTitle, Sheet } from "../components/ui";
 import { DocRow } from "../components/DocRow";
 import { Avatar } from "../art";
 import { WatermarkPreview, stampText } from "../components/Watermark";
-import { Blobs, CatArt, HeroScene, LendArt, ReadyArt, SuccessBurst } from "../illustrations";
+import { Blobs, FolderTile, HeroScene, LendArt, ReadyArt, SuccessBurst } from "../illustrations";
 import { daysUntil, fmtDate, timeAgo } from "../i18n";
 
 const rise = (i: number) => ({ initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0 }, transition: { delay: 0.04 * i, type: "spring" as const, stiffness: 260, damping: 24 } });
@@ -126,19 +126,12 @@ function Reminders({ limit = 2 }: { limit?: number }) {
 function Folders() {
   const { data, lang, go } = useStore();
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className="grid grid-cols-2 gap-x-3 gap-y-4">
       {CATEGORIES.map((c, i) => {
         const n = data.docs.filter((d) => d.category === c.id).length;
         return (
-          <motion.button key={c.id} {...rise(i)} whileTap={{ scale: 0.96 }} whileHover={{ y: -2 }} onClick={() => go(`cat/${c.id}`)}
-            className={`relative flex min-h-28 flex-col justify-between overflow-hidden rounded-3xl ${c.tone} p-3 text-left`}>
-            <span className="absolute -top-2 -right-2 h-16 w-16 rounded-full bg-white/35" />
-            <CatArt id={c.id} className="relative h-12 w-12" />
-            <span className="relative">
-              <span className="block text-[1.05rem] leading-tight font-semibold">{lang === "hi" ? c.hi : c.en}</span>
-              <span className="text-[0.88rem] text-mute">{n} {lang === "hi" ? "कागज़" : n === 1 ? "paper" : "papers"}</span>
-            </span>
-          </motion.button>
+          <FolderTile key={c.id} id={c.id} index={i} label={lang === "hi" ? c.hi : c.en}
+            count={lang === "hi" ? `${n} कागज़` : `${n} ${n === 1 ? "paper" : "papers"}`} onClick={() => go(`cat/${c.id}`)} />
         );
       })}
     </div>
@@ -318,6 +311,8 @@ export function SimpleHome() {
           </motion.button>
         ))}
       </div>
+      <h2 className="mt-7 mb-3 text-[1.3rem] font-semibold">{hi ? "मेरी फ़ाइलें" : "My files"}</h2>
+      <Folders />
       <SimpleExtra />
       <button onClick={() => setSettings({ simple: false })} className="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border-2 border-hair bg-white font-semibold text-mute">
         <LayoutGrid size={20} /> {hi ? "सारे फ़ीचर दिखाएँ" : "Show all features"}
