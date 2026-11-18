@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Archive, ArrowLeft, BadgeCheck, BriefcaseBusiness, CalendarDays, Camera, Car, Check, Columns3, Copy, DoorClosed, Eye, FileText, FlaskConical, FolderOpen, HandHelping, HeartPulse, Hospital, House, IdCard, Image, Info, Landmark, Link2, MapPin, Maximize, MessageCircle, Mic, Pencil, Plus, Printer, RotateCcw, Search, SearchX, Send, Share2, Siren, Stamp, TrainFront, UserMinus, UserPlus, UserRound } from "lucide-react";
-const Icons: Record<string, any> = { Archive, ArrowLeft, BadgeCheck, BriefcaseBusiness, CalendarDays, Camera, Car, Check, Columns3, Copy, DoorClosed, Eye, FileText, FlaskConical, FolderOpen, HandHelping, HeartPulse, Hospital, House, IdCard, Image, Info, Landmark, Link2, MapPin, Maximize, MessageCircle, Mic, Pencil, Plus, Printer, RotateCcw, Search, SearchX, Send, Share2, Siren, Stamp, TrainFront, UserMinus, UserPlus, UserRound };
+import { Archive, ArrowLeft, BadgeCheck, BriefcaseBusiness, CalendarDays, Camera, Car, Check, Columns3, Copy, DoorClosed, Eye, FileText, FlaskConical, FolderOpen, HandHelping, HeartPulse, Hospital, House, IdCard, Image, Info, Landmark, LayoutGrid, Link2, MapPin, Maximize, MessageCircle, MessageSquareText, Mic, MousePointerClick, Pencil, Plus, Printer, RotateCcw, Search, SearchX, Send, Share2, Siren, Smartphone, Sparkles, Stamp, TrainFront, UserMinus, UserPlus, UserRound } from "lucide-react";
+const Icons: Record<string, any> = { Archive, ArrowLeft, BadgeCheck, BriefcaseBusiness, CalendarDays, Camera, Car, Check, Columns3, Copy, DoorClosed, Eye, FileText, FlaskConical, FolderOpen, HandHelping, HeartPulse, Hospital, House, IdCard, Image, Info, Landmark, LayoutGrid, Link2, MapPin, Maximize, MessageCircle, MessageSquareText, Mic, MousePointerClick, Pencil, Plus, Printer, RotateCcw, Search, SearchX, Send, Share2, Siren, Smartphone, Sparkles, Stamp, TrainFront, UserMinus, UserPlus, UserRound };
 import { X } from "lucide-react";
 import { useStore } from "../store";
 
@@ -34,8 +34,8 @@ export function Screen({ title, children, right, onBack, noBack, sub }: { title?
 }
 
 type BtnVariant = "primary" | "secondary" | "ghost" | "danger" | "saffron";
-export function Button({ children, onClick, variant = "primary", className = "", icon, disabled, type = "button", big = false }: {
-  children: ReactNode; onClick?: () => void; variant?: BtnVariant; className?: string; icon?: string; disabled?: boolean; type?: "button" | "submit"; big?: boolean;
+export function Button({ children, onClick, variant = "primary", className = "", icon, disabled, type = "button", big = false, guide }: {
+  children: ReactNode; onClick?: () => void; variant?: BtnVariant; className?: string; icon?: string; disabled?: boolean; type?: "button" | "submit"; big?: boolean; guide?: string;
 }) {
   const v = {
     primary: "bg-brand text-white active:bg-brand-dark",
@@ -47,6 +47,7 @@ export function Button({ children, onClick, variant = "primary", className = "",
   return (
     <motion.button
       type={type}
+      data-guide={guide}
       whileTap={{ scale: 0.97 }}
       disabled={disabled}
       onClick={onClick}
@@ -58,22 +59,25 @@ export function Button({ children, onClick, variant = "primary", className = "",
   );
 }
 
-export function Card({ children, className = "", onClick, tone = "bg-white" }: { children: ReactNode; className?: string; onClick?: () => void; tone?: string }) {
+export function Card({ children, className = "", onClick, tone = "bg-white", guide }: { children: ReactNode; className?: string; onClick?: () => void; tone?: string; guide?: string }) {
   const C: any = onClick ? motion.button : "div";
   return (
     <C
       {...(onClick ? { whileTap: { scale: 0.98 }, onClick } : {})}
-      className={`block w-full rounded-2xl border border-hair ${tone} p-4 text-left ${onClick ? "active:brightness-[0.98]" : ""} ${className}`}
+      data-guide={guide}
+      className={`block w-full rounded-2xl border border-hair ${tone} p-4 text-left shadow-[0_1px_0_rgba(30,28,25,0.04),0_10px_24px_-18px_rgba(30,91,79,0.45)] ${onClick ? "active:brightness-[0.98]" : ""} ${className}`}
     >
       {children}
     </C>
   );
 }
 
-export function Chip({ children, onClick, active = false, icon, className = "" }: { children: ReactNode; onClick?: () => void; active?: boolean; icon?: string; className?: string }) {
+export function Chip({ children, onClick, active = false, icon, className = "", guide }: { children: ReactNode; onClick?: () => void; active?: boolean; icon?: string; className?: string; guide?: string }) {
   return (
     <motion.button
+      data-guide={guide}
       whileTap={{ scale: 0.96 }}
+      layout
       onClick={onClick}
       className={`inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full border-2 px-4 text-[1rem] font-medium ${active ? "border-brand bg-brand text-white" : "border-hair bg-white text-ink"} ${className}`}
     >
@@ -86,7 +90,10 @@ export function Chip({ children, onClick, active = false, icon, className = "" }
 export function SectionTitle({ children, right }: { children: ReactNode; right?: ReactNode }) {
   return (
     <div className="mt-6 mb-2 flex items-end justify-between gap-2">
-      <h2 className="text-[1.1rem] font-semibold">{children}</h2>
+      <h2 className="relative text-[1.15rem] font-semibold">
+        {children}
+        <motion.span className="absolute -bottom-1 left-0 h-1 rounded-full bg-saffron" initial={{ width: 0 }} whileInView={{ width: 28 }} viewport={{ once: true }} transition={{ duration: 0.5 }} />
+      </h2>
       {right}
     </div>
   );

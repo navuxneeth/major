@@ -1,12 +1,15 @@
 import { useEffect, useRef } from "react";
-import { motion } from "motion/react";
-import { Home as HomeIcon, Search, Plus, Users, Menu, HandHelping, Bell } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { Home as HomeIcon, Search, Plus, Users, Menu, HandHelping, Bell, Sparkles } from "lucide-react";
 import { StoreProvider, useStore } from "./store";
 import { Toast } from "./components/ui";
+import { GuideOverlay } from "./components/Guide";
 import { HelperHome, KeeperHome } from "./screens/Home";
 import { Counter, DocDetail, Find, Share } from "./screens/Docs";
 import { Add } from "./screens/Add";
 import { Ask, Category, Diary, Family, More, PrintSheet, Ready, Reminders, Unwell } from "./screens/Other";
+import { Help, PhoneMessages } from "./screens/Help";
+import { Lend } from "./screens/Lend";
 import { Lab } from "./screens/Lab";
 import { Lock, Onboard } from "./screens/Gate";
 import type { CategoryId } from "./data";
@@ -35,21 +38,20 @@ function Nav() {
       {items.map((i) => {
         const on = top === i.to;
         return (
-          <motion.button
-            key={i.to}
-            whileTap={{ scale: 0.92 }}
-            onClick={() => go(i.to)}
-            className={`flex min-h-16 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl text-[0.82rem] font-semibold ${on ? "text-brand" : "text-mute"}`}
-            aria-current={on ? "page" : undefined}
-          >
+          <motion.button key={i.to} whileTap={{ scale: 0.9 }} onClick={() => go(i.to)} aria-current={on ? "page" : undefined}
+            className={`relative flex min-h-16 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl text-[0.82rem] font-semibold ${on ? "text-brand" : "text-mute"}`}>
             {i.big ? (
-              <span className="-mt-5 flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white shadow-lg ring-4 ring-white">
+              <motion.span className="-mt-6 flex h-15 w-15 items-center justify-center rounded-full bg-brand text-white shadow-[0_10px_24px_-8px_rgba(30,91,79,0.8)] ring-4 ring-white"
+                whileHover={{ rotate: 90 }} style={{ width: 60, height: 60 }}>
                 <i.icon size={30} />
-              </span>
+              </motion.span>
             ) : (
-              <i.icon size={26} strokeWidth={on ? 2.6 : 2} />
+              <>
+                {on && <motion.span layoutId="nav-pill" className="absolute top-1 h-9 w-14 rounded-full bg-brand-soft" transition={{ type: "spring", stiffness: 420, damping: 32 }} />}
+                <i.icon size={26} strokeWidth={on ? 2.6 : 2} className="relative" />
+              </>
             )}
-            <span>{i.label}</span>
+            <span className="relative">{i.label}</span>
           </motion.button>
         );
       })}
@@ -57,18 +59,16 @@ function Nav() {
   );
 }
 
-function Routes() {
-  const { route, settings } = useStore();
-  const [a, b] = route.parts;
+function routeFor(parts: string[], params: URLSearchParams, role: string) {
+  const [a, b] = parts;
   switch (a) {
     case undefined:
-    case "":
-      return settings.role === "keeper" ? <KeeperHome /> : <HelperHome />;
-    case "find": return <Find key={route.params.get("q") ?? ""} />;
+    case "": return role === "keeper" ? <KeeperHome /> : <HelperHome />;
+    case "find": return <Find key={params.get("q") ?? ""} />;
     case "doc": return <DocDetail key={b} id={b} />;
     case "counter": return <Counter id={b} />;
     case "share": return <Share id={b} />;
-    case "add": return <Add key={route.params.toString()} />;
+    case "add": return <Add key={params.toString()} />;
     case "cat": return <Category id={b as CategoryId} />;
     case "ready": return <Ready id={b} />;
     case "family": return <Family />;
@@ -77,21 +77,44 @@ function Routes() {
     case "unwell": return <Unwell />;
     case "diary": return <Diary />;
     case "more": return <More />;
-    default: return settings.role === "keeper" ? <KeeperHome /> : <HelperHome />;
+    case "help": return <Help />;
+    case "phone": return <PhoneMessages />;
+    case "lend": return <Lend />;
+    default: return role === "keeper" ? <KeeperHome /> : <HelperHome />;
   }
 }
 
 function PhoneApp() {
-  const { route, settings, unlocked } = useStore();
+  const { route, settings, unlocked, go, guide, data } = useStore();
   const scroller = useRef<HTMLDivElement>(null);
   useEffect(() => { scroller.current?.scrollTo({ top: 0 }); }, [route.path]);
-  const hideNav = ["add", "counter", "share"].includes(route.parts[0] ?? "");
+  const top = route.parts[0] ?? "";
+  const hideNav = ["add", "counter", "share", "phone", "lend"].includes(top) || (settings.role === "keeper" && settings.simple);
+  const showHelpFab = settings.role === "keeper" && !["", "help", "add", "counter", "share", "phone", "lend"].includes(top) && !guide && !settings.simple;
+  const lendActive = settings.role === "keeper" && data.lend?.status === "active" && top !== "lend";
   return (
-    <div className="relative h-full w-full overflow-hidden bg-paper">
+    <div id="phone-root" className="relative h-full w-full overflow-hidden bg-paper">
       <div ref={scroller} className="no-scrollbar h-full overflow-y-auto">
-        <Routes />
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div key={route.path} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.22, ease: "easeOut" }} className="min-h-full">
+            {routeFor(route.parts, route.params, settings.role)}
+          </motion.div>
+        </AnimatePresence>
       </div>
+      {lendActive && (
+        <motion.button initial={{ y: -40 }} animate={{ y: 0 }} onClick={() => go("lend")} className="absolute inset-x-0 top-0 z-40 bg-danger py-2 text-center text-[0.95rem] font-semibold text-white">
+          {settings.lang === "hi" ? "राहुल मदद कर रहे हैं · बंद करने के लिए छुएँ" : "Rahul is helping · tap to see or end"}
+        </motion.button>
+      )}
+      {showHelpFab && (
+        <motion.button initial={{ scale: 0 }} animate={{ scale: 1 }} whileTap={{ scale: 0.9 }} onClick={() => go("help")}
+          className="absolute right-4 bottom-24 z-30 flex h-14 items-center gap-2 rounded-full bg-saffron px-4 font-semibold text-ink shadow-[0_12px_28px_-10px_rgba(232,163,61,0.9)]" aria-label="Help">
+          <motion.span animate={{ rotate: [0, 18, -12, 0] }} transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 3 }}><Sparkles size={22} /></motion.span>
+          {settings.lang === "hi" ? "मदद" : "Help"}
+        </motion.button>
+      )}
       {!hideNav && <Nav />}
+      <GuideOverlay rootId="phone-root" />
       <Toast />
       {!settings.onboarded && <Onboard />}
       {settings.onboarded && settings.lock && !unlocked && <Lock />}
@@ -103,7 +126,7 @@ function Shell() {
   const { route, setSettings, settings, go, reset, showToast } = useStore();
   const page = route.parts[0];
 
-  /* Test links: ?fresh=1&as=keeper|helper&lang=en|hi start a participant on clean sample data. */
+  /* Test links: ?fresh=1&as=keeper|helper&lang=en|hi&simple=1 start a participant on clean sample data. */
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
     if (!q.toString()) return;
@@ -113,6 +136,7 @@ function Shell() {
     setSettings({
       ...(as === "keeper" || as === "helper" ? { role: as, onboarded: true } : {}),
       ...(lang === "en" || lang === "hi" ? { lang } : {}),
+      ...(q.has("simple") ? { simple: q.get("simple") === "1" } : q.get("fresh") === "1" ? { simple: false } : {}),
     });
     window.history.replaceState(null, "", window.location.pathname + window.location.hash);
   }, []); // eslint-disable-line
@@ -120,16 +144,23 @@ function Shell() {
   if (page === "lab") return <div className="relative min-h-full"><Lab /><Toast fixed /></div>;
   if (page === "print") return <PrintSheet />;
 
+  const pill = (on: boolean) => `h-11 rounded-full border-2 px-4 font-semibold ${on ? "border-brand bg-brand text-white" : "border-hair bg-white"}`;
   return (
-    <div className="flex h-full items-center justify-center gap-12 lg:px-8">
+    <div className="flex h-full items-center justify-center gap-12 bg-[radial-gradient(circle_at_20%_20%,#F6E7C8_0,transparent_45%),radial-gradient(circle_at_85%_80%,#D7E9E2_0,transparent_40%)] lg:px-8">
       <aside className="no-print hidden max-w-sm flex-col gap-4 lg:flex">
-        <span className="font-serif text-[3.4rem] leading-none text-brand">Almari</span>
+        <span className="font-serif text-[3.6rem] leading-none text-brand">Almari</span>
         <p className="text-[1.25rem] leading-snug">Know what important papers your family has, and exactly where each original is kept: on the phone or in the almirah.</p>
         <p className="text-[1rem] text-mute">Best on a phone. Open this page on your phone, or try it here.</p>
         <div className="flex flex-wrap gap-2">
-          <button onClick={() => { setSettings({ role: "keeper", onboarded: true }); go(""); }} className={`h-11 rounded-full border-2 px-4 font-semibold ${settings.role === "keeper" ? "border-brand bg-brand text-white" : "border-hair bg-white"}`}>Sunita's phone</button>
-          <button onClick={() => { setSettings({ role: "helper", onboarded: true }); go(""); }} className={`h-11 rounded-full border-2 px-4 font-semibold ${settings.role === "helper" ? "border-brand bg-brand text-white" : "border-hair bg-white"}`}>Rahul's phone</button>
+          <button onClick={() => { setSettings({ role: "keeper", onboarded: true }); go(""); }} className={pill(settings.role === "keeper")}>Sunita's phone</button>
+          <button onClick={() => { setSettings({ role: "helper", onboarded: true }); go(""); }} className={pill(settings.role === "helper")}>Rahul's phone</button>
         </div>
+        {settings.role === "keeper" && (
+          <div className="flex flex-wrap gap-2">
+            <button onClick={() => { setSettings({ simple: false }); go(""); }} className={pill(!settings.simple)}>Full home</button>
+            <button onClick={() => { setSettings({ simple: true }); go(""); }} className={pill(settings.simple)}>Simple home</button>
+          </div>
+        )}
         <div className="flex flex-wrap gap-2">
           <button onClick={() => go("lab")} className="h-11 rounded-full border-2 border-hair bg-white px-4 font-semibold">Testing kit</button>
           <button onClick={() => { reset(); showToast("Sample data reset."); go(""); }} className="h-11 rounded-full border-2 border-hair bg-white px-4 font-semibold">Reset sample data</button>

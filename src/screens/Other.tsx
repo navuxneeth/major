@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { Check, Plus, Phone, KeyRound, ShieldAlert, Printer, Bell, Users, FlaskConical, RotateCcw, ChevronRight, Lock, HeartHandshake, Info } from "lucide-react";
+import { HandHelping, Smartphone, Check, Plus, Phone, KeyRound, ShieldAlert, Printer, Bell, Users, FlaskConical, RotateCcw, ChevronRight, Lock, HeartHandshake, Info } from "lucide-react";
 import { CATEGORIES, READY_FOR, type Access, type CategoryId } from "../data";
 import { useStore } from "../store";
 import { matchBundleItem } from "../search";
@@ -8,6 +8,7 @@ import { Avatar } from "../art";
 import { Button, Card, Chip, EmptyNote, Icon, Screen, SectionTitle, Sheet } from "../components/ui";
 import { DocRow, LocationDot } from "../components/DocRow";
 import { LangToggle } from "./Home";
+import { CatArt, FamilyArt, ReadyArt, SuccessBurst } from "../illustrations";
 import { daysUntil, fmtDate, timeAgo } from "../i18n";
 
 /* ================= FOLDER ================= */
@@ -18,12 +19,12 @@ export function Category({ id }: { id: CategoryId }) {
   const missing = cat.suggest.filter((s) => !docs.some((d) => d.title.toLowerCase().includes(s.en.toLowerCase().split(" ")[0].toLowerCase())));
   return (
     <Screen title={lang === "hi" ? cat.hi : cat.en} sub={`${docs.length} ${t("documents")}`}>
-      <div className={`mb-4 flex items-center gap-3 rounded-2xl ${cat.tone} p-4`}>
-        <Icon name={cat.icon} size={32} />
+      <div className={`mb-4 flex items-center gap-3 rounded-3xl ${cat.tone} p-4`}>
+        <CatArt id={cat.id} className="h-16 w-16 shrink-0" />
         <p className="text-[1rem]">{lang === "hi" ? "इस फ़ोल्डर के सारे कागज़, और हर असली कागज़ की जगह।" : "Everything in this folder, and where each original is kept."}</p>
       </div>
       <div className="flex flex-col gap-2">
-        {docs.map((d) => <DocRow key={d.id} doc={d} />)}
+        {docs.map((d, i) => <motion.div key={d.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i }}><DocRow doc={d} /></motion.div>)}
         {!docs.length && <EmptyNote>{lang === "hi" ? "अभी इस फ़ोल्डर में कुछ नहीं है।" : "Nothing in this folder yet."}</EmptyNote>}
       </div>
       {missing.length > 0 && (
@@ -56,6 +57,10 @@ export function Ready({ id }: { id: string }) {
   const docs = who === "both" ? data.docs : data.docs.filter((d) => d.personId === who);
   return (
     <Screen title={lang === "hi" ? b.hi : b.en} sub={t("bundleNote")}>
+      <div className={`mb-4 flex items-center gap-3 rounded-3xl ${b.tone} p-3`}>
+        <ReadyArt id={b.id} className="h-20 w-24 shrink-0" />
+        <p className="text-[1rem]">{lang === "hi" ? "क्या ले जाना है, और हर चीज़ किस फ़ाइल में है।" : "What to take, and which file each one is in."}</p>
+      </div>
       <p className="mb-2 text-[1.05rem] font-semibold">{lang === "hi" ? "किसके लिए?" : "Who is going?"}</p>
       <div className="mb-4 flex flex-wrap gap-2">
         <Chip active={who === "sunita"} onClick={() => setWho("sunita")}>{nameOf("sunita")}</Chip>
@@ -70,13 +75,13 @@ export function Ready({ id }: { id: string }) {
           return (
             <div key={key} className={`rounded-2xl border-2 bg-white p-3 ${isPacked ? "border-brand" : "border-hair"}`}>
               <div className="flex items-start gap-3">
-                <button
+                <motion.button whileTap={{ scale: 0.85 }} data-guide={b.items[0].en === key ? "ready-pack-0" : undefined}
                   onClick={() => setPacked((p) => (p.includes(key) ? p.filter((x) => x !== key) : [...p, key]))}
                   className={`mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 ${isPacked ? "border-brand bg-brand text-white" : "border-hair"}`}
                   aria-label={t("packed")} aria-pressed={isPacked}
                 >
-                  {isPacked && <Check size={26} />}
-                </button>
+                  {isPacked && <motion.span initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }}><Check size={26} /></motion.span>}
+                </motion.button>
                 <div className="min-w-0 flex-1">
                   <p className="text-[1.12rem] font-semibold">{lang === "hi" ? it.hi : it.en}</p>
                   <p className="text-[0.92rem] text-mute">{lang === "hi" ? it.whyHi : it.why}</p>
@@ -93,7 +98,9 @@ export function Ready({ id }: { id: string }) {
           );
         })}
       </div>
-      <p className="mt-4 text-center text-[1rem] font-semibold text-brand">{packed.length} / {b.items.length} {t("packed").toLowerCase()}</p>
+      <div className="mt-4 h-3 overflow-hidden rounded-full bg-hair"><motion.div className="h-full rounded-full bg-brand" animate={{ width: `${(packed.length / b.items.length) * 100}%` }} transition={{ type: "spring", stiffness: 200, damping: 25 }} /></div>
+      <p className="mt-2 text-center text-[1rem] font-semibold text-brand">{packed.length} / {b.items.length} {t("packed").toLowerCase()}</p>
+      {packed.length === b.items.length && <div className="mt-2 flex justify-center"><SuccessBurst size={110} /></div>}
     </Screen>
   );
 }
@@ -116,6 +123,7 @@ export function Family() {
 
   return (
     <Screen title={t("familyTitle")} sub={isKeeper ? t("familySub") : t("helperNote")}>
+      <div className="mb-3 flex justify-center rounded-3xl bg-saffron-soft py-2"><FamilyArt className="h-24 w-44" /></div>
       <div className="flex flex-col gap-2">
         {data.people.filter((p) => p.owner && !data.members.some((m) => m.personId === p.id)).map((p) => (
           <Card key={p.id} className="flex items-center gap-3">
@@ -386,13 +394,15 @@ export function More() {
   const { t, lang, settings, setSettings, go, reset, showToast, setUnlocked } = useStore();
   const links = [
     { icon: Users, label: t("familyTitle"), to: "family" },
+    { icon: HandHelping, label: lang === "hi" ? "मदद: कैसे करें, दिखाओ" : "Help: show me how", to: "help" },
+    { icon: Smartphone, label: lang === "hi" ? "फ़ोन उधार दें" : "Lend my phone", to: "lend" },
     { icon: Bell, label: t("remindersTitle"), to: "reminders" },
     { icon: HeartHandshake, label: t("unwellTitle"), to: "unwell" },
     { icon: KeyRound, label: t("diaryTitle"), to: "diary" },
     { icon: Printer, label: t("printIndex"), to: "print" },
   ];
   return (
-    <Screen title={t("moreTitle")} noBack>
+    <Screen title={t("moreTitle")} noBack={!(settings.role === "keeper" && settings.simple)}>
       <SectionTitle>{t("language")}</SectionTitle>
       <LangToggle />
       <SectionTitle>{t("textSize")}</SectionTitle>
@@ -403,6 +413,15 @@ export function More() {
             style={{ fontSize: [16, 20, 24][s] }}>A{s > 0 ? "+".repeat(s) : ""}</button>
         ))}
       </div>
+      {settings.role === "keeper" && (
+        <>
+          <SectionTitle>{lang === "hi" ? "होम स्क्रीन" : "Home screen"}</SectionTitle>
+          <div className="flex gap-2">
+            <Chip active={settings.simple} onClick={() => { setSettings({ simple: true }); go(""); }} icon="Sparkles">{lang === "hi" ? "आसान (4 बटन)" : "Simple (4 buttons)"}</Chip>
+            <Chip active={!settings.simple} onClick={() => { setSettings({ simple: false }); go(""); }} icon="LayoutGrid">{lang === "hi" ? "पूरा" : "Full"}</Chip>
+          </div>
+        </>
+      )}
       <SectionTitle>{t("whoIsUsing")}</SectionTitle>
       <div className="flex gap-2">
         <Chip active={settings.role === "keeper"} onClick={() => { setSettings({ role: "keeper" }); go(""); }}>{lang === "hi" ? "सुनीता (मम्मी)" : "Sunita (Mummy)"}</Chip>

@@ -11,9 +11,10 @@ export interface Settings {
   role: Role;
   lock: boolean;
   onboarded: boolean;
+  simple: boolean;
 }
 
-const defaultSettings: Settings = { lang: "en", scale: 0, role: "keeper", lock: true, onboarded: false };
+const defaultSettings: Settings = { lang: "en", scale: 0, role: "keeper", lock: true, onboarded: false, simple: false };
 
 function load<T>(key: string, fallback: T): T {
   try {
@@ -215,6 +216,32 @@ function useProvideStore() {
     setData((d) => ({ ...d, members: d.members.filter((x) => x.personId !== personId) }));
   }, []);
 
+  /* ---------- Lend my phone: one app, one helper, 15 minutes ---------- */
+  const requestLend = useCallback((app: "train" | "bank" | "almari") => {
+    setData((d) => ({ ...d, lend: { id: uid(), app, helper: "rahul", status: "waiting", requestedAt: nowIso() } }));
+  }, []);
+  const startLend = useCallback(() => {
+    setData((d) => (d.lend ? { ...d, lend: { ...d.lend, status: "active", startedAt: nowIso() } } : d));
+  }, []);
+  const endLend = useCallback((by: "owner" | "time" | "done") => {
+    setData((d) =>
+      d.lend
+        ? {
+            ...d,
+            lend: { ...d.lend, status: "ended", endedAt: nowIso(), endedBy: by },
+            activity: [{ id: uid(), who: d.lend.helper, action: "helped" as const, detail: d.lend.app, at: nowIso() }, ...d.activity],
+          }
+        : d,
+    );
+  }, []);
+  const clearLend = useCallback(() => setData((d) => ({ ...d, lend: null })), []);
+
+  /* ---------- Show me how: guided rings on the real buttons ---------- */
+  const [guide, setGuide] = useState<{ id: string; step: number } | null>(null);
+  const startGuide = useCallback((id: string) => setGuide({ id, step: 0 }), []);
+  const stopGuide = useCallback(() => setGuide(null), []);
+  const nextGuide = useCallback(() => setGuide((g) => (g ? { ...g, step: g.step + 1 } : g)), []);
+
   const setDiary = useCallback((en: string) => setData((d) => ({ ...d, diary: { en, hi: en } })), []);
 
   const reset = useCallback(() => {
@@ -225,6 +252,7 @@ function useProvideStore() {
     data, settings, setSettings, unlocked, setUnlocked, route, go, back, toast, showToast,
     t, lang, viewerId, person, personName, docOwnerLabel, file, place, locationParts, locationLine, docTitle, catName,
     log, addDoc, updateDoc, addFile, addReminder, toggleReminder, sendRequest, answerRequest, setMember, removeMember, setDiary, reset,
+    requestLend, startLend, endLend, clearLend, guide, startGuide, stopGuide, nextGuide,
   };
 }
 

@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import type { Doc, FileBox, Place, Person } from "./data";
 
 /* ------------------------------------------------------------------ */
@@ -253,6 +254,15 @@ export function PlaceView({ place, files, highlight, onPickSpot, onPickFile, com
         </>
       )}
       <path d="M70 250 v8 M230 250 v8" stroke={INK} strokeWidth="3" strokeLinecap="round" />
+      {/* the doors swing open when the page appears */}
+      {!onPickSpot && (
+        <>
+          <motion.rect x="62" y="14" width="88" height="236" rx="4" fill={isCupboard ? "#B88A5E" : "#AEB8BF"} stroke={INK} strokeWidth="2"
+            style={{ transformOrigin: "62px 132px" }} initial={{ scaleX: 1 }} animate={{ scaleX: 0 }} transition={{ delay: 0.25, duration: 0.7, ease: [0.4, 0, 0.2, 1] }} />
+          <motion.rect x="150" y="14" width="88" height="236" rx="4" fill={isCupboard ? "#B88A5E" : "#AEB8BF"} stroke={INK} strokeWidth="2"
+            style={{ transformOrigin: "238px 132px" }} initial={{ scaleX: 1 }} animate={{ scaleX: 0 }} transition={{ delay: 0.25, duration: 0.7, ease: [0.4, 0, 0.2, 1] }} />
+        </>
+      )}
     </svg>
   );
 }

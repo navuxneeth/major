@@ -26,6 +26,9 @@ const TASKS: { id: string; who: "all" | "caregiver" | "older"; en: string; hi: s
   { id: "T4", who: "all", en: "The bank wants your Aadhaar for KYC. Send it to them safely.", hi: "बैंक को केवाईसी के लिए आपका आधार चाहिए। उसे सुरक्षित तरीके से भेजिए।", tests: "Share safely: purpose stamp, masking", start: "Home (Sunita)" },
   { id: "T5", who: "caregiver", en: "Your mother is unwell. Find out which file your father's LIC policy is in.", hi: "आपकी मम्मी की तबियत ख़राब है। पता कीजिए पापा की एलआईसी पॉलिसी किस फ़ाइल में है।", tests: "Helper view, takeover", start: "Home (Rahul)" },
   { id: "T6a", who: "caregiver", en: "Ask your mother to send you her gas connection book. It is for a KYC update.", hi: "मम्मी से उनकी गैस कनेक्शन बुक माँगिए। केवाईसी अपडेट के लिए चाहिए।", tests: "Ask flow (helper side)", start: "Home (Rahul)" },
+  { id: "T7", who: "older", en: "You are not sure how to send your Aadhaar to the bank. Ask the app to show you how, and do it.", hi: "आपको नहीं पता बैंक को आधार कैसे भेजें। ऐप से पूछिए कि कैसे करें, और कर के दिखाइए।", tests: "Show me how (guided ring + voice)", start: "Home (Sunita)" },
+  { id: "T8", who: "older", en: "You want Rahul to book a train ticket for you on your phone. Get his help and finish the booking.", hi: "आप चाहती हैं राहुल आपके फ़ोन पर ट्रेन टिकट बुक करें। उनकी मदद लीजिए और बुकिंग पूरी कीजिए।", tests: "Lend my phone (OTP typed by owner)", start: "Home (Sunita)" },
+  { id: "T9", who: "all", en: "Compare: do T1 again on the Simple home screen. Which one was easier?", hi: "तुलना: T1 फिर से आसान होम स्क्रीन पर कीजिए। कौन सा आसान था?", tests: "Simple vs full home (Drishti's concern)", start: "More → Home screen → Simple" },
   { id: "T6b", who: "older", en: "Rahul has asked you for something. Please send it to him.", hi: "राहुल ने आपसे कुछ माँगा है। उन्हें भेज दीजिए।", tests: "Answer a request (paper-only document)", start: "Home (Sunita)" },
 ];
 
@@ -124,6 +127,8 @@ export function Lab() {
   const links = [
     { label: "Older adult, English (fresh data)", url: `${base}?fresh=1&as=keeper&lang=en#/` },
     { label: "Older adult, Hindi (fresh data)", url: `${base}?fresh=1&as=keeper&lang=hi#/` },
+    { label: "Older adult, Simple home, English", url: `${base}?fresh=1&as=keeper&lang=en&simple=1#/` },
+    { label: "Older adult, Simple home, Hindi", url: `${base}?fresh=1&as=keeper&lang=hi&simple=1#/` },
     { label: "Caregiver, English (fresh data)", url: `${base}?fresh=1&as=helper&lang=en#/` },
     { label: "Caregiver, Hindi (fresh data)", url: `${base}?fresh=1&as=helper&lang=hi#/` },
   ];

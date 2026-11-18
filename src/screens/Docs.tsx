@@ -62,7 +62,7 @@ export function Find() {
         <>
           <SectionTitle>{t("trySaying")}</SectionTitle>
           <div className="flex flex-wrap gap-2">
-            {examples.map((e) => <Chip key={e} icon="Search" onClick={() => setQ(e)}>{e}</Chip>)}
+            {examples.map((e, i) => <Chip key={e} icon="Search" guide={`find-chip-${i}`} onClick={() => setQ(e)}>{e}</Chip>)}
           </div>
         </>
       )}
@@ -78,7 +78,7 @@ export function Find() {
           ) : (
             <div className="flex flex-col gap-2">
               {results.map((d, i) => (
-                <motion.div key={d.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
+                <motion.div key={d.id} data-guide={`result-${i}`} initial={{ opacity: 0, y: 12, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: i * 0.05, type: "spring", stiffness: 260, damping: 24 }}>
                   <DocRow doc={d} />
                 </motion.div>
               ))}
@@ -115,7 +115,7 @@ export function DocDetail({ id }: { id: string }) {
   const owner = person(doc.personId);
   const loc = locationParts(doc.fileId);
   const cat = CATEGORIES.find((c) => c.id === doc.category);
-  const viewers = data.members.filter((m) => m.access === "all" || (m.access === "some" && m.folders.includes(doc.category)));
+  const viewers = data.members.filter((m) => m.personId !== doc.personId && (m.access === "all" || (m.access === "some" && m.folders.includes(doc.category))));
   const n = doc.expiry ? daysUntil(doc.expiry) : null;
 
   return (
@@ -134,7 +134,8 @@ export function DocDetail({ id }: { id: string }) {
             }} />
         </div>
       ) : (
-        <motion.button whileTap={{ scale: 0.98 }} onClick={() => go(`counter/${doc.id}`)} className="relative block w-full rounded-2xl border border-hair bg-white p-3" aria-label={t("showCounter")}>
+        <motion.button whileTap={{ scale: 0.98 }} onClick={() => go(`counter/${doc.id}`)} className="relative block w-full rounded-3xl border border-hair bg-white p-3 shadow-[0_18px_40px_-24px_rgba(30,91,79,0.6)]" aria-label={t("showCounter")}
+          initial={{ rotateX: 18, y: 16, opacity: 0 }} animate={{ rotateX: 0, y: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 160, damping: 18 }} style={{ transformPerspective: 800 }}>
           <DocArt doc={doc} ownerName={(owner?.name ?? "") + " Sharma"} className="h-auto w-full" />
           <span className="absolute right-3 bottom-3 flex h-10 w-10 items-center justify-center rounded-full bg-ink/70 text-white"><Maximize2 size={20} /></span>
         </motion.button>
@@ -149,8 +150,8 @@ export function DocDetail({ id }: { id: string }) {
 
       {!doc.paperOnly && (
         <div className="mt-4 grid grid-cols-2 gap-2">
-          <Button big icon="Maximize" onClick={() => go(`counter/${doc.id}`)}>{t("showCounter")}</Button>
-          <Button big variant="secondary" icon="Share2" onClick={() => go(`share/${doc.id}`)}>{t("shareSafely")}</Button>
+          <Button big icon="Maximize" guide="counter-btn" onClick={() => go(`counter/${doc.id}`)}>{t("showCounter")}</Button>
+          <Button big variant="secondary" icon="Share2" guide="share-btn" onClick={() => go(`share/${doc.id}`)}>{t("shareSafely")}</Button>
         </div>
       )}
 
@@ -280,9 +281,9 @@ export function Share({ id }: { id: string }) {
       <p className="text-[1.05rem] font-semibold">{t("shareFor")}</p>
       <p className="mb-2 text-[0.95rem] text-mute">{t("shareForNote")}</p>
       <div className="flex flex-wrap gap-2">
-        {PURPOSES.map((x) => {
+        {PURPOSES.map((x, i) => {
           const v = lang === "hi" ? x.hi : x.en;
-          return <Chip key={x.en} active={purpose === v} onClick={() => setPurpose(v)}>{v}</Chip>;
+          return <Chip key={x.en} guide={`purpose-${i}`} active={purpose === v} onClick={() => setPurpose(v)}>{v}</Chip>;
         })}
         <Chip active={purpose === "__custom"} onClick={() => setPurpose("__custom")} icon="Pencil">{lang === "hi" ? "कुछ और" : "Something else"}</Chip>
       </div>
@@ -306,7 +307,7 @@ export function Share({ id }: { id: string }) {
       )}
 
       <div className="mt-4 flex flex-col gap-2">
-        <Button big icon="MessageCircle" disabled={!p || busy} onClick={share}>{busy ? "…" : t("shareWhatsapp")}</Button>
+        <Button big icon="MessageCircle" guide="share-wa" disabled={!p || busy} onClick={share}>{busy ? "…" : t("shareWhatsapp")}</Button>
         <Button variant="secondary" icon="Link2" disabled={!p} onClick={() => setLinkOpen(true)}>{t("shareLink")}</Button>
       </div>
 

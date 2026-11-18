@@ -82,7 +82,7 @@ export interface Request {
 export interface Activity {
   id: string;
   who: string;
-  action: "viewed" | "added" | "shared" | "asked" | "sent" | "moved" | "access";
+  action: "viewed" | "added" | "shared" | "asked" | "sent" | "moved" | "access" | "helped";
   docId?: string;
   detail?: string;
   at: string;
@@ -113,8 +113,21 @@ export interface Unwell {
   visibleTo: string[];
 }
 
+export type LendStatus = "waiting" | "active" | "ended";
+export interface Lend {
+  id: string;
+  app: "train" | "bank" | "almari";
+  helper: string;
+  status: LendStatus;
+  requestedAt: string;
+  startedAt?: string;
+  endedAt?: string;
+  endedBy?: "owner" | "time" | "done";
+}
+
 export interface AppData {
   version: number;
+  lend?: Lend | null;
   people: Person[];
   places: Place[];
   files: FileBox[];

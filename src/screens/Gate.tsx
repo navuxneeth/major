@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { Fingerprint } from "lucide-react";
 import { useStore } from "../store";
 import { Avatar } from "../art";
+import { Blobs, HeroScene } from "../illustrations";
 
 /* First run: language and who is using the phone (the second matters only for testing). */
 export function Onboard() {
@@ -10,10 +11,12 @@ export function Onboard() {
   const [step, setStep] = useState(0);
   const hi = settings.lang === "hi";
   return (
-    <div className="absolute inset-0 z-[70] flex flex-col bg-brand px-6 pt-14 pb-10 text-white">
-      <span className="font-serif text-[3.2rem] leading-none">Almari</span>
-      <p className="mt-2 text-[1.2rem] text-white/85">{hi ? "हर कागज़ कहाँ है, पता रहे" : "Know where every paper is"}</p>
-      <div className="mt-auto">
+    <div className="absolute inset-0 z-[70] flex flex-col overflow-hidden bg-brand px-6 pt-14 pb-10 text-white">
+      <Blobs className="absolute inset-0 h-full w-full" />
+      <motion.span initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="relative font-serif text-[3.4rem] leading-none">Almari</motion.span>
+      <p className="relative mt-2 text-[1.2rem] text-white/85">{hi ? "हर कागज़ कहाँ है, पता रहे" : "Know where every paper is"}</p>
+      <div className="relative mt-4 flex justify-center"><HeroScene className="h-48 w-56" /></div>
+      <div className="relative mt-auto">
         {step === 0 ? (
           <>
             <p className="mb-3 text-[1.15rem] font-semibold">Choose your language · अपनी भाषा चुनें</p>
@@ -65,6 +68,8 @@ export function Lock() {
         <>
           <motion.button
             whileTap={{ scale: 0.92 }}
+            animate={scanning ? {} : { boxShadow: ["0 0 0 0 rgba(30,91,79,0.35)", "0 0 0 22px rgba(30,91,79,0)"] }}
+            transition={{ duration: 1.6, repeat: Infinity }}
             onClick={open}
             className={`mt-auto flex h-32 w-32 items-center justify-center rounded-full border-4 ${scanning ? "border-saffron bg-saffron-soft" : "border-brand bg-brand-soft"}`}
             aria-label={t("touchToOpen")}
