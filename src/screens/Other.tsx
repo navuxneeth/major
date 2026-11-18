@@ -5,7 +5,7 @@ import { CATEGORIES, READY_FOR, type Access, type CategoryId } from "../data";
 import { useStore } from "../store";
 import { matchBundleItem } from "../search";
 import { Avatar } from "../art";
-import { Button, Card, Chip, EmptyNote, Icon, Screen, SectionTitle, Sheet } from "../components/ui";
+import { Button, Card, Chip, EmptyNote, Icon, Screen, SectionTitle, Sheet, StickerBand } from "../components/ui";
 import { DocRow, LocationDot } from "../components/DocRow";
 import { LangToggle } from "./Home";
 import { CatArt, FamilyArt, ReadyArt, SuccessBurst } from "../illustrations";
@@ -19,10 +19,9 @@ export function Category({ id }: { id: CategoryId }) {
   const missing = cat.suggest.filter((s) => !docs.some((d) => d.title.toLowerCase().includes(s.en.toLowerCase().split(" ")[0].toLowerCase())));
   return (
     <Screen title={lang === "hi" ? cat.hi : cat.en} sub={`${docs.length} ${t("documents")}`}>
-      <div className={`mb-4 flex items-center gap-3 rounded-3xl ${cat.tone} p-4`}>
-        <CatArt id={cat.id} className="h-16 w-16 shrink-0" />
-        <p className="text-[1rem]">{lang === "hi" ? "इस फ़ोल्डर के सारे कागज़, और हर असली कागज़ की जगह।" : "Everything in this folder, and where each original is kept."}</p>
-      </div>
+      <StickerBand art={<CatArt id={cat.id} className="h-32 w-32" />}
+        title={lang === "hi" ? "हर कागज़, और कहाँ रखा है" : "Each paper, and where it’s kept"}
+        sub={`${docs.filter((d) => d.paperOnly).length} ${lang === "hi" ? "सिर्फ़ कागज़ पर" : "only on paper"}`} />
       <div className="flex flex-col gap-2">
         {docs.map((d, i) => <motion.div key={d.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i }}><DocRow doc={d} /></motion.div>)}
         {!docs.length && <EmptyNote>{lang === "hi" ? "अभी इस फ़ोल्डर में कुछ नहीं है।" : "Nothing in this folder yet."}</EmptyNote>}
@@ -34,7 +33,7 @@ export function Category({ id }: { id: CategoryId }) {
             {missing.map((s) => (
               <motion.button key={s.en} whileTap={{ scale: 0.98 }}
                 onClick={() => go(`add?name=${encodeURIComponent(lang === "hi" ? s.hi : s.en)}&cat=${id}&art=${s.art}`)}
-                className="flex min-h-14 items-center gap-3 rounded-2xl border-2 border-dashed border-hair bg-white px-4 text-left">
+                className="flex min-h-14 items-center gap-3 rounded-[22px] border-2 border-dashed border-black/15 bg-white px-4 text-left">
                 <Plus size={22} className="text-brand" />
                 <span className="flex-1 text-[1.05rem]">{lang === "hi" ? s.hi : s.en}</span>
               </motion.button>
@@ -57,10 +56,9 @@ export function Ready({ id }: { id: string }) {
   const docs = who === "both" ? data.docs : data.docs.filter((d) => d.personId === who);
   return (
     <Screen title={lang === "hi" ? b.hi : b.en} sub={t("bundleNote")}>
-      <div className={`mb-4 flex items-center gap-3 rounded-3xl ${b.tone} p-3`}>
-        <ReadyArt id={b.id} className="h-20 w-24 shrink-0" />
-        <p className="text-[1rem]">{lang === "hi" ? "क्या ले जाना है, और हर चीज़ किस फ़ाइल में है।" : "What to take, and which file each one is in."}</p>
-      </div>
+      <StickerBand art={<ReadyArt id={b.id} className="h-32 w-40" />}
+        title={lang === "hi" ? "क्या ले जाना है, और कहाँ रखा है" : "What to take, and which file it's in"}
+        sub={`${packed.length} / ${b.items.length} ${t("packed").toLowerCase()}`} />
       <p className="mb-2 text-[1.05rem] font-semibold">{lang === "hi" ? "किसके लिए?" : "Who is going?"}</p>
       <div className="mb-4 flex flex-wrap gap-2">
         <Chip active={who === "sunita"} onClick={() => setWho("sunita")}>{nameOf("sunita")}</Chip>
@@ -73,11 +71,11 @@ export function Ready({ id }: { id: string }) {
           const key = it.en;
           const isPacked = packed.includes(key);
           return (
-            <div key={key} className={`rounded-2xl border-2 bg-white p-3 ${isPacked ? "border-brand" : "border-hair"}`}>
+            <motion.div key={key} layout className={`rounded-[26px] p-3 transition-colors ${isPacked ? "bg-[#EAF6EE]" : "bg-white ring-1 ring-black/[0.08]"}`}>
               <div className="flex items-start gap-3">
                 <motion.button whileTap={{ scale: 0.85 }} data-guide={b.items[0].en === key ? "ready-pack-0" : undefined}
                   onClick={() => setPacked((p) => (p.includes(key) ? p.filter((x) => x !== key) : [...p, key]))}
-                  className={`mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 ${isPacked ? "border-brand bg-brand text-white" : "border-hair"}`}
+                  className={`mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 ${isPacked ? "border-[#2E9E5B] bg-[#2E9E5B] text-white" : "border-black/20 bg-white"}`}
                   aria-label={t("packed")} aria-pressed={isPacked}
                 >
                   {isPacked && <motion.span initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }}><Check size={26} /></motion.span>}
@@ -89,12 +87,12 @@ export function Ready({ id }: { id: string }) {
               </div>
               <div className="mt-2 flex flex-col gap-2">
                 {found.length ? found.map((d) => <DocRow key={d.id} doc={d} />) : (
-                  <button onClick={() => go(`add?name=${encodeURIComponent(lang === "hi" ? it.hi : it.en)}`)} className="flex min-h-12 items-center gap-2 rounded-xl bg-saffron-soft px-3 text-left font-medium">
+                  <button onClick={() => go(`add?name=${encodeURIComponent(lang === "hi" ? it.hi : it.en)}`)} className="flex min-h-12 items-center gap-2 rounded-full bg-[#FFF4DC] px-4 text-left font-semibold">
                     <Plus size={20} /> {t("notAdded")} · {t("addIt")}
                   </button>
                 )}
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>
@@ -123,7 +121,9 @@ export function Family() {
 
   return (
     <Screen title={t("familyTitle")} sub={isKeeper ? t("familySub") : t("helperNote")}>
-      <div className="mb-3 flex justify-center rounded-3xl bg-saffron-soft py-2"><FamilyArt className="h-24 w-44" /></div>
+      <StickerBand tone="bg-[#FFF4DC]" art={<FamilyArt className="h-28 w-44" />}
+        title={isKeeper ? (lang === "hi" ? "कौन क्या देखे, आप तय करें" : "You decide who sees what") : (lang === "hi" ? "मम्मी तय करती हैं" : "Mummy decides who sees what")}
+        sub={`${data.members.length} ${lang === "hi" ? "लोग" : "people"}`} />
       <div className="flex flex-col gap-2">
         {data.people.filter((p) => p.owner && !data.members.some((m) => m.personId === p.id)).map((p) => (
           <Card key={p.id} className="flex items-center gap-3">
@@ -156,11 +156,11 @@ export function Family() {
       {isKeeper && <Button variant="secondary" icon="UserPlus" className="mt-3 w-full" onClick={() => setInviting(true)}>{t("invite")}</Button>}
 
       <SectionTitle>{t("activity")}</SectionTitle>
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-2">
         {data.activity.slice(0, 14).map((a) => {
           const d = data.docs.find((x) => x.id === a.docId);
           return (
-            <div key={a.id} className="flex items-start gap-3 border-b border-hair py-2.5">
+            <div key={a.id} className="flex items-start gap-3 rounded-[20px] bg-card px-3 py-2.5">
               <Avatar person={person(a.who)} size={34} />
               <p className="flex-1 text-[1rem] leading-snug">
                 <b>{personName(a.who)}</b> {verb(a.action)} <b>{d ? docTitle(d) : ""}</b>
@@ -177,7 +177,7 @@ export function Family() {
           <div className="flex flex-col gap-2">
             {ACCESS.map((a) => (
               <button key={a.id} onClick={() => setMember({ ...m, access: a.id, folders: a.id === "some" && !m.folders.length ? ["health"] : m.folders })}
-                className={`flex min-h-16 items-center gap-3 rounded-2xl border-2 px-4 text-left ${m.access === a.id ? "border-brand bg-brand-soft" : "border-hair bg-white"}`}>
+                className={`flex min-h-16 items-center gap-3 rounded-[22px] border-2 px-4 text-left ${m.access === a.id ? "border-ink bg-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.3)]" : "border-transparent bg-card"}`}>
                 <Icon name={a.icon} size={24} />
                 <span className="flex-1 text-[1.05rem] font-semibold">{t(a.key)}</span>
                 {m.access === a.id && <Check size={24} className="text-brand" />}
@@ -229,8 +229,8 @@ const ASK_WHY = [
 ];
 
 export function Ask() {
-  const { data, t, lang, sendRequest, showToast, go, docTitle } = useStore();
-  const [doc, setDoc] = useState("");
+  const { data, t, lang, sendRequest, showToast, go, docTitle, route } = useStore();
+  const [doc, setDoc] = useState(() => route.params.get("name") ?? "");
   const [why, setWhy] = useState("");
   const match = data.docs.find((d) => d.title.toLowerCase() === doc.toLowerCase() || d.titleHi === doc || d.aliases.includes(doc.toLowerCase()));
   return (
@@ -239,13 +239,13 @@ export function Ask() {
       <div className="flex flex-wrap gap-2">
         {ASK_DOCS.map((d) => {
           const v = lang === "hi" ? d.hi : d.en;
-          return <Chip key={d.en} active={doc === v || doc === d.en} onClick={() => setDoc(d.en)}>{v}</Chip>;
+          return <Chip key={d.en} active={[v, d.en].some((x) => x.toLowerCase() === doc.trim().toLowerCase())} onClick={() => setDoc(d.en)}>{v}</Chip>;
         })}
       </div>
       <input value={doc} onChange={(e) => setDoc(e.target.value)} placeholder={lang === "hi" ? "या नाम लिखें" : "Or type a name"}
         className="mt-3 h-14 w-full rounded-[22px] bg-card px-4 text-[1.1rem] outline-none focus:border-brand" />
       {match && (
-        <div className="mt-2 flex items-start gap-2 rounded-xl bg-brand-soft p-3 text-[0.98rem]">
+        <div className="mt-2 flex items-start gap-2 rounded-[20px] bg-card p-3 text-[0.98rem]">
           <Info size={20} className="mt-0.5 shrink-0 text-brand" />
           <span>{lang === "hi" ? `यह पहले से है: ${docTitle(match)}।` : `Already here: ${docTitle(match)}.`} {match.paperOnly ? (lang === "hi" ? "पर सिर्फ़ कागज़ पर है, मम्मी फ़ोटो लेकर भेजेंगी।" : "But it is only on paper, so Mummy will take a photo and send it.") : (lang === "hi" ? "आप इसे अभी खोल सकते हैं।" : "You can open it now.")}</span>
         </div>
@@ -283,7 +283,7 @@ export function Reminders() {
           return (
             <div key={r.id} className={`rounded-[22px] bg-card p-3 ${r.done ? "opacity-50" : ""}`}>
               <div className="flex items-start gap-3">
-                <span className={`flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl text-center leading-none ${n <= 14 && !r.done ? "bg-danger-soft text-danger" : "bg-saffron-soft"}`}>
+                <span className={`flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-[22px] text-center leading-none ${n <= 14 && !r.done ? "bg-white text-danger" : "bg-white"} shadow-[0_4px_12px_-6px_rgba(0,0,0,0.25)]`}>
                   <span className="text-[1.15rem] font-bold">{new Date(r.due).getDate()}</span>
                   <span className="text-[0.7rem]">{new Date(r.due).toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN", { month: "short" })}</span>
                 </span>
@@ -303,7 +303,7 @@ export function Reminders() {
       </div>
       <Button variant="secondary" icon="Plus" className="mt-3 w-full" onClick={() => setAdding(true)}>{t("addReminder")}</Button>
       <Sheet open={adding} onClose={() => setAdding(false)} title={t("addReminder")}>
-        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={lang === "hi" ? "जैसे: बिजली बिल भरना" : "e.g. Pay electricity bill"} className="h-14 w-full rounded-2xl border-2 border-brand bg-white px-4 text-[1.1rem]" />
+        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={lang === "hi" ? "जैसे: बिजली बिल भरना" : "e.g. Pay electricity bill"} className="h-14 w-full rounded-[22px] border-2 border-transparent bg-card focus:border-ink px-4 text-[1.1rem]" />
         <input type="date" value={due} onChange={(e) => setDue(e.target.value)} className="mt-2 h-14 w-full rounded-[22px] bg-card px-4 text-[1.1rem]" />
         <p className="mt-2 text-[0.95rem] text-mute">{lang === "hi" ? "आपको और राहुल को याद आएगी।" : "You and Rahul will both get it."}</p>
         <Button big className="mt-3 w-full" disabled={!title.trim() || !due} onClick={() => {
@@ -323,13 +323,13 @@ export function Unwell() {
   const key = ["d9", "d10", "d7", "d11", "d14", "d1", "d3"].map((id) => data.docs.find((d) => d.id === id)).filter(Boolean);
   return (
     <Screen title={settings.role === "keeper" ? t("unwellTitle") : lang === "hi" ? "अगर मम्मी-पापा की तबियत ख़राब हो" : "If Mummy or Papa is unwell"} sub={t("unwellSub")}>
-      <div className="rounded-2xl bg-danger-soft p-4">
+      <div className="rounded-[28px] bg-[#FDECEA] p-4">
         <p className="flex items-center gap-2 text-[1.1rem] font-semibold"><HeartHandshake size={24} /> {t("callFirst")}</p>
         <ol className="mt-2 flex flex-col gap-2">
           {u.call.map((pid, i) => {
             const p = person(pid)!;
             return (
-              <li key={pid} className="flex items-center gap-3 rounded-xl bg-white p-2.5">
+              <li key={pid} className="flex items-center gap-3 rounded-2xl bg-white p-2.5">
                 <span className="w-6 text-center text-[1.2rem] font-bold">{i + 1}</span>
                 <Avatar person={p} size={36} />
                 <span className="flex-1 font-semibold">{personName(pid)} <span className="font-normal text-mute">· {lang === "hi" ? p.relationHi : p.relation}</span></span>
@@ -343,7 +343,7 @@ export function Unwell() {
         <Card><p className="text-[0.9rem] text-mute">{t("doctor")}</p><p className="text-[1.05rem] font-semibold">{u.doctor}</p></Card>
         <Card><p className="text-[0.9rem] text-mute">{t("hospital")}</p><p className="text-[1.05rem] font-semibold">{u.hospital}</p></Card>
       </div>
-      <div className="mt-3 rounded-2xl border-2 border-saffron bg-saffron-soft p-4 text-[1.02rem]">{lang === "hi" ? u.noteHi : u.note}</div>
+      <div className="mt-3 rounded-[22px] bg-[#FFF4DC] p-4 text-[1.02rem]">{lang === "hi" ? u.noteHi : u.note}</div>
       <SectionTitle>{t("importantPapers")}</SectionTitle>
       <div className="flex flex-col gap-2">{key.map((d) => <DocRow key={d!.id} doc={d!} />)}</div>
       <SectionTitle>{t("passwordDiary")}</SectionTitle>
@@ -363,7 +363,7 @@ export function Diary() {
   const [text, setText] = useState(lang === "hi" ? data.diary.hi : data.diary.en);
   return (
     <Screen title={t("diaryTitle")}>
-      <div className="flex items-start gap-3 rounded-2xl bg-brand text-white p-4">
+      <div className="flex items-start gap-3 rounded-[22px] bg-brand text-white p-4">
         <ShieldAlert size={28} className="shrink-0" />
         <p className="text-[1.02rem] leading-snug">{t("diaryNever")}</p>
       </div>
@@ -382,7 +382,7 @@ export function Diary() {
         ))}
       </div>
       <Sheet open={editing} onClose={() => setEditing(false)} title={t("diaryWhere")}>
-        <textarea value={text} onChange={(e) => setText(e.target.value)} rows={4} className="w-full rounded-2xl border-2 border-brand bg-white p-3 text-[1.08rem]" />
+        <textarea value={text} onChange={(e) => setText(e.target.value)} rows={4} className="w-full rounded-[22px] border-2 border-transparent bg-card focus:border-ink p-3 text-[1.08rem]" />
         <Button big className="mt-3 w-full" onClick={() => { setDiary(text); setEditing(false); showToast(lang === "hi" ? "सेव हो गया।" : "Saved."); }}>{t("save")}</Button>
       </Sheet>
     </Screen>
@@ -395,7 +395,7 @@ export function More() {
   const links = [
     { icon: Users, label: t("familyTitle"), to: "family" },
     { icon: HandHelping, label: lang === "hi" ? "मदद: कैसे करें, दिखाओ" : "Help: show me how", to: "help" },
-    { icon: Smartphone, label: lang === "hi" ? "फ़ोन उधार दें" : "Lend my phone", to: "lend" },
+    { icon: Smartphone, label: lang === "hi" ? "फ़ोन उधार दें (आज़माया गया आइडिया)" : "Lend my phone (explored idea)", to: "lend" },
     { icon: Bell, label: t("remindersTitle"), to: "reminders" },
     { icon: HeartHandshake, label: t("unwellTitle"), to: "unwell" },
     { icon: KeyRound, label: t("diaryTitle"), to: "diary" },
@@ -409,7 +409,7 @@ export function More() {
       <div className="flex gap-2">
         {([0, 1, 2] as const).map((s) => (
           <button key={s} onClick={() => setSettings({ scale: s })} aria-pressed={settings.scale === s}
-            className={`flex h-14 flex-1 items-center justify-center rounded-2xl border-2 font-semibold ${settings.scale === s ? "border-brand bg-brand text-white" : "border-hair bg-white"}`}
+            className={`flex h-14 flex-1 items-center justify-center rounded-full border-2 font-semibold ${settings.scale === s ? "border-ink bg-ink text-white" : "border-transparent bg-card"}`}
             style={{ fontSize: [16, 20, 24][s] }}>A{s > 0 ? "+".repeat(s) : ""}</button>
         ))}
       </div>

@@ -3,8 +3,8 @@ import { motion } from "motion/react";
 import { ChevronRight, ShieldAlert } from "lucide-react";
 import { useStore } from "../store";
 import { GUIDES, matchGuide } from "../components/Guide";
-import { HelpArt, LendArt } from "../illustrations";
-import { Card, EmptyNote, Icon, MicButton, Screen, SectionTitle } from "../components/ui";
+import { HelpArt } from "../illustrations";
+import { Card, EmptyNote, Icon, MicButton, Screen, SectionTitle, StickerBand } from "../components/ui";
 
 export function Help() {
   const { lang, go, startGuide } = useStore();
@@ -20,16 +20,11 @@ export function Help() {
 
   return (
     <Screen title={hi ? "मदद" : "Help"} sub={hi ? "हम दिखाएँगे कहाँ दबाना है। दबाएँगे आप ख़ुद।" : "We show you where to tap. You do the tapping."}>
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-        className="relative flex items-center gap-3 overflow-hidden rounded-3xl bg-saffron-soft p-4">
-        <HelpArt className="h-28 w-28 shrink-0" />
-        <div>
-          <p className="text-[1.25rem] leading-tight font-semibold">{hi ? "पूछिए, “यह कैसे करूँ?”" : "Ask, “How do I…?”"}</p>
-          <p className="mt-1 text-[0.98rem] text-mute">{hi ? "एक रोशनी वाला घेरा सही बटन पर आएगा, और आवाज़ बताएगी।" : "A glowing ring lands on the right button, and a voice tells you what to do."}</p>
-        </div>
-      </motion.div>
+      <StickerBand tone="bg-[#FFF4DC]" art={<HelpArt className="h-36 w-36" />}
+        title={hi ? "पूछिए, “यह कैसे करूँ?”" : "Ask, “How do I…?”"}
+        sub={hi ? "एक घेरा सही बटन पर आएगा, और आवाज़ बताएगी।" : "A ring lands on the right button and a voice tells you what to do."} />
 
-      <div className="mt-4 flex items-center gap-3 rounded-2xl border-2 border-brand bg-white p-3">
+      <div className="flex items-center gap-3 rounded-full bg-card p-2 pr-5">
         <MicButton onText={(text, final) => {
           setHeard(text);
           if (!final) return;
@@ -45,7 +40,7 @@ export function Help() {
         {GUIDES.filter((g) => !g.outside).map((g, i) => (
           <motion.div key={g.id} initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.05 * i }}>
             <Card onClick={() => run(g.id)} className="flex items-center gap-3">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-soft text-brand"><Icon name={g.icon} size={24} /></span>
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white"><Icon name={g.icon} size={24} /></span>
               <span className="flex-1 text-[1.05rem] font-semibold">{hi ? g.hi : g.en}</span>
               <ChevronRight size={22} className="text-mute" />
             </Card>
@@ -57,22 +52,13 @@ export function Help() {
       <div className="flex flex-col gap-2">
         {GUIDES.filter((g) => g.outside).map((g) => (
           <Card key={g.id} onClick={() => run(g.id)} className="flex items-center gap-3">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sky"><Icon name={g.icon} size={24} /></span>
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white"><Icon name={g.icon} size={24} /></span>
             <span className="flex-1 text-[1.05rem] font-semibold">{hi ? g.hi : g.en}</span>
             <ChevronRight size={22} className="text-mute" />
           </Card>
         ))}
       </div>
 
-      <SectionTitle>{hi ? "फिर भी अटक गए?" : "Still stuck?"}</SectionTitle>
-      <Card onClick={() => go("lend")} className="flex items-center gap-3" tone="bg-brand-soft">
-        <LendArt className="h-16 w-24 shrink-0" />
-        <span className="flex-1">
-          <span className="block text-[1.1rem] font-semibold">{hi ? "फ़ोन उधार दें" : "Lend my phone"}</span>
-          <span className="block text-[0.95rem] text-mute">{hi ? "राहुल 15 मिनट के लिए एक ऐप चला सकेंगे" : "Rahul can use one app for 15 minutes"}</span>
-        </span>
-        <ChevronRight size={22} className="text-mute" />
-      </Card>
     </Screen>
   );
 }
@@ -111,10 +97,10 @@ export function PhoneMessages() {
       ) : (
         <div className="p-4">
           <p className="mb-2 font-bold">BK-MYBANK</p>
-          <div className="rounded-3xl rounded-tl-md bg-paper p-4 text-[1.1rem] leading-relaxed">
+          <div className="rounded-[28px] rounded-tl-md bg-paper p-4 text-[1.1rem] leading-relaxed">
             <span data-guide="otp-digits" className="rounded-lg bg-saffron px-1.5 text-[1.5rem] font-bold tracking-widest">482913</span> is your OTP for ₹1,240. Valid 5 min. Do NOT share it with anyone. Bank never asks for OTP.
           </div>
-          <div className="mt-4 flex items-start gap-3 rounded-2xl bg-danger-soft p-4">
+          <div className="mt-4 flex items-start gap-3 rounded-[22px] bg-danger-soft p-4">
             <ShieldAlert size={26} className="shrink-0 text-danger" />
             <p className="text-[1rem]">{hi ? "कोई फ़ोन पर ओटीपी माँगे, चाहे वो बैंक बोले, तो मत बताइए। राहुल को भी नहीं।" : "If anyone asks for this on a call, even if they say they are the bank, don't tell them. Not even Rahul."}</p>
           </div>

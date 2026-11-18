@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { Search, ChevronRight, Bell, HeartHandshake, KeyRound, Printer, Mic, Sparkles, HandHelping, IdCard, LayoutGrid, Rows3, Clock, FileText, Send } from "lucide-react";
+import { Search, ChevronRight, Bell, HeartHandshake, KeyRound, Printer, Mic, Sparkles, HandHelping, IdCard, LayoutGrid, Rows3, Clock, FileText, Send, Plus } from "lucide-react";
 import { CATEGORIES, READY_FOR, type CategoryId, type Doc, type Request } from "../data";
 import { useStore } from "../store";
 import { Button, Chip, MicButton, Sheet } from "../components/ui";
@@ -223,7 +223,7 @@ function Reminders({ limit = 3 }: { limit?: number }) {
           return (
             <motion.button key={r.id} {...rise(i)} whileTap={{ scale: 0.98 }} onClick={() => (r.docId ? go(`doc/${r.docId}`) : go("reminders"))}
               className="flex min-h-18 items-center gap-3 rounded-[22px] bg-card px-4 py-3 text-left">
-              <span className={`flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-2xl leading-none ${urgent ? "bg-danger text-white" : "bg-white"}`}>
+              <span className={`flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-[22px] leading-none ${urgent ? "bg-danger text-white" : "bg-white"}`}>
                 <span className="text-[1.15rem] font-bold">{new Date(r.due).getDate()}</span>
                 <span className="text-[0.68rem] uppercase">{new Date(r.due).toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN", { month: "short" })}</span>
               </span>
@@ -294,7 +294,7 @@ function PlaceLine({ fileId }: { fileId: string | null }) {
   const { locationLine, file } = useStore();
   const f = file(fileId);
   return (
-    <div className="mt-2 flex items-start gap-2 rounded-2xl bg-card p-3 text-[1rem]">
+    <div className="mt-2 flex items-start gap-2 rounded-[22px] bg-card p-3 text-[1rem]">
       <span className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-black/20" style={{ background: f?.color }} />
       {locationLine(fileId)}
     </div>
@@ -309,7 +309,7 @@ function HelpCards() {
       {[
         { id: "help", to: "help", guide: "home-help", art: <HelpArt className="h-24 w-24" />, en: "Show me how", hi: "कैसे करें, दिखाओ", subEn: "A ring shows where to tap", subHi: "घेरा दिखाएगा कहाँ दबाना है" },
         settings.role === "keeper"
-          ? { id: "lend", to: "lend", guide: "home-lend", art: <LendArt className="h-20 w-28" />, en: "Lend my phone", hi: "फ़ोन उधार दें", subEn: "Rahul helps, 15 min", subHi: "राहुल मदद करें, 15 मिनट" }
+          ? { id: "rem", to: "reminders", guide: "home-rem", art: <span className="block -rotate-6"><CatArt id="money" className="h-20 w-20" /></span>, en: "Reminders", hi: "याद दिलाना", subEn: "Renewals before they lapse", subHi: "समय से पहले याद" }
           : { id: "ask", to: "ask", guide: "home-ask", art: <span className="block rotate-6"><CatArt id="home" className="h-20 w-20" /></span>, en: "Ask Mummy", hi: "मम्मी से माँगें", subEn: "For a document", subHi: "कोई कागज़" },
       ].map((x, i) => (
         <motion.button key={x.id} {...rise(i)} whileTap={{ scale: 0.97 }} whileHover="lift" onClick={() => go(x.to)} data-guide={x.guide}
@@ -394,7 +394,7 @@ export function SimpleHome() {
     { icon: Mic, en: "Find a paper", hi: "कागज़ ढूँढें", subEn: "Just say its name", subHi: "बस नाम बोलिए", to: "find", dark: true, guide: "home-find" },
     { icon: IdCard, en: "Show my ID", hi: "मेरा आईडी दिखाएँ", subEn: "Aadhaar, big and bright", subHi: "आधार, बड़ा और साफ़", to: "counter/d1", guide: "home-id" },
     { icon: Sparkles, en: "Show me how", hi: "कैसे करें, दिखाओ", subEn: "A ring shows where to tap", subHi: "घेरा दिखाएगा कहाँ दबाना है", to: "help", guide: "home-help" },
-    { icon: HandHelping, en: "Ask Rahul to help", hi: "राहुल से मदद लें", subEn: "He can use one app, 15 minutes", subHi: "एक ऐप, 15 मिनट", to: "lend", guide: "home-lend" },
+    { icon: Plus, en: "Add a paper", hi: "कागज़ जोड़ें", subEn: "Photo, then where you keep it", subHi: "फ़ोटो, फिर कहाँ रखा है", to: "add", guide: "home-add" },
   ];
   return (
     <div className="px-4 pt-4 pb-16">

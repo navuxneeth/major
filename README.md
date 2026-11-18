@@ -19,14 +19,14 @@ From 16 in-depth interviews (6 older adults, 10 caregivers) and a 131-response f
 - **Find in one step:** search or speak (English and Hindi), with a full-screen "show at counter" view.
 - **Ready for…:** hospital, train, bank and pension checklists that list each document and which file it is in.
 - **Family circle:** each member sees everything, chosen folders, or only the emergency card; helpers can add documents; the owner sees who viewed what.
-- **Ask for a document:** a son in another city asks, the parent sends it with one tap.
+- **Ask for a document (lives in search):** when Rahul searches and the document is not there, or it is only on paper, he gets "Ask Mummy for it". She sees one card on her home and sends it with one tap.
 - **Share safely:** every copy sent out is stamped "For SBI KYC only · date", with Aadhaar masking and 24-hour links.
 - **Reminders** for renewals go to the owner and the helper.
 - **Passwords:** never stored. Almari remembers only where the password diary is and which number or email each account uses.
 - **If I'm unwell** card and a printable almirah index.
 - **Show me how (Point & Say):** ask by voice or tap a task; a glowing ring sits on the exact button and a voice says "tap here". It never taps for you. Includes a "Where is my OTP?" guide on the phone's messages.
-- **Lend my phone:** the parent asks Rahul for help in one app (train tickets, bank). He gets 15 minutes, a red banner with a big End button stays on screen, and the parent types the OTP themselves, so nobody reads an OTP out on a call.
-- **Simple mode:** four giant buttons (find a paper, show my ID, show me how, ask Rahul) for parents who find apps hard. The helper switches it on during setup.
+- **Lend my phone (explored, not in the main flow):** kept under More only. Phones hold bank and other private data, and "Show me how" already covers everyday help.
+- **Simple mode (default for the parent):** four big buttons (find a paper, show my ID, show me how, add a paper) and the folders. "Show all features" opens the full home.
 - Opens with the phone's own lock. No new password.
 
 All data is a fictional sample family, stored only in the browser. DigiLocker import is shown as a concept; a real connection needs DigiLocker partner approval.
@@ -35,7 +35,7 @@ All data is a fictional sample family, stored only in the browser. DigiLocker im
 Each link starts a participant on fresh sample data:
 - Older adult, English: `https://navuxneeth.github.io/major/?fresh=1&as=keeper&lang=en`
 - Older adult, Hindi: `https://navuxneeth.github.io/major/?fresh=1&as=keeper&lang=hi`
-- Older adult, Simple home: add `&simple=1` to either link above
+- Older adult, full home: add `&simple=0` to the keeper link above (Simple is the default)
 - Caregiver, English: `https://navuxneeth.github.io/major/?fresh=1&as=helper&lang=en`
 - Caregiver, Hindi: `https://navuxneeth.github.io/major/?fresh=1&as=helper&lang=hi`
 

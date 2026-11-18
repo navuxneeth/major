@@ -231,3 +231,15 @@ export function EmptyNote({ icon = "Info", children }: { icon?: string; children
     </div>
   );
 }
+
+/** Header card used on inner screens: same language as the home sticker cards (soft card, big tight title, sticker art peeking out). */
+export function StickerBand({ art, title, sub, tone = "bg-card", className = "" }: { art: ReactNode; title: ReactNode; sub?: ReactNode; tone?: string; className?: string }) {
+  return (
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className={`relative mb-5 flex min-h-[148px] flex-col justify-start overflow-hidden rounded-[28px] ${tone} p-4 pr-[42%] ${className}`}>
+      <p className="title-tight relative z-10 text-[1.3rem] leading-[1.08] font-bold">{title}</p>
+      {sub && <p className="relative z-10 mt-1 text-[0.92rem] leading-snug text-mute">{sub}</p>}
+      <motion.span initial={{ y: 40, rotate: 14, opacity: 0 }} animate={{ y: 0, rotate: -6, opacity: 1 }} transition={{ type: "spring", stiffness: 180, damping: 16, delay: 0.08 }}
+        className="sticker absolute -right-2 -bottom-3 block">{art}</motion.span>
+    </motion.div>
+  );
+}

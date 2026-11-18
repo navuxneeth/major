@@ -15,7 +15,7 @@ import { Lock, Onboard } from "./screens/Gate";
 import type { CategoryId } from "./data";
 
 function Nav() {
-  const { route, go, t, settings } = useStore();
+  const { route, go, t, settings, lang } = useStore();
   const top = route.parts[0] ?? "";
   const keeper = settings.role === "keeper";
   const items = keeper
@@ -28,7 +28,7 @@ function Nav() {
     : [
         { to: "", icon: HomeIcon, label: t("home") },
         { to: "find", icon: Search, label: t("find") },
-        { to: "ask", icon: HandHelping, label: t("ask") },
+        { to: "reminders", icon: Bell, label: lang === "hi" ? "याद" : "Reminders" },
         { to: "more", icon: Menu, label: t("more") },
       ];
   return (
@@ -131,7 +131,7 @@ function Shell() {
     setSettings({
       ...(as === "keeper" || as === "helper" ? { role: as, onboarded: true } : {}),
       ...(lang === "en" || lang === "hi" ? { lang } : {}),
-      ...(q.has("simple") ? { simple: q.get("simple") === "1" } : q.get("fresh") === "1" ? { simple: false } : {}),
+      ...(q.has("simple") ? { simple: q.get("simple") === "1" } : q.get("fresh") === "1" ? { simple: as !== "helper" } : {}),
     });
     window.history.replaceState(null, "", window.location.pathname + window.location.hash);
   }, []); // eslint-disable-line

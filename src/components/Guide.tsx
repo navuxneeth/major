@@ -41,15 +41,6 @@ export const GUIDES: GuideDef[] = [
     ],
   },
   {
-    id: "lend", en: "Get Rahul's help on my phone", hi: "राहुल से फ़ोन पर मदद लेना", icon: "HandHelping", start: "",
-    keywords: ["help", "rahul", "son", "book", "ticket", "lend", "मदद", "राहुल", "बेटा", "टिकट", "बुक"],
-    steps: [
-      { target: "home-lend", en: "Tap Lend my phone.", hi: "फ़ोन उधार दें पर दबाइए।" },
-      { target: "lend-app-train", en: "Choose the app he should help with.", hi: "चुनिए किस ऐप में मदद चाहिए।" },
-      { target: "lend-send", en: "Tap here to ask Rahul.", hi: "राहुल से पूछने के लिए यहाँ दबाइए।" },
-    ],
-  },
-  {
     id: "otp", en: "Where is my OTP?", hi: "मेरा ओटीपी कहाँ है?", icon: "MessageSquareText", start: "phone", outside: true,
     keywords: ["otp", "code", "ओटीपी", "कोड", "kahan", "message"],
     steps: [
@@ -178,7 +169,7 @@ export function GuideOverlay({ rootId }: { rootId: string }) {
         <motion.div
           key={guide.step}
           initial={{ opacity: 0, y: below ? -10 : 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-          className="pointer-events-auto absolute inset-x-3 rounded-3xl bg-ink p-4 text-white shadow-2xl"
+          className="pointer-events-auto absolute inset-x-3 rounded-[28px] bg-ink p-4 text-white shadow-2xl"
           style={rect ? (below ? { top: Math.min(rect.y + rect.h + pad + 14, rect.H - 190) } : { top: Math.max(rect.y - pad - 170, 12) }) : { bottom: 110 }}
         >
           <div className="flex items-start gap-3">
@@ -186,10 +177,10 @@ export function GuideOverlay({ rootId }: { rootId: string }) {
             <p className="flex-1 text-[1.15rem] leading-snug font-semibold">{text}</p>
           </div>
           <div className="mt-3 flex gap-2">
-            <button onClick={() => speak(text, lang)} className="flex h-11 flex-1 items-center justify-center gap-2 rounded-2xl bg-white/15 font-semibold">
+            <button onClick={() => speak(text, lang)} className="flex h-11 flex-1 items-center justify-center gap-2 rounded-[22px] bg-white/15 font-semibold">
               <Volume2 size={20} /> {lang === "hi" ? "फिर से सुनें" : "Say it again"}
             </button>
-            <button onClick={() => { stopGuide(); window.speechSynthesis?.cancel(); }} className="flex h-11 items-center justify-center gap-1 rounded-2xl bg-white/15 px-4 font-semibold">
+            <button onClick={() => { stopGuide(); window.speechSynthesis?.cancel(); }} className="flex h-11 items-center justify-center gap-1 rounded-[22px] bg-white/15 px-4 font-semibold">
               <X size={20} /> {lang === "hi" ? "बंद" : "Stop"}
             </button>
           </div>

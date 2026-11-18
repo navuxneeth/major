@@ -20,7 +20,7 @@ export function DocRow({ doc, onClick, showOwner = true }: { doc: Doc; onClick?:
       onClick={onClick ?? (() => go(`doc/${doc.id}`))}
       className="flex w-full items-center gap-3 rounded-[22px] bg-card p-3 text-left active:bg-paper"
     >
-      <div className="flex h-16 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-paper">
+      <div className="flex h-16 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-paper">
         {doc.paperOnly ? (
           <FileQuestion size={30} className="text-mute" aria-hidden />
         ) : (

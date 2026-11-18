@@ -11,9 +11,9 @@
   --color-brand-soft: #F1F1F3;
   --color-glass: rgba(242, 242, 244, 0.72);
   --color-saffron: #E8A33D;
-  --color-saffron-soft: #FBEBCD;
+  --color-saffron-soft: #FFF4DC;
   --color-danger: #B3412E;
-  --color-danger-soft: #F8E1DB;
+  --color-danger-soft: #FDECEA;
   --color-sky: #DCE9F7;
   --color-rose: #F9DCD5;
   --color-sage: #DCEBD9;
@@ -61,7 +61,8 @@ input, textarea, select { font-family: inherit; }
 .title-tight { letter-spacing: -0.035em; }
 .no-scrollbar { scrollbar-width: none; }
 
-:focus-visible { outline: 3px solid var(--color-saffron); outline-offset: 2px; }
+:focus-visible { outline: 3px solid #111111; outline-offset: 2px; }
+input.bg-transparent:focus-visible { outline: none; }
 
 @keyframes ring-pulse {
   0% { transform: scale(0.9); opacity: 0.9; }

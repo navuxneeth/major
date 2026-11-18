@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { Search, X, ShieldCheck, MessageCircle, Camera, Bell, Eye, Link2, Maximize2 } from "lucide-react";
+import { Search, X, ShieldCheck, MessageCircle, Camera, Bell, Eye, Link2, Maximize2, Send } from "lucide-react";
 import { CATEGORIES } from "../data";
 import { useStore } from "../store";
 import { searchDocs } from "../search";
@@ -14,7 +14,7 @@ import { fileToDataUrl } from "../image";
 
 /* ================= FIND ================= */
 export function Find() {
-  const { data, t, lang, route, settings } = useStore();
+  const { data, t, lang, route, settings, go } = useStore();
   const [q, setQ] = useState(route.params.get("q") ?? "");
   const [who, setWho] = useState<"all" | "sunita" | "ramesh">("all");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -36,7 +36,7 @@ export function Find() {
   return (
     <Screen title={t("find")}>
       <div className="flex items-center gap-2">
-        <div className="flex h-14 min-w-0 flex-1 items-center gap-2 rounded-2xl border-2 border-brand bg-white px-3">
+        <div className="flex h-14 min-w-0 flex-1 items-center gap-2 rounded-full bg-card px-4 focus-within:ring-2 focus-within:ring-ink">
           <Search size={24} className="shrink-0 text-mute" aria-hidden />
           <input
             ref={inputRef}
@@ -73,7 +73,17 @@ export function Find() {
           {results.length === 0 ? (
             <div className="flex flex-col gap-3">
               <EmptyNote icon="SearchX">{t("noResults")}</EmptyNote>
-              <AddNamed name={q} />
+              {settings.role === "helper" ? (
+                <motion.button initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} whileTap={{ scale: 0.97 }} data-guide="find-ask"
+                  onClick={() => go(`ask?name=${encodeURIComponent(q.trim())}`)}
+                  className="relative flex min-h-24 items-center gap-4 overflow-hidden rounded-[26px] bg-[#FFF4DC] px-4 text-left">
+                  <span className="min-w-0 flex-1">
+                    <span className="title-tight block text-[1.25rem] leading-tight font-bold">{lang === "hi" ? "मम्मी से माँगें" : "Ask Mummy for it"}</span>
+                    <span className="block text-[0.92rem] text-mute">{lang === "hi" ? `"${q.trim()}" के लिए एक छोटा सा अनुरोध भेजें` : `She gets one card: "${q.trim()}", with a Send button`}</span>
+                  </span>
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-ink text-white"><Send size={22} /></span>
+                </motion.button>
+              ) : <AddNamed name={q} />}
             </div>
           ) : (
             <div className="flex flex-col gap-2">
@@ -121,9 +131,11 @@ export function DocDetail({ id }: { id: string }) {
   return (
     <Screen title={docTitle(doc)} sub={`${docOwnerLabel(doc.personId)} · ${catName(doc.category)}`}>
       {doc.paperOnly ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-hair bg-white p-6 text-center">
+        <div className="flex flex-col items-center gap-3 rounded-[22px] border-2 border-dashed border-black/15 bg-white p-6 text-center">
           <p className="text-[1.05rem] text-mute">{t("onlyPaper")}</p>
-          <Button icon="Camera" onClick={() => camRef.current?.click()}>{t("takePhotoNow")}</Button>
+          {settings.role === "helper"
+            ? <Button icon="Send" guide="doc-ask" onClick={() => go(`ask?name=${encodeURIComponent(doc.title)}`)}>{lang === "hi" ? "मम्मी से फ़ोटो माँगें" : "Ask Mummy for a photo"}</Button>
+            : <Button icon="Camera" onClick={() => camRef.current?.click()}>{t("takePhotoNow")}</Button>}
           <input ref={camRef} type="file" accept="image/*" capture="environment" className="hidden"
             onChange={async (e) => {
               const f = e.target.files?.[0];
@@ -134,7 +146,7 @@ export function DocDetail({ id }: { id: string }) {
             }} />
         </div>
       ) : (
-        <motion.button whileTap={{ scale: 0.98 }} onClick={() => go(`counter/${doc.id}`)} className="relative block w-full rounded-3xl bg-card p-3 shadow-[0_18px_40px_-24px_rgba(30,91,79,0.6)]" aria-label={t("showCounter")}
+        <motion.button whileTap={{ scale: 0.98 }} onClick={() => go(`counter/${doc.id}`)} className="relative block w-full rounded-[28px] bg-card p-3 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.45)]" aria-label={t("showCounter")}
           initial={{ rotateX: 18, y: 16, opacity: 0 }} animate={{ rotateX: 0, y: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 160, damping: 18 }} style={{ transformPerspective: 800 }}>
           <DocArt doc={doc} ownerName={(owner?.name ?? "") + " Sharma"} className="h-auto w-full" />
           <span className="absolute right-3 bottom-3 flex h-10 w-10 items-center justify-center rounded-full bg-ink/70 text-white"><Maximize2 size={20} /></span>
@@ -156,22 +168,22 @@ export function DocDetail({ id }: { id: string }) {
       )}
 
       <SectionTitle>{t("originalKept")}</SectionTitle>
-      <div className="rounded-2xl bg-card p-3">
+      <div className="rounded-[22px] bg-card p-3">
         {loc?.place && (
           <PlaceView place={loc.place} files={data.files} highlight={doc.fileId} person={loc.place.personId ? person(loc.place.personId) : undefined} />
         )}
         {loc ? (
-          <ol className="mt-1 flex flex-col gap-1 text-[1.1rem]">
-            <li className="flex items-center gap-2"><span className="w-6 text-center font-bold text-saffron">1</span><b>{loc.placeName}</b></li>
-            <li className="flex items-center gap-2"><span className="w-6 text-center font-bold text-saffron">2</span>{loc.spotName}</li>
-            <li className="flex items-center gap-2"><span className="w-6 text-center font-bold text-saffron">3</span>
+          <ol className="mt-2 flex flex-col gap-2 rounded-[18px] bg-white p-3 text-[1.1rem]">
+            <li className="flex items-center gap-2"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink text-[0.85rem] font-bold text-white">1</span><b>{loc.placeName}</b></li>
+            <li className="flex items-center gap-2"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink text-[0.85rem] font-bold text-white">2</span>{loc.spotName}</li>
+            <li className="flex items-center gap-2"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink text-[0.85rem] font-bold text-white">3</span>
               <span className="inline-block h-5 w-4 rounded-sm border border-black/20" style={{ background: loc.file.color }} />{loc.fileName}
             </li>
           </ol>
         ) : (
           <p className="text-mute">{lang === "hi" ? "जगह अभी नहीं लिखी" : "Place not noted yet"}</p>
         )}
-        {doc.note && <p className="mt-2 rounded-xl bg-paper p-2 text-[0.95rem] text-mute">{doc.note}</p>}
+        {doc.note && <p className="mt-2 rounded-2xl bg-paper p-2 text-[0.95rem] text-mute">{doc.note}</p>}
         <Button variant="ghost" icon="MapPin" className="mt-1 w-full" onClick={() => { setNewFile(doc.fileId); setMoving(true); }}>{t("changePlace")}</Button>
       </div>
 
@@ -227,11 +239,11 @@ export function Counter({ id }: { id: string }) {
       className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-white p-3"
       aria-label={t("tapToClose")}
     >
-      <p className="text-[1.4rem] font-semibold">{docTitle(doc)} · {owner?.name} Sharma</p>
+      <p className="title-tight text-center text-[1.6rem] leading-tight font-bold">{docTitle(doc)}<span className="block text-[1.1rem] font-medium text-mute">{owner?.name} Sharma</span></p>
       <div className="w-full">
         <DocArt doc={doc} ownerName={(owner?.name ?? "") + " Sharma"} className="h-auto w-full" />
       </div>
-      {doc.number && <p className="text-[2rem] font-bold tracking-widest">{doc.number}</p>}
+      {doc.number && <p className="rounded-full bg-card px-6 py-2 text-[2rem] font-bold tracking-widest">{doc.number}</p>}
       <p className="text-[1rem] text-mute">{t("tapToClose")}</p>
     </motion.button>
   );
@@ -289,7 +301,7 @@ export function Share({ id }: { id: string }) {
       </div>
       {purpose === "__custom" && (
         <input value={custom} onChange={(e) => setCustom(e.target.value)} autoFocus placeholder={lang === "hi" ? "जैसे: पोस्ट ऑफिस" : "e.g. Post office"}
-          className="mt-3 h-14 w-full rounded-2xl border-2 border-brand bg-white px-4 text-[1.1rem] outline-none" />
+          className="mt-3 h-14 w-full rounded-[22px] border-2 border-transparent bg-card focus:border-ink px-4 text-[1.1rem] outline-none" />
       )}
 
       {doc.art === "aadhaar" && (
@@ -312,7 +324,7 @@ export function Share({ id }: { id: string }) {
       </div>
 
       <Sheet open={linkOpen} onClose={() => setLinkOpen(false)} title={lang === "hi" ? "24 घंटे वाला लिंक" : "24-hour link"}>
-        <div className="flex items-center gap-3 rounded-2xl bg-white p-3">
+        <div className="flex items-center gap-3 rounded-[22px] bg-white p-3">
           <Link2 size={24} className="text-brand" />
           <span className="flex-1 truncate font-mono text-[0.95rem]">almari.link/s/{doc.id}-{Math.random().toString(36).slice(2, 6)}</span>
         </div>

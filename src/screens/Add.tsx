@@ -128,7 +128,7 @@ export function Add() {
       {/* progress */}
       <div className="mb-4 flex gap-1.5" aria-hidden>
         {STEP_KEYS.map((_, i) => (
-          <span key={i} className={`h-2 flex-1 rounded-full ${i <= step ? "bg-brand" : "bg-hair"}`} />
+          <span key={i} className={`h-2 flex-1 rounded-full ${i <= step ? "bg-ink" : "bg-card"}`} />
         ))}
       </div>
 
@@ -136,7 +136,7 @@ export function Add() {
         <motion.div key={step} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.2 }}>
           {step === 0 && (
             <div>
-              <h2 className="mb-3 text-[1.35rem] font-semibold">{t("stepPhoto")}</h2>
+              <h2 className="title-tight mb-3 text-[1.5rem] font-bold">{t("stepPhoto")}</h2>
               <div className="flex flex-col gap-2">
                 <MethodBtn icon={Camera} title={t("takePhoto")} sub={t("takePhotoSub")} onClick={() => camRef.current?.click()} primary />
                 <MethodBtn icon={ImageIcon} title={t("fromGallery")} sub={t("fromGallerySub")} onClick={() => galRef.current?.click()} />
@@ -151,12 +151,12 @@ export function Add() {
 
           {step === 1 && (
             <div>
-              {image && <img src={image} alt="" className="mb-3 max-h-40 w-full rounded-2xl border border-hair object-contain" />}
-              <h2 className="mb-2 text-[1.35rem] font-semibold">{t("stepWhat")}</h2>
+              {image && <img src={image} alt="" className="mb-3 max-h-40 w-full rounded-[22px] border border-hair object-contain" />}
+              <h2 className="title-tight mb-2 text-[1.5rem] font-bold">{t("stepWhat")}</h2>
               <div className="flex items-center gap-2">
                 <input value={title} onChange={(e) => { setTitle(e.target.value); const g = guessFromName(e.target.value); if (g) { setCategory(g.category); setArt(g.art); } }}
                   placeholder={t("typeOrSpeak")} disabled={!!existing}
-                  className="h-14 min-w-0 flex-1 rounded-2xl border-2 border-brand bg-white px-4 text-[1.15rem] outline-none disabled:opacity-60" />
+                  className="h-14 min-w-0 flex-1 rounded-[22px] border-2 border-transparent bg-card focus:border-ink px-4 text-[1.15rem] outline-none disabled:opacity-60" />
                 {!existing && <MicButton onText={(txt) => { setTitle(txt); const g = guessFromName(txt); if (g) { setCategory(g.category); setArt(g.art); } }} />}
               </div>
               {!existing && (
@@ -170,7 +170,7 @@ export function Add() {
               <div className="flex gap-2">
                 {people.map((pp) => (
                   <button key={pp.id} disabled={!!existing} onClick={() => setPersonId(pp.id)}
-                    className={`flex min-h-16 flex-1 items-center gap-2 rounded-2xl border-2 px-3 ${personId === pp.id ? "border-brand bg-brand-soft" : "border-hair bg-white"}`}>
+                    className={`flex min-h-16 flex-1 items-center gap-2 rounded-[22px] border-2 px-3 ${personId === pp.id ? "border-ink bg-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.3)]" : "border-transparent bg-card"}`}>
                     <Avatar person={pp} size={36} />
                     <span className="text-[1.05rem] font-semibold">{personName(pp.id)}</span>
                   </button>
@@ -181,11 +181,11 @@ export function Add() {
 
           {step === 2 && (
             <div>
-              <h2 className="mb-3 text-[1.35rem] font-semibold">{t("stepFolder")}</h2>
+              <h2 className="title-tight mb-3 text-[1.5rem] font-bold">{t("stepFolder")}</h2>
               <div className="grid grid-cols-2 gap-2">
                 {CATEGORIES.map((c) => (
                   <button key={c.id} onClick={() => setCategory(c.id)}
-                    className={`flex min-h-20 flex-col justify-between rounded-2xl border-4 p-3 text-left ${c.tone} ${category === c.id ? "border-brand" : "border-transparent"}`}>
+                    className={`flex min-h-20 flex-col justify-between rounded-[22px] border-4 p-3 text-left ${c.tone} ${category === c.id ? "border-brand" : "border-transparent"}`}>
                     <span className="flex items-center justify-between"><Icon name={c.icon} size={26} />{category === c.id && <Check size={24} className="text-brand" />}</span>
                     <span className="text-[1.02rem] font-semibold">{lang === "hi" ? c.hi : c.en}</span>
                   </button>
@@ -196,7 +196,7 @@ export function Add() {
 
           {step === 3 && (
             <div>
-              <h2 className="mb-1 text-[1.35rem] font-semibold">{t("stepWhere")}</h2>
+              <h2 className="title-tight mb-1 text-[1.5rem] font-bold">{t("stepWhere")}</h2>
               <p className="mb-3 text-[0.98rem] text-mute">{lang === "hi" ? "ताकि परिवार को असली कागज़ ढूँढने के लिए आपको फ़ोन न करना पड़े।" : "So nobody has to call you to find the original."}</p>
               <LocationPicker value={fileId} onChange={setFileId} />
             </div>
@@ -204,7 +204,7 @@ export function Add() {
 
           {step === 4 && (
             <div>
-              <h2 className="mb-3 text-[1.35rem] font-semibold">{t("stepDate")}</h2>
+              <h2 className="title-tight mb-3 text-[1.5rem] font-bold">{t("stepDate")}</h2>
               <div className="flex flex-col gap-2">
                 <Chip active={hasDate === false} onClick={() => { setHasDate(false); setExpiry(""); }} className="justify-start">{t("noDate")}</Chip>
                 <Chip active={hasDate === true} onClick={() => setHasDate(true)} icon="CalendarDays" className="justify-start">{lang === "hi" ? "हाँ, तारीख़ चुनें" : "Yes, pick the date"}</Chip>
@@ -212,7 +212,7 @@ export function Add() {
               {hasDate && (
                 <>
                   <input type="date" value={expiry} onChange={(e) => setExpiry(e.target.value)} min={new Date().toISOString().slice(0, 10)}
-                    className="mt-3 h-14 w-full rounded-2xl border-2 border-brand bg-white px-4 text-[1.1rem]" aria-label={t("expires")} />
+                    className="mt-3 h-14 w-full rounded-[22px] border-2 border-transparent bg-card focus:border-ink px-4 text-[1.1rem]" aria-label={t("expires")} />
                   <p className="mt-4 mb-2 font-semibold">{t("remindAlso")}</p>
                   <div className="flex flex-wrap gap-2">
                     {data.people.filter((x) => x.id !== personId && x.id !== "meena").map((x) => (
@@ -228,10 +228,10 @@ export function Add() {
 
           {step === 5 && (
             <div>
-              <h2 className="mb-3 text-[1.35rem] font-semibold">{lang === "hi" ? "एक बार देख लें" : "Check once and save"}</h2>
+              <h2 className="title-tight mb-3 text-[1.5rem] font-bold">{lang === "hi" ? "एक बार देख लें" : "Check once and save"}</h2>
               <div className="rounded-[22px] bg-card p-3">
                 {method === "paper" && !image ? (
-                  <p className="rounded-xl bg-paper p-4 text-center text-mute">{t("onlyPaper")}</p>
+                  <p className="rounded-2xl bg-paper p-4 text-center text-mute">{t("onlyPaper")}</p>
                 ) : (
                   <DocArt doc={previewDoc} ownerName={(owner?.name ?? "") + " Sharma"} className="h-auto w-full" />
                 )}
@@ -262,7 +262,7 @@ export function Add() {
 
       {/* WhatsApp: explains the real share route; the sample lets testers continue */}
       <Sheet open={waOpen} onClose={() => setWaOpen(false)} title={t("fromWhatsappBtn")}>
-        <div className="rounded-2xl bg-[#E7F5E9] p-4 text-[1.05rem]">{t("whatsappHow")}</div>
+        <div className="rounded-[22px] bg-[#E7F5E9] p-4 text-[1.05rem]">{t("whatsappHow")}</div>
         <Button variant="secondary" className="mt-3 w-full" icon="Image" onClick={() => { setWaOpen(false); galRef.current?.click(); setMethod("whatsapp"); }}>
           {lang === "hi" ? "व्हाट्सऐप से सेव की फ़ोटो चुनें" : "Pick a photo saved from WhatsApp"}
         </Button>
@@ -301,10 +301,10 @@ export function Add() {
 function MethodBtn({ icon: I, title, sub, onClick, primary }: { icon: any; title: string; sub: string; onClick: () => void; primary?: boolean }) {
   return (
     <motion.button whileTap={{ scale: 0.98 }} onClick={onClick}
-      className={`flex min-h-20 items-center gap-4 rounded-2xl border-2 px-4 text-left ${primary ? "border-brand bg-brand text-white" : "border-hair bg-white"}`}>
-      <I size={30} className="shrink-0" aria-hidden />
+      className={`flex min-h-[88px] items-center gap-4 rounded-[28px] px-4 text-left ${primary ? "bg-ink text-white" : "bg-card"}`}>
+      <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full ${primary ? "bg-white/15" : "bg-white"}`}><I size={26} aria-hidden /></span>
       <span>
-        <span className="block text-[1.12rem] font-semibold">{title}</span>
+        <span className="title-tight block text-[1.25rem] leading-tight font-bold">{title}</span>
         <span className={`block text-[0.92rem] ${primary ? "text-white/80" : "text-mute"}`}>{sub}</span>
       </span>
     </motion.button>
@@ -315,7 +315,7 @@ function SummaryLine({ fileId }: { fileId: string | null }) {
   const { locationLine, file, t } = useStore();
   const f = file(fileId);
   return (
-    <div className="mt-2 flex items-start gap-2 rounded-xl bg-saffron-soft p-3 text-[1rem]">
+    <div className="mt-2 flex items-start gap-2 rounded-2xl bg-saffron-soft p-3 text-[1rem]">
       <span className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-black/20" style={{ background: f?.color }} />
       <span><b>{t("originalKept")}:</b> {locationLine(fileId)}</span>
     </div>

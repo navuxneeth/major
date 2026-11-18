@@ -14,7 +14,7 @@ export interface Settings {
   simple: boolean;
 }
 
-const defaultSettings: Settings = { lang: "en", scale: 0, role: "keeper", lock: true, onboarded: false, simple: false };
+const defaultSettings: Settings = { lang: "en", scale: 0, role: "keeper", lock: true, onboarded: false, simple: true };
 
 function load<T>(key: string, fallback: T): T {
   try {
