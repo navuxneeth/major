@@ -1,7 +1,7 @@
 name: Deploy to GitHub Pages
+# The live site is served from the gh-pages branch (built dist/ output).
+# This workflow is kept for switching Pages to "GitHub Actions" later; run it by hand.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read

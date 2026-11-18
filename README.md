@@ -44,4 +44,4 @@ Each link starts a participant on fresh sample data:
 npm install
 npm run dev
 ```
-Built with React, TypeScript, Vite, Tailwind CSS and Motion. Deployed to GitHub Pages by `.github/workflows/pages.yml` on every push to `main`.
+Built with React, TypeScript, Vite, Tailwind CSS and Motion. Deployed to GitHub Pages from the `gh-pages` branch: run `npm run build` and push the `dist/` folder there. (`.github/workflows/pages.yml` is a manual alternative if Pages is switched to "GitHub Actions".)
