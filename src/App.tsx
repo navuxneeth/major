@@ -22,39 +22,34 @@ function Nav() {
     ? [
         { to: "", icon: HomeIcon, label: t("home") },
         { to: "find", icon: Search, label: t("find") },
-        { to: "add", icon: Plus, label: t("add"), big: true },
         { to: "family", icon: Users, label: t("family") },
         { to: "more", icon: Menu, label: t("more") },
       ]
     : [
         { to: "", icon: HomeIcon, label: t("home") },
         { to: "find", icon: Search, label: t("find") },
-        { to: "ask", icon: HandHelping, label: t("ask"), big: true },
-        { to: "reminders", icon: Bell, label: t("reminders") },
+        { to: "ask", icon: HandHelping, label: t("ask") },
         { to: "more", icon: Menu, label: t("more") },
       ];
   return (
-    <nav className="no-print absolute inset-x-0 bottom-0 z-30 flex items-end justify-around border-t border-hair bg-white/95 px-1 pt-1 pb-[max(env(safe-area-inset-bottom),8px)] backdrop-blur">
-      {items.map((i) => {
-        const on = top === i.to;
-        return (
-          <motion.button key={i.to} whileTap={{ scale: 0.9 }} onClick={() => go(i.to)} aria-current={on ? "page" : undefined}
-            className={`relative flex min-h-16 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl text-[0.82rem] font-semibold ${on ? "text-brand" : "text-mute"}`}>
-            {i.big ? (
-              <motion.span className="-mt-6 flex h-15 w-15 items-center justify-center rounded-full bg-brand text-white shadow-[0_10px_24px_-8px_rgba(30,91,79,0.8)] ring-4 ring-white"
-                whileHover={{ rotate: 90 }} style={{ width: 60, height: 60 }}>
-                <i.icon size={30} />
-              </motion.span>
-            ) : (
-              <>
-                {on && <motion.span layoutId="nav-pill" className="absolute top-1 h-9 w-14 rounded-full bg-brand-soft" transition={{ type: "spring", stiffness: 420, damping: 32 }} />}
-                <i.icon size={26} strokeWidth={on ? 2.6 : 2} className="relative" />
-              </>
-            )}
-            <span className="relative">{i.label}</span>
-          </motion.button>
-        );
-      })}
+    <nav className="no-print pointer-events-none absolute inset-x-0 bottom-0 z-30 flex items-end gap-3 px-4 pb-[max(env(safe-area-inset-bottom),14px)]">
+      <div className="glass pointer-events-auto flex flex-1 items-center rounded-full p-1.5">
+        {items.map((i) => {
+          const on = top === i.to;
+          return (
+            <motion.button key={i.to} whileTap={{ scale: 0.9 }} onClick={() => go(i.to)} aria-current={on ? "page" : undefined}
+              className="relative flex h-14 flex-1 flex-col items-center justify-center gap-0.5 rounded-full text-[0.78rem] font-semibold">
+              {on && <motion.span layoutId="nav-pill" className="absolute inset-0 rounded-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.08)]" transition={{ type: "spring", stiffness: 420, damping: 32 }} />}
+              <i.icon size={22} strokeWidth={on ? 2.5 : 2} className={`relative ${on ? "text-ink" : "text-mute"}`} />
+              <span className={`relative ${on ? "text-ink" : "text-mute"}`}>{i.label}</span>
+            </motion.button>
+          );
+        })}
+      </div>
+      <motion.button whileTap={{ scale: 0.88 }} whileHover={{ rotate: 90 }} onClick={() => go("add")} aria-label={t("add")}
+        className="pointer-events-auto flex h-[66px] w-[66px] shrink-0 items-center justify-center rounded-full bg-ink text-white shadow-[0_14px_28px_-12px_rgba(0,0,0,0.7)]">
+        <Plus size={30} />
+      </motion.button>
     </nav>
   );
 }
@@ -90,7 +85,7 @@ function PhoneApp() {
   useEffect(() => { scroller.current?.scrollTo({ top: 0 }); }, [route.path]);
   const top = route.parts[0] ?? "";
   const hideNav = ["add", "counter", "share", "phone", "lend"].includes(top) || (settings.role === "keeper" && settings.simple);
-  const showHelpFab = settings.role === "keeper" && !["", "help", "add", "counter", "share", "phone", "lend"].includes(top) && !guide && !settings.simple;
+  const showHelpFab = false && settings.role === "keeper" && !["", "help", "add", "counter", "share", "phone", "lend"].includes(top) && !guide && !settings.simple;
   const lendActive = settings.role === "keeper" && data.lend?.status === "active" && top !== "lend";
   return (
     <div id="phone-root" className="relative h-full w-full overflow-hidden bg-paper">
@@ -108,7 +103,7 @@ function PhoneApp() {
       )}
       {showHelpFab && (
         <motion.button initial={{ scale: 0 }} animate={{ scale: 1 }} whileTap={{ scale: 0.9 }} onClick={() => go("help")}
-          className="absolute right-4 bottom-24 z-30 flex h-14 items-center gap-2 rounded-full bg-saffron px-4 font-semibold text-ink shadow-[0_12px_28px_-10px_rgba(232,163,61,0.9)]" aria-label="Help">
+          className="absolute right-4 bottom-28 z-30 flex h-12 items-center gap-2 rounded-full bg-[#F7D27A] px-4 font-semibold text-ink shadow-[0_12px_28px_-10px_rgba(0,0,0,0.35)]" aria-label="Help">
           <motion.span animate={{ rotate: [0, 18, -12, 0] }} transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 3 }}><Sparkles size={22} /></motion.span>
           {settings.lang === "hi" ? "मदद" : "Help"}
         </motion.button>

@@ -297,3 +297,70 @@ export function FolderTile({ id, label, count, onClick, index = 0 }: { id: Categ
     </motion.button>
   );
 }
+
+/* ---------- Frosted-glass folder with real papers peeking out (Apple-style) ---------- */
+export type PeekPaper = { tone: "plain" | "due" | "verified" | "paper"; tilt: number };
+
+const PEEK_STYLE: Record<PeekPaper["tone"], { bg: string; dot: string; icon: "check" | "clock" | "q" | "lines" }> = {
+  plain: { bg: "#FFFFFF", dot: "#E7E7EA", icon: "lines" },
+  due: { bg: "#F7D27A", dot: "#E2A93A", icon: "clock" },
+  verified: { bg: "#FFFFFF", dot: "#34C759", icon: "check" },
+  paper: { bg: "#F0EEE8", dot: "#B9B4AA", icon: "q" },
+};
+
+export function GlassFolder({ id, label, count, papers, onClick, index = 0, place }: {
+  id: CategoryId; label: string; count: number; papers: PeekPaper[]; onClick: () => void; index?: number; place?: { color: string; text: string };
+}) {
+  return (
+    <motion.button
+      onClick={onClick}
+      initial={{ opacity: 0, y: 18, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay: 0.05 * index, type: "spring", stiffness: 240, damping: 22 }}
+      whileTap="open" whileHover="open"
+      className="flex w-full flex-col items-center text-left"
+      aria-label={`${label}, ${count}`}
+    >
+      <span className="relative block h-[150px] w-full">
+        {/* back panel with tab */}
+        <span className="absolute top-[26px] left-0 h-5 w-[44%] rounded-t-[14px] bg-[#E4E4E8]" />
+        <span className="absolute inset-x-0 top-[38px] bottom-0 rounded-[24px] bg-[#E4E4E8]" />
+        {/* papers */}
+        {papers.slice(0, 3).map((p, i) => {
+          const s = PEEK_STYLE[p.tone];
+          const left = 9 + i * 15;
+          return (
+            <motion.span key={i}
+              className="absolute top-[6px] h-[78px] w-[52%] rounded-[10px] border border-black/5 shadow-[0_2px_6px_rgba(0,0,0,0.08)]"
+              style={{ left: `${left}%`, background: s.bg, rotate: p.tilt, zIndex: i + 1 }}
+              variants={{ open: { y: -12 - i * 3, rotate: p.tilt * 1.6 } }}
+              transition={{ type: "spring", stiffness: 300, damping: 18 }}>
+              <span className="absolute top-2 left-2 flex h-5 w-5 items-center justify-center rounded-full" style={{ background: s.dot }}>
+                {s.icon === "check" && <svg viewBox="0 0 12 12" className="h-3 w-3"><path d="M3 6.2 5.2 8.4 9 4" stroke="#fff" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                {s.icon === "clock" && <svg viewBox="0 0 12 12" className="h-3 w-3"><circle cx="6" cy="6" r="3.6" stroke="#fff" strokeWidth="1.4" fill="none" /><path d="M6 4.2V6l1.2.9" stroke="#fff" strokeWidth="1.3" fill="none" strokeLinecap="round" /></svg>}
+                {s.icon === "q" && <span className="text-[9px] font-bold text-white">?</span>}
+              </span>
+              <span className="absolute top-3 right-3 h-1.5 w-8 rounded-full bg-black/10" />
+            </motion.span>
+          );
+        })}
+        {/* frosted front */}
+        <motion.span
+          className="glass absolute inset-x-0 bottom-0 z-10 h-[96px] origin-bottom rounded-[24px]"
+          variants={{ open: { rotateX: 10 } }} transition={{ type: "spring", stiffness: 260, damping: 20 }} style={{ transformPerspective: 500 }}
+        >
+          {place && (
+            <span className="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-full bg-white/70 px-2 py-0.5 text-[0.72rem] font-semibold text-ink/70">
+              <span className="h-2.5 w-2.5 rounded-[3px]" style={{ background: place.color }} />{place.text}
+            </span>
+          )}
+          <span className="sticker absolute right-3 bottom-2.5 block" style={{ transform: "rotate(-8deg)" }}>
+            <CatArt id={id} className="h-12 w-12" />
+          </span>
+        </motion.span>
+      </span>
+      <span className="mt-2.5 block w-full text-center text-[1.02rem] leading-snug font-semibold">
+        {label} <span className="ml-1 inline-block rounded-full bg-card px-2 py-0.5 align-middle text-[0.82rem] font-semibold text-mute">{count}</span>
+      </span>
+    </motion.button>
+  );
+}

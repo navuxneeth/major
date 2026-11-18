@@ -1,25 +1,26 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { Search, ChevronRight, Bell, HeartHandshake, KeyRound, Printer, Send, Mic, Sparkles, HandHelping, IdCard, LayoutGrid } from "lucide-react";
-import { CATEGORIES, READY_FOR, type Request } from "../data";
+import { Search, ChevronRight, Bell, HeartHandshake, KeyRound, Printer, Mic, Sparkles, HandHelping, IdCard, LayoutGrid, Rows3, Clock, FileText, Send } from "lucide-react";
+import { CATEGORIES, READY_FOR, type CategoryId, type Doc, type Request } from "../data";
 import { useStore } from "../store";
-import { Button, Card, MicButton, SectionTitle, Sheet } from "../components/ui";
+import { Button, Chip, MicButton, Sheet } from "../components/ui";
 import { DocRow } from "../components/DocRow";
-import { Avatar } from "../art";
+import { Avatar, DocArt } from "../art";
 import { WatermarkPreview, stampText } from "../components/Watermark";
-import { Blobs, FolderTile, HeroScene, LendArt, ReadyArt, SuccessBurst } from "../illustrations";
+import { CatArt, GlassFolder, HeroScene, HelpArt, LendArt, ReadyArt, SuccessBurst, type PeekPaper } from "../illustrations";
+import { matchBundleItem } from "../search";
 import { daysUntil, fmtDate, timeAgo } from "../i18n";
 
-const rise = (i: number) => ({ initial: { opacity: 0, y: 14 }, animate: { opacity: 1, y: 0 }, transition: { delay: 0.04 * i, type: "spring" as const, stiffness: 260, damping: 24 } });
+const rise = (i: number) => ({ initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { delay: 0.05 * i, type: "spring" as const, stiffness: 240, damping: 24 } });
 
 export function LangToggle({ dark = false }: { dark?: boolean }) {
   const { settings, setSettings } = useStore();
   return (
-    <div className={`relative flex rounded-full p-0.5 text-[0.95rem] font-semibold ${dark ? "bg-white/15" : "border-2 border-hair bg-white"}`} role="group" aria-label="Language">
+    <div className={`relative flex rounded-full p-1 text-[0.92rem] font-semibold ${dark ? "bg-white/15" : "bg-card"}`} role="group" aria-label="Language">
       {(["en", "hi"] as const).map((l) => (
         <button key={l} onClick={() => setSettings({ lang: l })} aria-pressed={settings.lang === l}
-          className={`relative z-10 h-10 min-w-12 rounded-full px-3 ${settings.lang === l ? (dark ? "text-brand" : "text-white") : dark ? "text-white" : "text-ink"}`}>
-          {settings.lang === l && <motion.span layoutId={dark ? "lang-pill-d" : "lang-pill"} className={`absolute inset-0 -z-10 rounded-full ${dark ? "bg-white" : "bg-brand"}`} transition={{ type: "spring", stiffness: 400, damping: 30 }} />}
+          className={`relative z-10 h-9 min-w-11 rounded-full px-3 ${settings.lang === l ? "text-white" : "text-ink"}`}>
+          {settings.lang === l && <motion.span layoutId="lang-pill" className="absolute inset-0 -z-10 rounded-full bg-ink" transition={{ type: "spring", stiffness: 420, damping: 30 }} />}
           {l === "en" ? "EN" : "हिं"}
         </button>
       ))}
@@ -27,130 +28,213 @@ export function LangToggle({ dark = false }: { dark?: boolean }) {
   );
 }
 
-function Hero({ title, sub, stats }: { title: string; sub: string; stats: { n: number | string; label: string }[] }) {
-  const { go } = useStore();
-  return (
-    <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="relative overflow-hidden rounded-b-[36px] bg-brand px-4 pt-3 pb-5 text-white">
-      <Blobs className="absolute inset-0 h-full w-full" />
-      <div className="relative flex items-center justify-between">
-        <span className="font-serif text-[2rem] leading-none">Almari</span>
-        <LangToggle dark />
-      </div>
-      <div className="relative mt-2 flex items-end gap-2">
-        <div className="min-w-0 flex-1 pb-2">
-          <h1 className="text-[1.55rem] leading-tight font-semibold">{title}</h1>
-          <p className="mt-1 text-[0.98rem] text-white/80">{sub}</p>
-        </div>
-        <HeroScene className="h-36 w-40 shrink-0" />
-      </div>
-      <div className="relative mt-1 flex gap-2">
-        {stats.map((s, i) => (
-          <motion.div key={s.label} {...rise(i + 2)} className="flex-1 rounded-2xl bg-white/12 px-3 py-2 backdrop-blur">
-            <p className="text-[1.35rem] leading-none font-bold">{s.n}</p>
-            <p className="mt-1 text-[0.8rem] leading-tight text-white/80">{s.label}</p>
-          </motion.div>
-        ))}
-      </div>
-      <div className="relative mt-3 flex items-center gap-2">
-        <motion.button whileTap={{ scale: 0.98 }} onClick={() => go("find")} data-guide="home-find"
-          className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-2xl bg-white px-4 text-left text-[1.05rem] text-mute shadow-lg">
-          <Search size={24} className="shrink-0 text-brand" aria-hidden />
-          <span className="truncate">{useStore().t("findPlaceholder")}</span>
-        </motion.button>
-        <MicOnHero />
-      </div>
-    </motion.div>
-  );
+function greeting(lang: string) {
+  if (lang === "hi") return "नमस्ते";
+  const h = new Date().getHours();
+  return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
 }
 
-function MicOnHero() {
-  const { go } = useStore();
+/* ---------- top of the screen: greeting, big title, search ---------- */
+function Top({ hello, title }: { hello: string; title: string }) {
+  const { go, t } = useStore();
   return (
-    <div className="rounded-full ring-4 ring-white/25">
-      <MicButton onText={(text, final) => final && go(`find?q=${encodeURIComponent(text)}`)} />
+    <div className="px-4 pt-4">
+      <div className="flex items-center justify-between">
+        <span className="font-serif text-[1.7rem] leading-none">Almari</span>
+        <LangToggle />
+      </div>
+      <p className="mt-5 text-[1rem] text-mute">{hello}</p>
+      <h1 className="title-tight text-[2.25rem] leading-[1.02] font-bold">{title}</h1>
+      <div className="mt-4 flex items-center gap-2">
+        <motion.button whileTap={{ scale: 0.98 }} onClick={() => go("find")} data-guide="home-find"
+          className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-full bg-card px-5 text-left text-[1.05rem] text-mute">
+          <Search size={22} className="shrink-0 text-ink" aria-hidden />
+          <span className="truncate">{t("findPlaceholder")}</span>
+        </motion.button>
+        <MicButton onText={(text, final) => final && go(`find?q=${encodeURIComponent(text)}`)} />
+      </div>
     </div>
   );
 }
 
-function QuickActions() {
-  const { lang, go } = useStore();
+/* ---------- a card in the "My Lists" style: meta row, big centred title, stickers peeking out ---------- */
+function StickerCard({ metaLeft, metaRight, title, sub, onClick, children, guide, index = 0, tone = "bg-card" }: {
+  metaLeft: React.ReactNode; metaRight?: React.ReactNode; title: string; sub?: string; onClick?: () => void; children?: React.ReactNode; guide?: string; index?: number; tone?: string;
+}) {
+  return (
+    <motion.button {...rise(index)} whileTap={{ scale: 0.98 }} whileHover="lift" onClick={onClick} data-guide={guide}
+      className={`relative flex h-[218px] w-full flex-col justify-start overflow-hidden rounded-[28px] ${tone} px-4 pt-3.5 text-center`}>
+      <span className="flex items-center justify-between text-[0.88rem] text-mute">
+        <span className="flex items-center gap-1.5">{metaLeft}</span>
+        <span className="flex items-center gap-1.5">{metaRight}</span>
+      </span>
+      <span className="title-tight mt-2 block text-[1.55rem] leading-tight font-bold">{title}</span>
+      {sub && <span className="mt-1 block text-[0.95rem] text-mute">{sub}</span>}
+      <motion.span className="absolute inset-x-0 -bottom-6 flex items-end justify-center gap-1" variants={{ lift: { y: -10 } }} transition={{ type: "spring", stiffness: 260, damping: 18 }}>
+        {children}
+      </motion.span>
+    </motion.button>
+  );
+}
+
+function DocSticker({ doc, tilt = 0, w = 112 }: { doc: Doc; tilt?: number; w?: number }) {
+  const { person } = useStore();
+  return (
+    <span className="sticker block shrink-0" style={{ width: w, transform: `rotate(${tilt}deg)` }}>
+      {doc.paperOnly ? (
+        <span className="flex aspect-[1.5] w-full flex-col items-center justify-center rounded-lg bg-[#F0EEE8] text-[0.7rem] font-semibold text-mute">
+          <FileText size={22} />{doc.title.slice(0, 16)}
+        </span>
+      ) : (
+        <DocArt doc={doc} ownerName={(person(doc.personId)?.name ?? "") + " Sharma"} className="block h-auto w-full rounded-lg" />
+      )}
+    </span>
+  );
+}
+
+/* ---------- filters ---------- */
+type Filter = "all" | "mine" | "other" | "due";
+function useFiltered(filter: Filter) {
+  const { data } = useStore();
+  return useMemo(() => {
+    if (filter === "mine") return data.docs.filter((d) => d.personId === "sunita");
+    if (filter === "other") return data.docs.filter((d) => d.personId === "ramesh");
+    if (filter === "due") return data.docs.filter((d) => d.expiry && daysUntil(d.expiry) <= 60);
+    return data.docs;
+  }, [data.docs, filter]);
+}
+
+function FilterChips({ value, onChange }: { value: Filter; onChange: (f: Filter) => void }) {
+  const { lang, settings, data, person } = useStore();
   const hi = lang === "hi";
-  const items = [
-    { id: "help", icon: Sparkles, en: "Show me how", hi: "कैसे करें, दिखाओ", to: "help", tone: "bg-saffron-soft", guide: "home-help" },
-    { id: "lend", icon: HandHelping, en: "Lend my phone", hi: "फ़ोन उधार दें", to: "lend", tone: "bg-sky", guide: "home-lend" },
-    { id: "id", icon: IdCard, en: "My ID card", hi: "मेरा आईडी", to: "counter/d1", tone: "bg-sage", guide: "home-id" },
+  const keeper = settings.role === "keeper";
+  const due = data.docs.filter((d) => d.expiry && daysUntil(d.expiry) <= 60).length;
+  const opts: { id: Filter; label: React.ReactNode }[] = [
+    { id: "all", label: hi ? "सब" : "All" },
+    { id: "mine", label: keeper ? (hi ? "मेरे" : "Mine") : hi ? "मम्मी" : "Mummy" },
+    { id: "other", label: keeper ? (hi ? "रमेश जी" : "Ramesh") : hi ? "पापा" : "Papa" },
+    { id: "due", label: <>{hi ? "जल्द करना" : "Due soon"}<span className="ml-1 rounded-full bg-danger px-1.5 text-[0.75rem] text-white">{due}</span></> },
   ];
   return (
-    <div className="mt-4 grid grid-cols-3 gap-2">
-      {items.map((i, k) => (
-        <motion.button key={i.id} {...rise(k)} whileTap={{ scale: 0.95 }} onClick={() => go(i.to)} data-guide={i.guide}
-          className={`flex min-h-24 flex-col items-center justify-center gap-1.5 rounded-2xl ${i.tone} px-1 text-center`}>
-          <motion.span whileHover={{ rotate: -8 }} className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm"><i.icon size={24} className="text-brand" /></motion.span>
-          <span className="text-[0.92rem] leading-tight font-semibold">{hi ? i.hi : i.en}</span>
-        </motion.button>
+    <div className="no-scrollbar -mx-4 mt-4 flex gap-2 overflow-x-auto px-4">
+      {opts.map((o) => <Chip key={o.id} active={value === o.id} onClick={() => onChange(o.id)}>{o.label}</Chip>)}
+      <span className="flex shrink-0 items-center gap-1 rounded-full bg-card px-3">
+        <span className="text-[0.95rem] font-medium">{hi ? "साझा" : "Shared"}</span>
+        <span className="flex -space-x-2">{["ramesh", "rahul", "priya"].map((p) => <Avatar key={p} person={person(p)} size={26} ring />)}</span>
+      </span>
+    </div>
+  );
+}
+
+function paperTone(d: Doc): PeekPaper["tone"] {
+  if (d.paperOnly) return "paper";
+  if (d.expiry && daysUntil(d.expiry) <= 60) return "due";
+  if (d.source === "digilocker") return "verified";
+  return "plain";
+}
+
+function Folders({ docs, view }: { docs: Doc[]; view: "grid" | "list" }) {
+  const { lang, go, data } = useStore();
+  const cats = CATEGORIES.map((c) => ({ c, ds: docs.filter((d) => d.category === c.id) })).filter((x) => x.ds.length || docs === data.docs);
+  if (view === "list") {
+    return (
+      <div className="flex flex-col gap-2">
+        {cats.map(({ c, ds }, i) => (
+          <motion.button key={c.id} {...rise(i)} whileTap={{ scale: 0.98 }} onClick={() => go(`cat/${c.id}`)}
+            className="flex min-h-20 items-center gap-3 rounded-[22px] bg-card px-4 text-left">
+            <span className="sticker block"><CatArt id={c.id} className="h-11 w-11" /></span>
+            <span className="flex-1 text-[1.1rem] font-semibold">{lang === "hi" ? c.hi : c.en}</span>
+            <span className="rounded-full bg-white px-2.5 py-0.5 text-[0.9rem] font-semibold text-mute">{ds.length}</span>
+            <ChevronRight size={20} className="text-mute" />
+          </motion.button>
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div className="grid grid-cols-2 gap-x-4 gap-y-5">
+      {cats.map(({ c, ds }, i) => (
+        <GlassFolder key={c.id} id={c.id} index={i} label={lang === "hi" ? c.hi : c.en} count={ds.length}
+          papers={(ds.length ? ds : [{ paperOnly: false } as Doc]).slice(0, 3).map((d, k) => ({ tone: ds.length ? paperTone(d) : "plain", tilt: [-4, 3, 7][k] }))}
+          onClick={() => go(`cat/${c.id}`)} />
       ))}
     </div>
   );
 }
 
-function Reminders({ limit = 2 }: { limit?: number }) {
-  const { data, lang, t, go, personName } = useStore();
-  const list = data.reminders.filter((r) => !r.done).sort((a, b) => a.due.localeCompare(b.due)).slice(0, limit);
-  if (!list.length) return null;
+function SectionLabel({ children, right }: { children: React.ReactNode; right?: React.ReactNode }) {
   return (
-    <>
-      <SectionTitle right={<button onClick={() => go("reminders")} className="min-h-10 px-1 font-semibold text-brand">{t("seeAll")}</button>}>{t("comingUp")}</SectionTitle>
-      <div className="no-scrollbar -mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1">
-        {list.map((r, i) => {
-          const n = daysUntil(r.due);
-          const urgent = n <= 14;
-          return (
-            <motion.button key={r.id} {...rise(i)} whileTap={{ scale: 0.97 }} onClick={() => (r.docId ? go(`doc/${r.docId}`) : go("reminders"))}
-              className={`flex w-64 shrink-0 snap-start flex-col gap-2 rounded-2xl p-3 text-left ${urgent ? "bg-danger text-white" : "border border-hair bg-white"}`}>
-              <span className="flex items-center justify-between">
-                <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${urgent ? "bg-white/20" : "bg-saffron-soft"}`}>
-                  <motion.span animate={urgent ? { rotate: [0, -14, 14, -8, 0] } : {}} transition={{ duration: 0.8, repeat: Infinity, repeatDelay: 2.5 }}><Bell size={22} /></motion.span>
-                </span>
-                <span className={`rounded-full px-2.5 py-1 text-[0.85rem] font-bold ${urgent ? "bg-white text-danger" : "bg-saffron-soft"}`}>{n} {t("daysLeft")}</span>
-              </span>
-              <span className="text-[1.05rem] leading-snug font-semibold">{lang === "hi" ? r.titleHi : r.title}</span>
-              <span className={`text-[0.88rem] ${urgent ? "text-white/85" : "text-mute"}`}>{fmtDate(r.due, lang)} · {r.notify.map((p) => personName(p)).join(", ")}</span>
-            </motion.button>
-          );
-        })}
-      </div>
-    </>
+    <div className="mt-8 mb-3 flex items-center justify-between">
+      <h2 className="title-tight text-[1.3rem] font-bold">{children}</h2>
+      {right}
+    </div>
   );
 }
 
-function Folders() {
-  const { data, lang, go } = useStore();
+function ViewToggle({ view, onChange }: { view: "grid" | "list"; onChange: (v: "grid" | "list") => void }) {
+  const { lang } = useStore();
   return (
-    <div className="grid grid-cols-2 gap-x-3 gap-y-4">
-      {CATEGORIES.map((c, i) => {
-        const n = data.docs.filter((d) => d.category === c.id).length;
+    <div className="relative flex rounded-full bg-card p-1">
+      {(["grid", "list"] as const).map((v) => (
+        <button key={v} onClick={() => onChange(v)} aria-pressed={view === v} aria-label={v === "grid" ? (lang === "hi" ? "ग्रिड" : "Grid") : lang === "hi" ? "लिस्ट" : "List"}
+          className="relative z-10 flex h-9 w-11 items-center justify-center rounded-full">
+          {view === v && <motion.span layoutId="view-pill" className="absolute inset-0 -z-10 rounded-full bg-white shadow-sm" transition={{ type: "spring", stiffness: 420, damping: 30 }} />}
+          {v === "grid" ? <LayoutGrid size={18} /> : <Rows3 size={18} />}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ReadyCards({ docs }: { docs: Doc[] }) {
+  const { lang, go } = useStore();
+  const hi = lang === "hi";
+  return (
+    <div className="flex flex-col gap-3">
+      {READY_FOR.map((r, i) => {
+        const found = r.items.flatMap((it) => matchBundleItem(docs, it.match).slice(0, 1));
+        const missing = r.items.length - r.items.filter((it) => matchBundleItem(docs, it.match).length).length;
         return (
-          <FolderTile key={c.id} id={c.id} index={i} label={lang === "hi" ? c.hi : c.en}
-            count={lang === "hi" ? `${n} कागज़` : `${n} ${n === 1 ? "paper" : "papers"}`} onClick={() => go(`cat/${c.id}`)} />
+          <StickerCard key={r.id} index={i} guide={`ready-${r.id}`} onClick={() => go(`ready/${r.id}`)}
+            metaLeft={<><Clock size={15} /> {hi ? "तैयारी" : "Get ready"}</>}
+            metaRight={<><FileText size={15} /> {r.items.length}</>}
+            title={hi ? r.hi : r.en}
+            sub={missing ? (hi ? `${missing} अभी जोड़ना है` : `${missing} still to add`) : hi ? "सब मिल गया, फ़ाइलों के साथ" : "All found, with their files"}>
+            <span className="sticker mb-6 block -rotate-6"><ReadyArt id={r.id} className="h-20 w-24" /></span>
+            {found.slice(0, 2).map((d, k) => <DocSticker key={d.id + k} doc={d} tilt={[4, -3][k]} w={104} />)}
+          </StickerCard>
         );
       })}
     </div>
   );
 }
 
-function ReadyFor() {
-  const { t, lang, go } = useStore();
+function Reminders({ limit = 3 }: { limit?: number }) {
+  const { data, lang, t, go, personName } = useStore();
+  const list = data.reminders.filter((r) => !r.done).sort((a, b) => a.due.localeCompare(b.due)).slice(0, limit);
+  if (!list.length) return null;
   return (
     <>
-      <SectionTitle>{t("readyFor")}</SectionTitle>
-      <div className="no-scrollbar -mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1">
-        {READY_FOR.map((r, i) => (
-          <motion.button key={r.id} {...rise(i)} whileTap={{ scale: 0.96 }} onClick={() => go(`ready/${r.id}`)} data-guide={`ready-${r.id}`}
-            className={`flex w-40 shrink-0 snap-start flex-col items-start gap-2 rounded-3xl ${r.tone} p-3 text-left`}>
-            <ReadyArt id={r.id} className="h-16 w-20" />
-            <span className="text-[1.02rem] leading-tight font-semibold">{lang === "hi" ? r.hi : r.en}</span>
-          </motion.button>
-        ))}
+      <SectionLabel right={<button onClick={() => go("reminders")} className="min-h-10 px-1 font-semibold">{t("seeAll")}</button>}>{t("comingUp")}</SectionLabel>
+      <div className="flex flex-col gap-2">
+        {list.map((r, i) => {
+          const n = daysUntil(r.due);
+          const urgent = n <= 14;
+          return (
+            <motion.button key={r.id} {...rise(i)} whileTap={{ scale: 0.98 }} onClick={() => (r.docId ? go(`doc/${r.docId}`) : go("reminders"))}
+              className="flex min-h-18 items-center gap-3 rounded-[22px] bg-card px-4 py-3 text-left">
+              <span className={`flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-2xl leading-none ${urgent ? "bg-danger text-white" : "bg-white"}`}>
+                <span className="text-[1.15rem] font-bold">{new Date(r.due).getDate()}</span>
+                <span className="text-[0.68rem] uppercase">{new Date(r.due).toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN", { month: "short" })}</span>
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[1.05rem] leading-snug font-semibold">{lang === "hi" ? r.titleHi : r.title}</span>
+                <span className="block text-[0.88rem] text-mute">{n} {t("daysLeft")} · {r.notify.map((p) => personName(p)).join(", ")}</span>
+              </span>
+              <motion.span animate={urgent ? { rotate: [0, -14, 14, -8, 0] } : {}} transition={{ duration: 0.8, repeat: Infinity, repeatDelay: 2.5 }}><Bell size={20} className={urgent ? "text-danger" : "text-mute"} /></motion.span>
+            </motion.button>
+          );
+        })}
       </div>
     </>
   );
@@ -168,23 +252,18 @@ function RequestCard({ req }: { req: Request }) {
   const finish = () => { setSent(true); window.setTimeout(() => { answerRequest(req.id, "sent"); setOpen(false); setSent(false); showToast(lang === "hi" ? `भेज दिया। ${fromName} को मिल गया।` : `Sent. ${fromName} has it now.`); }, 1300); };
   return (
     <>
-      <motion.div initial={{ y: 16, opacity: 0, scale: 0.98 }} animate={{ y: 0, opacity: 1, scale: 1 }} transition={{ type: "spring", stiffness: 220, damping: 20, delay: 0.3 }}
-        className="relative mt-4 overflow-hidden rounded-3xl border-2 border-saffron bg-saffron-soft p-4">
-        <motion.span className="absolute inset-0 rounded-3xl border-4 border-saffron" animate={{ opacity: [0.7, 0, 0.7] }} transition={{ duration: 2.2, repeat: Infinity }} />
-        <div className="relative flex items-center gap-3">
-          <span className="relative"><Avatar person={from} size={48} /><span className="absolute -right-0.5 -bottom-0.5 h-4 w-4 rounded-full border-2 border-white bg-[#3E8E5A]" /></span>
-          <div className="min-w-0">
-            <p className="text-[1.15rem] leading-snug font-semibold">{fromName} {t("needsThis")}</p>
-            <p className="text-[0.9rem] text-mute">{timeAgo(req.at, lang)}</p>
-          </div>
+      <motion.div initial={{ y: 16, opacity: 0, scale: 0.98 }} animate={{ y: 0, opacity: 1, scale: 1 }} transition={{ type: "spring", stiffness: 220, damping: 20, delay: 0.2 }}
+        className="relative mt-5 overflow-hidden rounded-[28px] bg-[#FFF4DC] px-4 pt-3.5 pb-4">
+        <div className="flex items-center justify-between text-[0.88rem] text-mute">
+          <span className="flex items-center gap-1.5"><Clock size={15} /> {timeAgo(req.at, lang)}</span>
+          <span className="flex items-center gap-1.5"><span className="relative"><Avatar person={from} size={24} /><motion.span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-[#FFF4DC] bg-[#34C759]" animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.6, repeat: Infinity }} /></span>{fromName}</span>
         </div>
-        <div className="relative mt-3 rounded-2xl bg-white p-3">
-          <p className="text-[1.25rem] font-semibold">{doc ? docTitle(doc) : req.docName}</p>
-          <p className="text-[1rem] text-mute">{t("forPurpose")}: {req.purpose}</p>
-        </div>
-        <div className="relative mt-3 flex gap-2">
+        <p className="title-tight mt-2 text-center text-[1.5rem] leading-tight font-bold">{lang === "hi" ? `${fromName} को ${doc ? docTitle(doc) : req.docName} चाहिए` : `${fromName} needs your ${doc ? docTitle(doc).toLowerCase() : req.docName}`}</p>
+        <p className="mt-1 text-center text-[0.98rem] text-mute">{t("forPurpose")}: {req.purpose}</p>
+        {doc && <div className="mt-3 flex justify-center"><DocSticker doc={doc} tilt={-4} w={120} /></div>}
+        <div className="mt-4 flex gap-2">
           <Button big className="flex-1" icon="Send" onClick={() => setOpen(true)}>{t("sendOne")}</Button>
-          <Button big variant="secondary" onClick={() => answerRequest(req.id, "declined")}>{t("notNow")}</Button>
+          <Button big variant="secondary" className="bg-white" onClick={() => answerRequest(req.id, "declined")}>{t("notNow")}</Button>
         </div>
       </motion.div>
       <Sheet open={open} onClose={() => setOpen(false)} title={doc ? docTitle(doc) : req.docName}>
@@ -215,204 +294,201 @@ function PlaceLine({ fileId }: { fileId: string | null }) {
   const { locationLine, file } = useStore();
   const f = file(fileId);
   return (
-    <div className="mt-2 flex items-start gap-2 rounded-xl bg-white p-3 text-[1rem]">
+    <div className="mt-2 flex items-start gap-2 rounded-2xl bg-card p-3 text-[1rem]">
       <span className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-black/20" style={{ background: f?.color }} />
       {locationLine(fileId)}
     </div>
   );
 }
 
-function QuickLinks() {
-  const { t, go, settings, lang } = useStore();
-  const items = [
-    { icon: HeartHandshake, label: settings.role === "keeper" ? t("unwellTitle") : lang === "hi" ? "अगर मम्मी-पापा की तबियत ख़राब हो" : "If Mummy or Papa is unwell", to: "unwell", tone: "bg-danger-soft text-danger" },
-    { icon: KeyRound, label: t("diaryTitle"), to: "diary", tone: "bg-saffron-soft text-ink" },
-    ...(settings.role === "keeper" ? [{ icon: Printer, label: t("printIndex"), to: "print", tone: "bg-sky text-ink" }] : []),
-  ];
+function HelpCards() {
+  const { lang, go, settings } = useStore();
+  const hi = lang === "hi";
   return (
-    <div className="mt-6 flex flex-col gap-2">
-      {items.map((i, k) => (
-        <motion.div key={i.to} {...rise(k)}>
-          <Card onClick={() => go(i.to)} className="flex items-center gap-3">
-            <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${i.tone}`}><i.icon size={24} aria-hidden /></span>
-            <span className="flex-1 text-[1.05rem] font-semibold">{i.label}</span>
-            <ChevronRight size={22} className="text-mute" aria-hidden />
-          </Card>
-        </motion.div>
+    <div className="grid grid-cols-2 gap-3">
+      {[
+        { id: "help", to: "help", guide: "home-help", art: <HelpArt className="h-24 w-24" />, en: "Show me how", hi: "कैसे करें, दिखाओ", subEn: "A ring shows where to tap", subHi: "घेरा दिखाएगा कहाँ दबाना है" },
+        settings.role === "keeper"
+          ? { id: "lend", to: "lend", guide: "home-lend", art: <LendArt className="h-20 w-28" />, en: "Lend my phone", hi: "फ़ोन उधार दें", subEn: "Rahul helps, 15 min", subHi: "राहुल मदद करें, 15 मिनट" }
+          : { id: "ask", to: "ask", guide: "home-ask", art: <span className="block rotate-6"><CatArt id="home" className="h-20 w-20" /></span>, en: "Ask Mummy", hi: "मम्मी से माँगें", subEn: "For a document", subHi: "कोई कागज़" },
+      ].map((x, i) => (
+        <motion.button key={x.id} {...rise(i)} whileTap={{ scale: 0.97 }} whileHover="lift" onClick={() => go(x.to)} data-guide={x.guide}
+          className="relative flex h-48 flex-col justify-start overflow-hidden rounded-[26px] bg-card px-3 pt-3 text-left">
+          <span className="title-tight block text-[1.2rem] leading-tight font-bold">{hi ? x.hi : x.en}</span>
+          <span className="mt-0.5 block text-[0.85rem] text-mute">{hi ? x.subHi : x.subEn}</span>
+          <motion.span className="sticker absolute -bottom-3 left-1/2 block -translate-x-1/2" variants={{ lift: { y: -8, rotate: -4 } }}>{x.art}</motion.span>
+        </motion.button>
       ))}
     </div>
   );
 }
 
-function greeting(lang: string) {
-  if (lang === "hi") return "नमस्ते";
-  const h = new Date().getHours();
-  return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+function AlmirahCard() {
+  const { data, lang, go } = useStore();
+  const hi = lang === "hi";
+  return (
+    <StickerCard tone="bg-[#EEF3F1]" onClick={() => go("print")}
+      metaLeft={<><LayoutGrid size={15} /> {data.files.length} {hi ? "फ़ाइलें" : "files"}</>}
+      metaRight={<>{data.places.length} {hi ? "जगहें" : "places"}</>}
+      title={hi ? "क्या कहाँ रखा है" : "What is where"}
+      sub={hi ? "पूरी अलमारी की लिस्ट" : "Your whole almirah, file by file"}>
+      <span className="sticker block"><HeroScene className="h-40 w-48" /></span>
+    </StickerCard>
+  );
+}
+
+function QuickLinks() {
+  const { t, go, settings, lang } = useStore();
+  const items = [
+    { icon: HeartHandshake, label: settings.role === "keeper" ? t("unwellTitle") : lang === "hi" ? "अगर मम्मी-पापा की तबियत ख़राब हो" : "If Mummy or Papa is unwell", to: "unwell" },
+    { icon: KeyRound, label: t("diaryTitle"), to: "diary" },
+    ...(settings.role === "keeper" ? [{ icon: Printer, label: t("printIndex"), to: "print" }] : []),
+  ];
+  return (
+    <div className="mt-8 overflow-hidden rounded-[24px] bg-card">
+      {items.map((i, k) => (
+        <motion.button key={i.to} whileTap={{ scale: 0.98 }} onClick={() => go(i.to)} className={`flex min-h-16 w-full items-center gap-3 px-4 text-left ${k ? "border-t border-white" : ""}`}>
+          <i.icon size={22} aria-hidden />
+          <span className="flex-1 text-[1.02rem] font-semibold">{i.label}</span>
+          <ChevronRight size={20} className="text-mute" aria-hidden />
+        </motion.button>
+      ))}
+    </div>
+  );
 }
 
 export function KeeperHome() {
-  const { data, t, lang, settings } = useStore();
+  const { data, lang, settings } = useStore();
+  const [filter, setFilter] = useState<Filter>("all");
+  const [view, setView] = useState<"grid" | "list">("grid");
+  const docs = useFiltered(filter);
   if (settings.simple) return <SimpleHome />;
   const pending = data.requests.filter((q) => q.to === "sunita" && q.status === "pending");
-  const due = data.reminders.filter((r) => !r.done && daysUntil(r.due) <= 30).length;
   const hi = lang === "hi";
   return (
-    <div className="pb-28">
-      <Hero
-        title={`${greeting(lang)}, ${hi ? "सुनीता जी" : "Sunita ji"}`}
-        sub={hi ? "हर कागज़, और उसकी असली जगह" : "Every paper, and where its original is"}
-        stats={[
-          { n: data.docs.length, label: hi ? "कागज़" : "papers" },
-          { n: data.files.length, label: hi ? "फ़ाइलें" : "files" },
-          { n: due, label: hi ? "जल्द करना है" : "due soon" },
-        ]}
-      />
+    <div className="pb-32">
+      <Top hello={`${greeting(lang)}, ${hi ? "सुनीता जी" : "Sunita ji"}`} title={hi ? "मेरे कागज़" : "My papers"} />
       <div className="px-4">
+        <FilterChips value={filter} onChange={setFilter} />
         {pending.map((q) => <RequestCard key={q.id} req={q} />)}
-        <QuickActions />
-        <ReadyFor />
-        <Reminders limit={4} />
-        <SectionTitle>{t("allFolders")}</SectionTitle>
-        <Folders />
+        <SectionLabel right={<ViewToggle view={view} onChange={setView} />}>{hi ? "फ़ाइलें" : "Files"}</SectionLabel>
+        <Folders docs={docs} view={view} />
+        <SectionLabel>{hi ? "मदद" : "Help"}</SectionLabel>
+        <HelpCards />
+        <SectionLabel>{hi ? "किसके लिए तैयारी?" : "Ready for…"}</SectionLabel>
+        <ReadyCards docs={docs} />
+        <Reminders />
+        <div className="mt-8"><AlmirahCard /></div>
         <QuickLinks />
       </div>
     </div>
   );
 }
 
-/* Simple mode: four big things, nothing else. The helper turns it on during setup. */
+/* Simple mode: four big things and the folders. The helper turns it on during setup. */
 export function SimpleHome() {
   const { data, lang, go, setSettings } = useStore();
   const hi = lang === "hi";
   const pending = data.requests.filter((q) => q.to === "sunita" && q.status === "pending");
   const tiles = [
-    { icon: Mic, en: "Find a paper", hi: "कागज़ ढूँढें", subEn: "Just say its name", subHi: "बस नाम बोलिए", to: "find", tone: "bg-brand text-white", guide: "home-find" },
-    { icon: IdCard, en: "Show my ID", hi: "मेरा आईडी दिखाएँ", subEn: "Aadhaar, big and bright", subHi: "आधार, बड़ा और साफ़", to: "counter/d1", tone: "bg-sage", guide: "home-id" },
-    { icon: Sparkles, en: "Show me how", hi: "कैसे करें, दिखाओ", subEn: "A ring shows where to tap", subHi: "घेरा दिखाएगा कहाँ दबाना है", to: "help", tone: "bg-saffron-soft", guide: "home-help" },
-    { icon: HandHelping, en: "Ask Rahul to help", hi: "राहुल से मदद लें", subEn: "He can use one app, 15 minutes", subHi: "एक ऐप, 15 मिनट", to: "lend", tone: "bg-sky", guide: "home-lend" },
+    { icon: Mic, en: "Find a paper", hi: "कागज़ ढूँढें", subEn: "Just say its name", subHi: "बस नाम बोलिए", to: "find", dark: true, guide: "home-find" },
+    { icon: IdCard, en: "Show my ID", hi: "मेरा आईडी दिखाएँ", subEn: "Aadhaar, big and bright", subHi: "आधार, बड़ा और साफ़", to: "counter/d1", guide: "home-id" },
+    { icon: Sparkles, en: "Show me how", hi: "कैसे करें, दिखाओ", subEn: "A ring shows where to tap", subHi: "घेरा दिखाएगा कहाँ दबाना है", to: "help", guide: "home-help" },
+    { icon: HandHelping, en: "Ask Rahul to help", hi: "राहुल से मदद लें", subEn: "He can use one app, 15 minutes", subHi: "एक ऐप, 15 मिनट", to: "lend", guide: "home-lend" },
   ];
   return (
-    <div className="px-4 pt-3 pb-28">
+    <div className="px-4 pt-4 pb-16">
       <div className="flex items-center justify-between">
-        <span className="font-serif text-[2.1rem] leading-none text-brand">Almari</span>
+        <span className="font-serif text-[1.7rem] leading-none">Almari</span>
         <LangToggle />
       </div>
-      <h1 className="mt-3 text-[1.7rem] leading-tight font-semibold">{greeting(lang)}, {hi ? "सुनीता जी" : "Sunita ji"}</h1>
+      <p className="mt-5 text-[1rem] text-mute">{greeting(lang)}</p>
+      <h1 className="title-tight text-[2.25rem] leading-[1.02] font-bold">{hi ? "सुनीता जी" : "Sunita ji"}</h1>
       {pending.map((q) => <RequestCard key={q.id} req={q} />)}
-      <div className="mt-4 flex flex-col gap-3">
+      <div className="mt-5 flex flex-col gap-3">
         {tiles.map((x, i) => (
           <motion.button key={x.en} {...rise(i)} whileTap={{ scale: 0.97 }} onClick={() => go(x.to)} data-guide={x.guide}
-            className={`flex min-h-24 items-center gap-4 rounded-3xl px-5 text-left ${x.tone}`}>
-            <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${x.tone.includes("text-white") ? "bg-white/20" : "bg-white"}`}><x.icon size={30} /></span>
+            className={`flex min-h-24 items-center gap-4 rounded-[28px] px-5 text-left ${x.dark ? "bg-ink text-white" : "bg-card"}`}>
+            <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full ${x.dark ? "bg-white/15" : "bg-white"}`}><x.icon size={28} /></span>
             <span>
-              <span className="block text-[1.3rem] leading-tight font-semibold">{hi ? x.hi : x.en}</span>
-              <span className={`block text-[0.98rem] ${x.tone.includes("text-white") ? "text-white/80" : "text-mute"}`}>{hi ? x.subHi : x.subEn}</span>
+              <span className="title-tight block text-[1.35rem] leading-tight font-bold">{hi ? x.hi : x.en}</span>
+              <span className={`block text-[0.98rem] ${x.dark ? "text-white/70" : "text-mute"}`}>{hi ? x.subHi : x.subEn}</span>
             </span>
           </motion.button>
         ))}
       </div>
-      <h2 className="mt-7 mb-3 text-[1.3rem] font-semibold">{hi ? "मेरी फ़ाइलें" : "My files"}</h2>
-      <Folders />
-      <SimpleExtra />
-      <button onClick={() => setSettings({ simple: false })} className="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border-2 border-hair bg-white font-semibold text-mute">
+      <SectionLabel>{hi ? "मेरी फ़ाइलें" : "My files"}</SectionLabel>
+      <Folders docs={data.docs} view="grid" />
+      <div className="mt-8 grid grid-cols-2 gap-2">
+        <button onClick={() => go("reminders")} className="flex min-h-14 items-center justify-center gap-2 rounded-full bg-card font-semibold"><Bell size={20} /> {hi ? "याद दिलाना" : "Reminders"}</button>
+        <button onClick={() => go("more")} className="flex min-h-14 items-center justify-center gap-2 rounded-full bg-card font-semibold">{hi ? "सेटिंग" : "Settings"}</button>
+      </div>
+      <button onClick={() => setSettings({ simple: false })} className="mt-2 flex min-h-12 w-full items-center justify-center gap-2 rounded-full font-semibold text-mute">
         <LayoutGrid size={20} /> {hi ? "सारे फ़ीचर दिखाएँ" : "Show all features"}
       </button>
     </div>
   );
 }
 
-function SimpleExtra() {
-  const { lang, go } = useStore();
-  const hi = lang === "hi";
-  return (
-    <div className="mt-6 grid grid-cols-2 gap-2">
-      <button onClick={() => go("reminders")} className="flex min-h-14 items-center justify-center gap-2 rounded-2xl border-2 border-hair bg-white font-semibold"><Bell size={20} /> {hi ? "याद दिलाना" : "Reminders"}</button>
-      <button onClick={() => go("more")} className="flex min-h-14 items-center justify-center gap-2 rounded-2xl border-2 border-hair bg-white font-semibold">{hi ? "सेटिंग" : "Settings"}</button>
-    </div>
-  );
-}
-
 export function HelperHome() {
-  const { data, t, lang, go, personName, docTitle, startLend } = useStore();
+  const { data, t, lang, go, docTitle, startLend } = useStore();
   const hi = lang === "hi";
+  const [filter, setFilter] = useState<Filter>("all");
+  const [view, setView] = useState<"grid" | "list">("grid");
+  const docs = useFiltered(filter);
   const mine = data.requests.filter((q) => q.from === "rahul").slice(0, 3);
-  const recent = data.activity.filter((a) => a.who !== "rahul" && a.docId).slice(0, 3);
-  const due = data.reminders.filter((r) => !r.done && daysUntil(r.due) <= 30).length;
   const lend = data.lend;
   return (
-    <div className="pb-28">
-      <Hero
-        title={t("parentsDocs")}
-        sub={hi ? "नागपुर · आप बेंगलुरु से देख रहे हैं" : "Nagpur · you are viewing from Bengaluru"}
-        stats={[
-          { n: data.docs.length, label: hi ? "कागज़" : "papers" },
-          { n: due, label: hi ? "जल्द करना है" : "due soon" },
-          { n: data.requests.filter((q) => q.from === "rahul" && q.status === "pending").length, label: hi ? "माँगे गए" : "asked" },
-        ]}
-      />
+    <div className="pb-32">
+      <Top hello={hi ? "नागपुर · आप बेंगलुरु से देख रहे हैं" : "Nagpur · viewing from Bengaluru"} title={hi ? "मम्मी-पापा के कागज़" : "Mummy & Papa's papers"} />
       <div className="px-4">
+        <FilterChips value={filter} onChange={setFilter} />
         {lend?.status === "waiting" && (
-          <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="mt-4 overflow-hidden rounded-3xl bg-danger p-4 text-white">
+          <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="mt-5 overflow-hidden rounded-[28px] bg-ink p-4 text-white">
             <div className="flex items-center gap-3">
-              <LendArt className="h-16 w-24 shrink-0" live />
+              <span className="sticker block"><LendArt className="h-16 w-24" live /></span>
               <div>
-                <p className="text-[1.15rem] font-semibold">{hi ? "मम्मी को मदद चाहिए" : "Mummy needs your help"}</p>
-                <p className="text-[0.95rem] text-white/85">{lend.app === "train" ? (hi ? "ट्रेन टिकट" : "Train tickets") : hi ? "बैंक ऐप" : "Bank app"} · 15 {hi ? "मिनट" : "min"}</p>
+                <p className="title-tight text-[1.25rem] font-bold">{hi ? "मम्मी को मदद चाहिए" : "Mummy needs your help"}</p>
+                <p className="text-[0.95rem] text-white/75">{lend.app === "train" ? (hi ? "ट्रेन टिकट" : "Train tickets") : hi ? "बैंक ऐप" : "Bank app"} · 15 {hi ? "मिनट" : "min"}</p>
               </div>
             </div>
-            <Button big variant="secondary" className="mt-3 w-full" icon="Check" onClick={() => { startLend(); go("lend"); }}>{hi ? "मदद करें" : "Accept and help"}</Button>
+            <Button big variant="secondary" className="mt-3 w-full bg-white" icon="Check" onClick={() => { startLend(); go("lend"); }}>{hi ? "मदद करें" : "Accept and help"}</Button>
           </motion.div>
         )}
-        {lend?.status === "active" && (
-          <Button big className="mt-4 w-full" icon="HandHelping" onClick={() => go("lend")}>{hi ? "मम्मी के फ़ोन पर वापस जाएँ" : "Back to Mummy's phone"}</Button>
-        )}
-        <Button big className="mt-4 w-full" icon="HandHelping" onClick={() => go("ask")}>{t("askMummy")}</Button>
+        {lend?.status === "active" && <Button big className="mt-5 w-full" icon="HandHelping" onClick={() => go("lend")}>{hi ? "मम्मी के फ़ोन पर वापस जाएँ" : "Back to Mummy's phone"}</Button>}
         {mine.length > 0 && (
           <>
-            <SectionTitle>{t("yourRequests")}</SectionTitle>
+            <SectionLabel>{t("yourRequests")}</SectionLabel>
             <div className="flex flex-col gap-2">
               {mine.map((q, i) => {
                 const doc = data.docs.find((d) => d.id === q.docId);
                 return (
-                  <motion.div key={q.id} {...rise(i)}>
-                    <Card onClick={doc && q.status === "sent" ? () => go(`doc/${doc.id}`) : undefined} className="flex items-center gap-3">
-                      <Send size={22} className="shrink-0 text-brand" aria-hidden />
-                      <span className="min-w-0 flex-1">
-                        <span className="block font-semibold">{doc ? docTitle(doc) : q.docName}</span>
-                        <span className="block text-[0.9rem] text-mute">{q.purpose} · {timeAgo(q.at, lang)}</span>
-                      </span>
-                      <span className={`rounded-full px-3 py-1 text-[0.85rem] font-semibold ${q.status === "sent" ? "bg-sage" : q.status === "declined" ? "bg-hair" : "bg-saffron-soft"}`}>
-                        {q.status === "sent" ? t("received") : q.status === "declined" ? (hi ? "बाद में" : "Later") : t("waiting")}
-                      </span>
-                    </Card>
-                  </motion.div>
+                  <motion.button key={q.id} {...rise(i)} whileTap={{ scale: 0.98 }} onClick={doc && q.status === "sent" ? () => go(`doc/${doc.id}`) : undefined}
+                    className="flex min-h-16 w-full items-center gap-3 rounded-[22px] bg-card px-4 text-left">
+                    <Send size={20} className="shrink-0" aria-hidden />
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-semibold">{doc ? docTitle(doc) : q.docName}</span>
+                      <span className="block text-[0.88rem] text-mute">{q.purpose} · {timeAgo(q.at, lang)}</span>
+                    </span>
+                    <span className={`rounded-full px-3 py-1 text-[0.85rem] font-semibold ${q.status === "sent" ? "bg-[#34C759] text-white" : q.status === "declined" ? "bg-white" : "bg-[#F7D27A]"}`}>
+                      {q.status === "sent" ? t("received") : q.status === "declined" ? (hi ? "बाद में" : "Later") : t("waiting")}
+                    </span>
+                  </motion.button>
                 );
               })}
             </div>
           </>
         )}
+        <SectionLabel right={<ViewToggle view={view} onChange={setView} />}>{hi ? "फ़ाइलें" : "Files"}</SectionLabel>
+        <Folders docs={docs} view={view} />
+        <SectionLabel>{hi ? "मदद" : "Help"}</SectionLabel>
+        <HelpCards />
         <Reminders limit={4} />
-        <SectionTitle>{t("allFolders")}</SectionTitle>
-        <Folders />
-        {recent.length > 0 && (
-          <>
-            <SectionTitle>{hi ? "हाल में घर पर" : "Recently at home"}</SectionTitle>
-            <div className="flex flex-col gap-2">
-              {recent.map((a) => {
-                const doc = data.docs.find((d) => d.id === a.docId);
-                if (!doc) return null;
-                return (
-                  <div key={a.id}>
-                    <p className="mb-1 text-[0.9rem] text-mute">{personName(a.who)} · {timeAgo(a.at, lang)}</p>
-                    <DocRow doc={doc} />
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        )}
+        <SectionLabel>{hi ? "किसके लिए तैयारी?" : "Ready for…"}</SectionLabel>
+        <ReadyCards docs={docs} />
         <QuickLinks />
       </div>
     </div>
   );
 }
+

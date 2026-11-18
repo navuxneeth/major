@@ -60,7 +60,7 @@ export function LocationPicker({ value, onChange }: { value: string | null; onCh
         ))}
       </div>
 
-      <div className="mt-3 rounded-2xl border border-hair bg-white p-2">
+      <div className="mt-3 rounded-[22px] bg-card p-2">
         <PlaceView
           place={place}
           files={data.files}

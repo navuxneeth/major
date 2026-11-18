@@ -229,7 +229,7 @@ export function Add() {
           {step === 5 && (
             <div>
               <h2 className="mb-3 text-[1.35rem] font-semibold">{lang === "hi" ? "एक बार देख लें" : "Check once and save"}</h2>
-              <div className="rounded-2xl border border-hair bg-white p-3">
+              <div className="rounded-[22px] bg-card p-3">
                 {method === "paper" && !image ? (
                   <p className="rounded-xl bg-paper p-4 text-center text-mute">{t("onlyPaper")}</p>
                 ) : (
@@ -283,7 +283,7 @@ export function Add() {
             <button key={d.title} onClick={() => {
               setDigi(d); setTitle(lang === "hi" ? d.titleHi : d.title); setArt(d.art); setCategory(d.category); setPersonId(d.personId);
               setMethod("digilocker"); setDlOpen(false); setStep(3);
-            }} className="flex min-h-16 items-center gap-3 rounded-2xl border-2 border-hair bg-white px-3 text-left">
+            }} className="flex min-h-16 items-center gap-3 rounded-[22px] bg-card px-3 text-left">
               <ShieldCheck size={24} className="text-brand" />
               <span className="flex-1">
                 <span className="block font-semibold">{lang === "hi" ? d.titleHi : d.title}</span>

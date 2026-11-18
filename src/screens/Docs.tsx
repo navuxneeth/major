@@ -134,7 +134,7 @@ export function DocDetail({ id }: { id: string }) {
             }} />
         </div>
       ) : (
-        <motion.button whileTap={{ scale: 0.98 }} onClick={() => go(`counter/${doc.id}`)} className="relative block w-full rounded-3xl border border-hair bg-white p-3 shadow-[0_18px_40px_-24px_rgba(30,91,79,0.6)]" aria-label={t("showCounter")}
+        <motion.button whileTap={{ scale: 0.98 }} onClick={() => go(`counter/${doc.id}`)} className="relative block w-full rounded-3xl bg-card p-3 shadow-[0_18px_40px_-24px_rgba(30,91,79,0.6)]" aria-label={t("showCounter")}
           initial={{ rotateX: 18, y: 16, opacity: 0 }} animate={{ rotateX: 0, y: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 160, damping: 18 }} style={{ transformPerspective: 800 }}>
           <DocArt doc={doc} ownerName={(owner?.name ?? "") + " Sharma"} className="h-auto w-full" />
           <span className="absolute right-3 bottom-3 flex h-10 w-10 items-center justify-center rounded-full bg-ink/70 text-white"><Maximize2 size={20} /></span>
@@ -156,7 +156,7 @@ export function DocDetail({ id }: { id: string }) {
       )}
 
       <SectionTitle>{t("originalKept")}</SectionTitle>
-      <div className="rounded-2xl border-2 border-saffron bg-white p-3">
+      <div className="rounded-2xl bg-card p-3">
         {loc?.place && (
           <PlaceView place={loc.place} files={data.files} highlight={doc.fileId} person={loc.place.personId ? person(loc.place.personId) : undefined} />
         )}
@@ -293,7 +293,7 @@ export function Share({ id }: { id: string }) {
       )}
 
       {doc.art === "aadhaar" && (
-        <label className="mt-4 flex min-h-14 cursor-pointer items-center gap-3 rounded-2xl border-2 border-hair bg-white px-3">
+        <label className="mt-4 flex min-h-14 cursor-pointer items-center gap-3 rounded-[22px] bg-card px-3">
           <input type="checkbox" checked={masked} onChange={(e) => setMasked(e.target.checked)} className="h-6 w-6 accent-[#1E5B4F]" />
           <span className="text-[1rem]">{t("maskAadhaar")}</span>
         </label>

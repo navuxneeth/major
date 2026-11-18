@@ -15,17 +15,18 @@ export function Screen({ title, children, right, onBack, noBack, sub }: { title?
   return (
     <div className="flex min-h-full flex-col">
       {title !== undefined && (
-        <header className="sticky top-0 z-20 flex items-center gap-2 border-b border-hair bg-paper/95 px-3 py-2 backdrop-blur">
-          {!noBack && (
-            <button onClick={onBack ?? back} className="flex h-12 min-w-12 items-center gap-1 rounded-full px-2 text-ink active:bg-hair" aria-label={t("back")}>
-              <ArrowLeft size={26} />
-            </button>
-          )}
-          <div className="min-w-0 flex-1">
-            <h1 className="truncate text-[1.3rem] leading-tight font-semibold">{title}</h1>
-            {sub && <p className="truncate text-[0.85rem] text-mute">{sub}</p>}
+        <header className="sticky top-0 z-20 bg-white/85 px-4 pt-3 pb-3 backdrop-blur-xl">
+          <div className="flex h-12 items-center gap-2">
+            {!noBack && (
+              <motion.button whileTap={{ scale: 0.9 }} onClick={onBack ?? back} className="-ml-1 flex h-12 w-12 items-center justify-center rounded-full bg-card text-ink" aria-label={t("back")}>
+                <ArrowLeft size={24} />
+              </motion.button>
+            )}
+            <div className="flex-1" />
+            {right}
           </div>
-          {right}
+          <h1 className="title-tight mt-2 text-[2rem] leading-[1.05] font-bold">{title}</h1>
+          {sub && <p className="mt-1 text-[0.98rem] leading-snug text-mute">{sub}</p>}
         </header>
       )}
       <div className="flex-1 px-4 pt-4 pb-28">{children}</div>
@@ -38,10 +39,10 @@ export function Button({ children, onClick, variant = "primary", className = "",
   children: ReactNode; onClick?: () => void; variant?: BtnVariant; className?: string; icon?: string; disabled?: boolean; type?: "button" | "submit"; big?: boolean; guide?: string;
 }) {
   const v = {
-    primary: "bg-brand text-white active:bg-brand-dark",
-    secondary: "bg-white text-ink border-2 border-hair active:bg-hair",
-    ghost: "bg-transparent text-brand active:bg-brand-soft",
-    danger: "bg-white text-danger border-2 border-danger-soft active:bg-danger-soft",
+    primary: "bg-ink text-white active:bg-black shadow-[0_10px_20px_-12px_rgba(0,0,0,0.6)]",
+    secondary: "bg-card text-ink active:bg-hair",
+    ghost: "bg-transparent text-ink underline-offset-4 active:bg-card",
+    danger: "bg-danger-soft text-danger active:brightness-95",
     saffron: "bg-saffron text-ink active:brightness-95",
   }[variant];
   return (
@@ -51,7 +52,7 @@ export function Button({ children, onClick, variant = "primary", className = "",
       whileTap={{ scale: 0.97 }}
       disabled={disabled}
       onClick={onClick}
-      className={`flex items-center justify-center gap-2 rounded-2xl px-5 font-semibold transition-colors disabled:opacity-40 ${big ? "min-h-16 text-[1.15rem]" : "min-h-14 text-[1.05rem]"} ${v} ${className}`}
+      className={`flex items-center justify-center gap-2 rounded-full px-6 font-semibold transition-colors disabled:opacity-35 ${big ? "min-h-16 text-[1.15rem]" : "min-h-14 text-[1.05rem]"} ${v} ${className}`}
     >
       {icon && <Icon name={icon} size={big ? 26 : 22} />}
       {children}
@@ -65,7 +66,7 @@ export function Card({ children, className = "", onClick, tone = "bg-white", gui
     <C
       {...(onClick ? { whileTap: { scale: 0.98 }, onClick } : {})}
       data-guide={guide}
-      className={`block w-full rounded-2xl border border-hair ${tone} p-4 text-left shadow-[0_1px_0_rgba(30,28,25,0.04),0_10px_24px_-18px_rgba(30,91,79,0.45)] ${onClick ? "active:brightness-[0.98]" : ""} ${className}`}
+      className={`block w-full rounded-[22px] ${tone === "bg-white" ? "bg-card" : tone} p-4 text-left ${onClick ? "active:brightness-[0.97]" : ""} ${className}`}
     >
       {children}
     </C>
@@ -79,7 +80,7 @@ export function Chip({ children, onClick, active = false, icon, className = "", 
       whileTap={{ scale: 0.96 }}
       layout
       onClick={onClick}
-      className={`inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full border-2 px-4 text-[1rem] font-medium ${active ? "border-brand bg-brand text-white" : "border-hair bg-white text-ink"} ${className}`}
+      className={`inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full px-5 text-[1rem] font-medium ${active ? "bg-ink text-white" : "bg-card text-ink"} ${className}`}
     >
       {icon && <Icon name={icon} size={20} />}
       {children}
@@ -89,11 +90,8 @@ export function Chip({ children, onClick, active = false, icon, className = "", 
 
 export function SectionTitle({ children, right }: { children: ReactNode; right?: ReactNode }) {
   return (
-    <div className="mt-6 mb-2 flex items-end justify-between gap-2">
-      <h2 className="relative text-[1.15rem] font-semibold">
-        {children}
-        <motion.span className="absolute -bottom-1 left-0 h-1 rounded-full bg-saffron" initial={{ width: 0 }} whileInView={{ width: 28 }} viewport={{ once: true }} transition={{ duration: 0.5 }} />
-      </h2>
+    <div className="mt-7 mb-3 flex items-end justify-between gap-2">
+      <h2 className="title-tight text-[1.25rem] font-bold">{children}</h2>
       {right}
     </div>
   );
@@ -106,7 +104,7 @@ export function Sheet({ open, onClose, title, children }: { open: boolean; onClo
       {open && (
         <motion.div className="absolute inset-0 z-50 flex items-end bg-black/40" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
           <motion.div
-            className="max-h-[88%] w-full overflow-y-auto rounded-t-3xl bg-paper px-4 pt-3 pb-8"
+            className="max-h-[88%] w-full overflow-y-auto rounded-t-[32px] bg-white px-4 pt-3 pb-8"
             initial={{ y: 60 }} animate={{ y: 0 }} exit={{ y: 80 }} transition={{ type: "spring", damping: 28, stiffness: 320 }}
             onClick={(e) => e.stopPropagation()}
             role="dialog"
@@ -133,7 +131,7 @@ export function Toast({ fixed = false }: { fixed?: boolean }) {
         <motion.div
           key={toast}
           initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }}
-          className={`pointer-events-none ${fixed ? "fixed" : "absolute"} inset-x-4 bottom-28 z-[60] rounded-2xl bg-ink px-4 py-3 text-center text-[1rem] text-white shadow-lg`}
+          className={`pointer-events-none ${fixed ? "fixed" : "absolute"} inset-x-6 bottom-32 z-[60] rounded-full bg-ink/90 px-5 py-3 text-center text-[1rem] text-white shadow-xl backdrop-blur`}
           role="status"
         >
           {toast}
@@ -227,7 +225,7 @@ function VoiceFallback({ open, onPick, onClose }: { open: boolean; onPick: (s: s
 
 export function EmptyNote({ icon = "Info", children }: { icon?: string; children: ReactNode }) {
   return (
-    <div className="flex items-start gap-3 rounded-2xl bg-saffron-soft p-4 text-[1rem]">
+    <div className="flex items-start gap-3 rounded-[22px] bg-card p-4 text-[1rem]">
       <Icon name={icon} size={24} className="mt-0.5 shrink-0" />
       <div>{children}</div>
     </div>

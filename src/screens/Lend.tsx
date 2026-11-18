@@ -247,7 +247,7 @@ function MockApp({ app, mode, onDone }: { app: AppId; mode: "watch" | "control";
 
   return (
     <div className="relative px-4 pt-4 pb-28" ref={box}>
-      <div className="overflow-hidden rounded-3xl border border-hair bg-white shadow-sm">
+      <div className="overflow-hidden rounded-3xl bg-card shadow-sm">
         <div className={`px-4 py-3 text-white ${app === "train" ? "bg-[#2E6E9E]" : "bg-[#2F6B4E]"}`}>
           <p className="text-[1.15rem] font-bold">{app === "train" ? (hi ? "ट्रेन टिकट" : "Train tickets") : (hi ? "बैंक ऐप" : "Bank app")}</p>
           <p className="text-[0.8rem] text-white/80">{hi ? "नमूना ऐप" : "Sample app"}</p>
