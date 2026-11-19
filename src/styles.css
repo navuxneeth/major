@@ -6,9 +6,9 @@
   --color-ink: #1C1C1E;
   --color-mute: #48484D;
   --color-hair: #EBEBED;
-  --color-brand: var(--brand, #1C1C1E);
-  --color-brand-dark: var(--brand-dark, #000000);
-  --color-brand-soft: var(--brand-soft, #E9E9EE);
+  --color-brand: var(--brand, #3B7A1F);
+  --color-brand-dark: var(--brand-dark, #2E6116);
+  --color-brand-soft: var(--brand-soft, #E8F4DA);
   --color-glass: rgba(242, 242, 244, 0.72);
   --color-saffron: #E8A33D;
   --color-saffron-soft: #FFF4DC;
@@ -95,3 +95,5 @@ input.bg-transparent:focus-visible { outline: none; }
 .pt-safe { padding-top: calc(var(--top) + 8px); }
 /* Very narrow phones: drop the document thumbnail so names and places get the width */
 @media (max-width: 345px) { .doc-thumb { display: none; } }
+
+.wash { background: linear-gradient(180deg, #DCEFC3 0%, #EEF7E2 55%, #FFFFFF 100%); }

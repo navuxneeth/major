@@ -31,32 +31,25 @@ function Nav() {
         { to: "reminders", icon: Bell, label: lang === "hi" ? "याद" : "Reminders" },
         { to: "more", icon: Menu, label: t("more") },
       ];
-  const tab = (i: (typeof items)[number]) => {
-    const on = top === i.to;
-    return (
-      <motion.button key={i.to} whileTap={{ scale: 0.94 }} onClick={() => go(i.to)} aria-current={on ? "page" : undefined}
-        className="flex min-h-[3.5rem] flex-1 flex-col items-center justify-center gap-1">
-        <span className={`flex h-8 w-14 items-center justify-center rounded-full transition-colors ${on ? "bg-brand-soft text-brand" : "text-ink"}`}>
-          <i.icon size={24} strokeWidth={on ? 2.4 : 2} />
-        </span>
-        <span className={`text-[0.82rem] leading-none ${on ? "font-bold text-brand" : "font-medium text-ink"}`}>{i.label}</span>
-      </motion.button>
-    );
-  };
   return (
-    <nav className="no-print absolute inset-x-0 bottom-0 z-30 border-t border-[#D9D9DE] bg-white px-1 pt-2 pb-[max(env(safe-area-inset-bottom),12px)]">
-      <div className="flex items-start">
-        {tab(items[0])}
-        {tab(items[1])}
-        <div className="flex flex-1 justify-center">
-          <motion.button whileTap={{ scale: 0.92 }} onClick={() => go("add")} aria-label={t("add")}
-            className="flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white">
-            <Plus size={28} strokeWidth={2.4} />
-          </motion.button>
-        </div>
-        {tab(items[2])}
-        {tab(items[3])}
+    <nav className="no-print pointer-events-none absolute inset-x-0 bottom-0 z-30 flex items-end gap-3 px-4 pb-[max(env(safe-area-inset-bottom),14px)]">
+      <div className="pointer-events-auto flex flex-1 items-center rounded-full bg-[#EFEFF2] p-1.5 shadow-[0_12px_30px_-14px_rgba(0,0,0,0.35)] ring-1 ring-black/5">
+        {items.map((i) => {
+          const on = top === i.to;
+          return (
+            <motion.button key={i.to} whileTap={{ scale: 0.9 }} onClick={() => go(i.to)} aria-current={on ? "page" : undefined}
+              className="relative flex h-14 flex-1 flex-col items-center justify-center gap-0.5 rounded-full text-[0.82rem] font-semibold">
+              {on && <motion.span layoutId="nav-pill" className="absolute inset-0 rounded-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)]" transition={{ type: "spring", stiffness: 420, damping: 32 }} />}
+              <i.icon size={22} strokeWidth={on ? 2.5 : 2} className={`relative ${on ? "text-brand" : "text-ink"}`} />
+              <span className={`relative ${on ? "text-brand" : "text-ink"}`}>{i.label}</span>
+            </motion.button>
+          );
+        })}
       </div>
+      <motion.button whileTap={{ scale: 0.88 }} onClick={() => go("add")} aria-label={t("add")}
+        className="pointer-events-auto flex h-[66px] w-[66px] shrink-0 items-center justify-center rounded-full bg-brand text-white shadow-[0_14px_28px_-12px_rgba(40,80,20,0.6)]">
+        <Plus size={30} />
+      </motion.button>
     </nav>
   );
 }
