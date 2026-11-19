@@ -2,7 +2,9 @@
 
 Almari keeps a copy of a family's important papers on the phone, and remembers where each original is kept at home: which almirah, which shelf, which file.
 
-It is a prototype from our Major Project on aging and digital inclusion at MIT Institute of Design, Pune. It runs on a made-up sample family, Sunita and her son Rahul, and nothing leaves the browser.
+A Major Project on aging and digital inclusion at MIT Institute of Design, Pune, by Anubhuti Raj, Drishti Mishra, Navaneeth Sankar K P, Padmashree Naik and Vikhyat Kaushik, guided by Prof. Sohnit Kumar with Vinay.
+
+The prototype opens with sample papers for one family, Sunita and her son Rahul, and everything stays on your own device.
 
 **Try it:** https://navuxneeth.github.io/major/anubhuti/ (best on a phone)
 
@@ -27,12 +29,6 @@ We surveyed 131 people and interviewed 6 older adults and 10 family helpers. Thr
 - Passwords are never stored. The app only notes where the password diary is.
 
 "Lend my phone", where a helper could guide the parent remotely, is kept as an explored idea and is not part of the main app.
-
-## Team
-
-Anubhuti Raj, Drishti Mishra, Navaneeth Sankar K P, Padmashree Naik, Vikhyat Kaushik
-
-Mentor: Prof. Sohnit Kumar, with Vinay
 
 ## For testing
 
