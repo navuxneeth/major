@@ -6,13 +6,13 @@
   --color-ink: #1C1C1E;
   --color-mute: #48484D;
   --color-hair: #EBEBED;
-  --color-brand: var(--brand, #3B7A1F);
-  --color-brand-dark: var(--brand-dark, #2E6116);
+  --color-brand: var(--brand, #2A6012);
+  --color-brand-dark: var(--brand-dark, #1F4A0C);
   --color-brand-soft: var(--brand-soft, #E8F4DA);
   --color-glass: rgba(242, 242, 244, 0.72);
   --color-saffron: #E8A33D;
   --color-saffron-soft: #FFF4DC;
-  --color-danger: #B3412E;
+  --color-danger: #9E2F1D;
   --color-danger-soft: #FDECEA;
   --color-sky: #DCE9F7;
   --color-rose: #F9DCD5;

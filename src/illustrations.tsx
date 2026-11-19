@@ -305,7 +305,7 @@ const PEEK_STYLE: Record<PeekPaper["tone"], { bg: string; dot: string; icon: "ch
   plain: { bg: "#FFFFFF", dot: "#E7E7EA", icon: "lines" },
   due: { bg: "#F7D27A", dot: "#E2A93A", icon: "clock" },
   verified: { bg: "#FFFFFF", dot: "#34C759", icon: "check" },
-  paper: { bg: "#F0EEE8", dot: "#B9B4AA", icon: "q" },
+  paper: { bg: "#F0EEE8", dot: "#6F6A60", icon: "q" },
 };
 
 export function GlassFolder({ id, label, count, papers, onClick, index = 0, place }: {

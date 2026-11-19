@@ -41,7 +41,7 @@ function Nav() {
               className="relative flex h-14 flex-1 flex-col items-center justify-center gap-0.5 rounded-full text-[0.82rem] font-semibold">
               {on && <motion.span layoutId="nav-pill" className="absolute inset-0 rounded-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)]" transition={{ type: "spring", stiffness: 420, damping: 32 }} />}
               <i.icon size={22} strokeWidth={on ? 2.5 : 2} className={`relative ${on ? "text-brand" : "text-ink"}`} />
-              <span className={`relative ${on ? "text-brand" : "text-ink"}`}>{i.label}</span>
+              <span className="relative text-ink">{i.label}</span>
             </motion.button>
           );
         })}
