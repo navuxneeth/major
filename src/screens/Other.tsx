@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { HandHelping, Smartphone, Check, Plus, Send, Phone, KeyRound, ShieldAlert, Printer, Bell, Users, FlaskConical, RotateCcw, ChevronRight, ChevronDown, Lock, HeartHandshake, Info } from "lucide-react";
+import { HandHelping, Smartphone, Check, Plus, Send, Phone, KeyRound, ShieldAlert, Printer, Bell, Users, ChevronRight, ChevronDown, HeartHandshake, Info } from "lucide-react";
 import { CATEGORIES, READY_FOR, readyDefaultWho, type Access, type CategoryId } from "../data";
 import { useStore } from "../store";
 import { matchBundleItem } from "../search";
 import { Avatar, PlaceView } from "../art";
 import { Button, Card, Chip, EmptyNote, Icon, Screen, SectionTitle, Sheet, StickerBand } from "../components/ui";
-import { DocRow, LocationDot } from "../components/DocRow";
-import { CatArt, FamilyArt, ReadyArt, SuccessBurst } from "../illustrations";
+import { DocRow} from "../components/DocRow";
+import { ReadyArt, SuccessBurst } from "../illustrations";
 import { daysUntil, fmtDate, timeAgo } from "../i18n";
 
 /* ================= FOLDER ================= */
@@ -436,7 +436,7 @@ export function Diary() {
 
 /* ================= MORE / SETTINGS ================= */
 export function More() {
-  const { t, lang, settings, setSettings, go, reset, showToast, setUnlocked } = useStore();
+  const { t, lang, settings, setSettings, go, reset, showToast } = useStore();
   const links = [
     { icon: Users, label: t("familyTitle"), to: "family" },
     { icon: HandHelping, label: lang === "hi" ? "मदद: कैसे करें, दिखाओ" : "Help: show me how", to: "help" },
@@ -552,7 +552,7 @@ export function Where() {
 }
 
 export function PrintSheet() {
-  const { data, lang, back, file } = useStore();
+  const { data, lang, back } = useStore();
   const byFile = data.files.map((f) => ({ f, docs: data.docs.filter((d) => d.fileId === f.id) })).filter((x) => x.docs.length);
   return (
     <div className="print-area min-h-full bg-white p-6 text-ink">

@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+
 import type { Doc, FileBox, Place, Person } from "./data";
 
 /* ------------------------------------------------------------------ */

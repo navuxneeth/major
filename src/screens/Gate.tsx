@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { ChevronRight, Fingerprint } from "lucide-react";
+import { ChevronRight} from "lucide-react";
 import { useStore } from "../store";
 import { AppMark } from "../components/ui";
 import { Avatar } from "../art";
@@ -61,49 +61,3 @@ export function Onboard() {
   );
 }
 
-/* Opens with the phone's own lock: no new password to remember. */
-export function Lock() {
-  const { t, setUnlocked, settings } = useStore();
-  const [pattern, setPattern] = useState(false);
-  const [dots, setDots] = useState<number[]>([]);
-  const [scanning, setScanning] = useState(false);
-  const hi = settings.lang === "hi";
-  const open = () => { setScanning(true); setTimeout(() => setUnlocked(true), 550); };
-  return (
-    <div className="wash absolute inset-0 z-[65] flex flex-col items-center px-6 pb-10 text-center" style={{ paddingTop: "calc(var(--top) + 56px)" }}>
-      <AppMark size={80} />
-      <span className="mt-4 text-[1.75rem] leading-none font-bold tracking-[-0.02em]">Almari</span>
-      <p className="mt-2 text-[1.06rem] text-mute">{settings.role === "keeper" ? (hi ? "सुनीता जी का फ़ोन" : "Sunita's phone") : (hi ? "राहुल का फ़ोन" : "Rahul's phone")}</p>
-      {!pattern ? (
-        <>
-          <motion.button
-            whileTap={{ scale: 0.94 }}
-            animate={scanning ? {} : { boxShadow: ["0 0 0 0 rgba(42,96,18,0.28)", "0 0 0 22px rgba(42,96,18,0)"] }}
-            transition={{ duration: 1.8, repeat: Infinity }}
-            onClick={open}
-            className={`mt-auto flex h-24 w-24 items-center justify-center rounded-full ${scanning ? "bg-brand text-white" : "bg-white text-brand shadow-[0_10px_26px_-14px_rgba(40,70,20,0.45)]"}`}
-            aria-label={t("touchToOpen")}
-          >
-            <Fingerprint size={52} strokeWidth={1.6} />
-          </motion.button>
-          <p className="mt-5 text-[1.12rem] font-semibold">{hi ? "खोलने के लिए छुएँ" : "Touch to open"}</p>
-          <button onClick={() => setPattern(true)} className="mt-1 min-h-11 px-4 text-[1rem] font-semibold text-brand">{t("usePattern")}</button>
-        </>
-      ) : (
-        <div className="mt-auto">
-          <div className="grid grid-cols-3 gap-6">
-            {Array.from({ length: 9 }, (_, i) => (
-              <button key={i} onClick={() => {
-                const next = dots.includes(i) ? dots : [...dots, i];
-                setDots(next);
-                if (next.length >= 4) open();
-              }} className={`h-16 w-16 rounded-full ${dots.includes(i) ? "bg-brand" : "bg-white shadow-[0_8px_20px_-14px_rgba(0,0,0,0.4)]"}`} aria-label={`dot ${i + 1}`} />
-            ))}
-          </div>
-          <p className="mt-4 text-[1rem] text-mute">{hi ? "कोई भी 4 बिंदु छुएँ" : "Tap any 4 dots"}</p>
-        </div>
-      )}
-      <p className="mt-auto max-w-xs text-[0.94rem] leading-snug text-mute">{t("noNewPassword")}</p>
-    </div>
-  );
-}

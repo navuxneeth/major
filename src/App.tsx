@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Home as HomeIcon, Search, Plus, Users, Menu, HandHelping, Bell, Sparkles } from "lucide-react";
+import { Home as HomeIcon, Search, Plus, Users, Menu, Bell } from "lucide-react";
 import { StoreProvider, useStore } from "./store";
 import { AppMark, Toast } from "./components/ui";
 import { GuideOverlay } from "./components/Guide";
@@ -81,13 +81,12 @@ function routeFor(parts: string[], params: URLSearchParams, role: string) {
 }
 
 function PhoneApp() {
-  const { route, settings, unlocked, go, guide, data } = useStore();
+  const { route, settings, go, data } = useStore();
   const scroller = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => { scroller.current?.scrollTo({ top: 0 }); setScrolled(false); }, [route.path]);
   const top = route.parts[0] ?? "";
   const hideNav = ["add", "counter", "share", "phone", "lend"].includes(top);
-  const showHelpFab = false && settings.role === "keeper" && !["", "help", "add", "counter", "share", "phone", "lend"].includes(top) && !guide && !settings.simple;
   const lendActive = settings.role === "keeper" && data.lend?.status === "active" && top !== "lend";
   return (
     <div id="phone-root" className="relative h-full w-full overflow-hidden bg-paper">
@@ -101,13 +100,6 @@ function PhoneApp() {
       {lendActive && (
         <motion.button initial={{ y: -40 }} animate={{ y: 0 }} onClick={() => go("lend")} className="absolute inset-x-0 top-0 z-40 bg-danger py-2 text-center text-[0.95rem] font-semibold text-white">
           {settings.lang === "hi" ? "राहुल मदद कर रहे हैं · बंद करने के लिए छुएँ" : "Rahul is helping · tap to see or end"}
-        </motion.button>
-      )}
-      {showHelpFab && (
-        <motion.button initial={{ scale: 0 }} animate={{ scale: 1 }} whileTap={{ scale: 0.9 }} onClick={() => go("help")}
-          className="absolute right-4 bottom-28 z-30 flex h-12 items-center gap-2 rounded-full bg-white lift px-4 font-semibold text-ink" aria-label="Help">
-          <motion.span className="text-brand" animate={{ rotate: [0, 18, -12, 0] }} transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 3 }}><Sparkles size={22} /></motion.span>
-          {settings.lang === "hi" ? "मदद" : "Help"}
         </motion.button>
       )}
       <div className={`pointer-events-none absolute inset-x-0 top-0 z-[75] bg-white/85 backdrop-blur-xl transition-opacity duration-200 ${scrolled ? "opacity-100" : "opacity-0"}`} style={{ height: "var(--top)" }} aria-hidden />
@@ -132,7 +124,7 @@ function Shell() {
   const { route, setSettings, settings, go, reset, showToast } = useStore();
   const page = route.parts[0];
 
-  /* Test links: ?fresh=1&as=keeper|helper&lang=en|hi&simple=1 start a participant on clean sample data. */
+  /* Test links: ?fresh=1&as=keeper|helper&lang=en|hi start a participant on clean sample data. */
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
     if (!q.toString()) return;
@@ -142,7 +134,6 @@ function Shell() {
     setSettings({
       ...(as === "keeper" || as === "helper" ? { role: as, onboarded: true } : {}),
       ...(lang === "en" || lang === "hi" ? { lang } : {}),
-      ...(q.has("simple") ? { simple: q.get("simple") === "1" } : q.get("fresh") === "1" ? { simple: as !== "helper" } : {}),
     });
     window.history.replaceState(null, "", window.location.pathname + window.location.hash);
   }, []); // eslint-disable-line

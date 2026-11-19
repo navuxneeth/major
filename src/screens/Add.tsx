@@ -22,7 +22,7 @@ function guessFromName(name: string): { category: CategoryId; art: Art } | null 
 
 
 export function Add() {
-  const { data, t, lang, route, go, addDoc, updateDoc, addReminder, answerRequest, showToast, viewerId, settings, person, personName } = useStore();
+  const { data, t, lang, route, go, addDoc, updateDoc, addReminder, answerRequest, showToast, viewerId, person, personName } = useStore();
   const p = route.params;
   const reqId = p.get("req");
   const existingId = p.get("doc");

@@ -9,12 +9,10 @@ export interface Settings {
   lang: Lang;
   scale: 0 | 1 | 2;
   role: Role;
-  lock: boolean;
   onboarded: boolean;
-  simple: boolean;
 }
 
-const defaultSettings: Settings = { lang: "en", scale: 0, role: "keeper", lock: true, onboarded: false, simple: true };
+const defaultSettings: Settings = { lang: "en", scale: 0, role: "keeper", onboarded: false };
 
 function load<T>(key: string, fallback: T): T {
   try {
@@ -55,7 +53,6 @@ function useProvideStore() {
     return d && d.version === 3 ? d : seed();
   });
   const [settings, setSettingsState] = useState<Settings>(() => ({ ...defaultSettings, ...load(SET_KEY, {}) }));
-  const [unlocked, setUnlocked] = useState(false);
   const [route, setRoute] = useState(parseHash());
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<number>();
@@ -249,7 +246,7 @@ function useProvideStore() {
   }, []);
 
   return {
-    data, settings, setSettings, unlocked, setUnlocked, route, go, back, toast, showToast,
+    data, settings, setSettings, route, go, back, toast, showToast,
     t, lang, viewerId, person, personName, docOwnerLabel, file, place, locationParts, locationLine, docTitle, catName,
     log, addDoc, updateDoc, addFile, addReminder, toggleReminder, sendRequest, answerRequest, setMember, removeMember, setDiary, reset,
     requestLend, startLend, endLend, clearLend, guide, startGuide, stopGuide, nextGuide,

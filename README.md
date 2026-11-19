@@ -1,47 +1,48 @@
 # Almari
 
-**Know what important papers your family has, and exactly where each original is kept: on the phone or in the almirah.**
+Almari keeps a copy of a family's important papers on the phone, and remembers where each original is kept at home: which almirah, which shelf, which file.
 
-Live: https://navuxneeth.github.io/major/
-Testing kit (for facilitators): https://navuxneeth.github.io/major/#/lab
+It is a prototype from our Major Project on aging and digital inclusion at MIT Institute of Design, Pune. It runs on a made-up sample family, Sunita and her son Rahul, and nothing leaves the browser.
 
-Major Project, Group 4 · B.Des UX, MIT Institute of Design · Drishti Mishra, Anubhuti Raj, Padmashree Naik, Vikhyat Kaushik, Navaneeth Sankar K P · Mentor: Prof. Sohnit Kumar · Co-mentor: Vinay
+**Try it:** https://navuxneeth.github.io/major/anubhuti/ (best on a phone)
 
-## Why it exists
-From 16 in-depth interviews (6 older adults, 10 caregivers) and a 131-response family survey:
-- Paper is the family's real record; the phone only holds convenience copies.
-- Finding is the real pain: failed searches turn into hour-long hunts and arguments at home.
-- Where things are kept usually lives in one person's head, so taking over fails when that person is busy, away or unwell.
-- Half the helpers live in another city and help blind, over phone calls.
+## Why we made it
+
+We surveyed 131 people and interviewed 6 older adults and 10 family helpers. Three things kept coming up:
+
+- Paper is still the real record. The phone only holds scattered copies.
+- Usually one person knows where everything is kept, so things fall apart when that person is busy, away or unwell.
+- Half the helpers live in another city and help over phone calls, without seeing the screen.
 
 ## What it does
-- **Where the original is:** every document records its place, shelf and file colour, drawn as the family's own almirah.
-- **Find in one step:** search or speak (English and Hindi), with a full-screen "show at counter" view.
-- **Ready for…:** hospital, train, bank and pension checklists that list each document and which file it is in.
-- **Family circle:** each member sees everything, chosen folders, or only the emergency card; helpers can add documents; the owner sees who viewed what.
-- **Ask for a document (lives in search):** when Rahul searches and the document is not there, or it is only on paper, he gets "Ask Mummy for it". She sees one card on her home and sends it with one tap.
-- **Share safely:** every copy sent out is stamped "For SBI KYC only · date", with Aadhaar masking and 24-hour links.
-- **Reminders** for renewals go to the owner and the helper.
-- **Passwords:** never stored. Almari remembers only where the password diary is and which number or email each account uses.
-- **If I'm unwell** card and a printable almirah index.
-- **Show me how (Point & Say):** ask by voice or tap a task; a glowing ring sits on the exact button and a voice says "tap here". It never taps for you. Includes a "Where is my OTP?" guide on the phone's messages.
-- **Lend my phone (explored, not in the main flow):** kept under More only. Phones hold bank and other private data, and "Show me how" already covers everyday help.
-- **Simple mode (default for the parent):** four big buttons (find a paper, show my ID, show me how, add a paper) and the folders. "Show all features" opens the full home.
-- Opens with the phone's own lock. No new password.
 
-All data is a fictional sample family, stored only in the browser. DigiLocker import is shown as a concept; a real connection needs DigiLocker partner approval.
+- Every paper shows where its original is, with a drawing of the family's own almirah.
+- Search by typing or by voice, in English or Hindi.
+- Show a paper full screen at a counter, or share a copy stamped for one purpose, with the Aadhaar number masked.
+- A helper can ask for a paper. The parent sees one card and taps Send.
+- Lists for a hospital visit, train journey, bank visit or pension, showing which file each paper is in.
+- Reminders for renewals, an "If I'm unwell" page, and a printable list of what is where.
+- Short "Show me how" guides that point to the right button.
+- Each family member sees everything, chosen folders, or only the emergency page.
+- Passwords are never stored. The app only notes where the password diary is.
 
-## Testing links
-Each link starts a participant on fresh sample data:
-- Older adult, English: `https://navuxneeth.github.io/major/?fresh=1&as=keeper&lang=en`
-- Older adult, Hindi: `https://navuxneeth.github.io/major/?fresh=1&as=keeper&lang=hi`
-- Older adult, full home: add `&simple=0` to the keeper link above (Simple is the default)
-- Caregiver, English: `https://navuxneeth.github.io/major/?fresh=1&as=helper&lang=en`
-- Caregiver, Hindi: `https://navuxneeth.github.io/major/?fresh=1&as=helper&lang=hi`
+"Lend my phone", where a helper could guide the parent remotely, is kept as an explored idea and is not part of the main app.
 
-## Run locally
+## Team
+
+Anubhuti Raj, Drishti Mishra, Navaneeth Sankar K P, Padmashree Naik, Vikhyat Kaushik
+
+Mentor: Prof. Sohnit Kumar, with Vinay
+
+## For testing
+
+The testing kit for moderators is at `/#/lab`. To start a participant on fresh sample data, add `?fresh=1&as=keeper` (Sunita) or `?fresh=1&as=helper` (Rahul) to the link, with `&lang=hi` for Hindi.
+
+## Run it locally
+
 ```
 npm install
 npm run dev
 ```
-Built with React, TypeScript, Vite, Tailwind CSS and Motion. Deployed to GitHub Pages from the `gh-pages` branch: run `npm run build` and push the `dist/` folder there. (`.github/workflows/pages.yml` is a manual alternative if Pages is switched to "GitHub Actions".)
+
+Built with React, TypeScript, Vite, Tailwind CSS and Motion. The live site is served from the `gh-pages` branch: run `npm run build` and copy `dist/` there.

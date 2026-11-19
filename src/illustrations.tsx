@@ -245,18 +245,6 @@ export function SuccessBurst({ size = 120 }: { size?: number }) {
   );
 }
 
-/* ---------- Soft background blobs for hero cards ---------- */
-export function Blobs({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 400 220" preserveAspectRatio="none" className={className} aria-hidden>
-      <motion.circle cx="340" cy="30" r="90" fill="rgba(255,255,255,0.08)" animate={{ cy: [30, 42, 30] }} transition={{ duration: 8, repeat: Infinity }} />
-      <motion.circle cx="60" cy="210" r="70" fill="rgba(232,163,61,0.18)" animate={{ cx: [60, 74, 60] }} transition={{ duration: 9, repeat: Infinity }} />
-      {Array.from({ length: 24 }, (_, i) => (
-        <circle key={i} cx={20 + (i % 8) * 22} cy={18 + Math.floor(i / 8) * 22} r="1.6" fill="rgba(255,255,255,0.22)" />
-      ))}
-    </svg>
-  );
-}
 
 /* ---------- A real-looking file folder, in the same colour as the family's almirah files ---------- */
 export const FOLDER_COLOR: Record<CategoryId, { body: string; tab: string; text: string }> = {
@@ -270,41 +258,6 @@ export const FOLDER_COLOR: Record<CategoryId, { body: string; tab: string; text:
   travel: { body: "#2F8790", tab: "#3F9AA6", text: "#FFFFFF" },
 };
 
-export function FolderTile({ id, label, count, onClick, index = 0 }: { id: CategoryId; label: string; count: string; onClick: () => void; index?: number }) {
-  const c = FOLDER_COLOR[id];
-  return (
-    <motion.button
-      onClick={onClick}
-      initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 * index, type: "spring", stiffness: 260, damping: 22 }}
-      whileTap="open" whileHover="open"
-      className="relative block h-32 w-full text-left"
-      aria-label={`${label}, ${count}`}
-      style={{ perspective: 600 }}
-    >
-      {/* back of the folder with its tab */}
-      <span className="absolute top-0 left-0 h-6 w-[46%] rounded-t-xl" style={{ background: c.tab }} />
-      <span className="absolute inset-x-0 top-4 bottom-0 rounded-2xl rounded-tl-none" style={{ background: c.tab }} />
-      {/* papers inside, they rise when touched */}
-      <motion.span className="absolute inset-x-3 top-6 h-16 rounded-lg border border-black/10 bg-white" variants={{ open: { y: -10, rotate: -2 } }} transition={{ type: "spring", stiffness: 300, damping: 18 }}>
-        <span className="absolute top-2.5 left-3 h-1.5 w-16 rounded-full bg-hair" />
-        <span className="absolute top-5 left-3 h-1.5 w-10 rounded-full bg-hair" />
-      </motion.span>
-      <motion.span className="absolute inset-x-5 top-8 h-14 rounded-lg border border-black/10 bg-[#FFFDF6]" variants={{ open: { y: -16, rotate: 3 } }} transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.03 }} />
-      {/* front flap tilts open */}
-      <motion.span
-        className="absolute inset-x-0 bottom-0 flex h-[72%] origin-bottom flex-col justify-between rounded-2xl px-3 py-2.5 shadow-[0_-4px_12px_-6px_rgba(0,0,0,0.25)]"
-        style={{ background: c.body, color: c.text }}
-        variants={{ open: { rotateX: 14 } }} transition={{ type: "spring", stiffness: 260, damping: 18 }}
-      >
-        <span className="text-[1.05rem] leading-tight font-semibold">{label}</span>
-        <span className="flex items-center justify-between">
-          <span className="text-[0.88rem] opacity-85">{count}</span>
-          <span className="h-2 w-8 rounded-full" style={{ background: "rgba(255,255,255,0.45)" }} />
-        </span>
-      </motion.span>
-    </motion.button>
-  );
-}
 
 /* ---------- Frosted-glass folder with real papers peeking out (Apple-style) ---------- */
 export type PeekPaper = { tone: "plain" | "due" | "verified" | "paper"; tilt: number };

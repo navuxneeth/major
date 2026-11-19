@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { Search, X, ShieldCheck, MessageCircle, Camera, Bell, Eye, Link2, Maximize2, Send , MapPin } from "lucide-react";
+import { Search, X, ShieldCheck, MessageCircle, Bell, Eye, Link2, Maximize2, Send , MapPin } from "lucide-react";
 import { CATEGORIES } from "../data";
 import { useStore } from "../store";
 import { searchDocs } from "../search";
