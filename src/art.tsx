@@ -152,16 +152,10 @@ export function PlaceView({ place, files, highlight, onPickSpot, onPickFile, com
       const on = f.id === highlight;
       return (
         <g key={f.id} onClick={onPickFile ? (e) => { e.stopPropagation(); onPickFile(f.id); } : undefined} style={{ cursor: onPickFile ? "pointer" : undefined }}>
-          {on && <rect x={x - 5} y={yBase - h - 5} width={w + 10} height={h + 10} rx="7" fill="none" stroke={BRAND} strokeWidth="3" />}
+          {on && <circle cx={x + w / 2} cy={yBase - h / 2} r="24" fill={f.color} opacity="0.4" className="pulse-ring" />}
           <rect x={x} y={yBase - h} width={w} height={h} rx="4" fill={f.color} />
           <rect x={x + 4} y={yBase - h + 9} width={w - 8} height="14" rx="2.5" fill="rgba(255,255,255,0.8)" />
           <rect x={x + 7} y={yBase - 14} width={w - 14} height="6" rx="3" fill="rgba(0,0,0,0.18)" />
-          {on && (
-            <g transform={`translate(${x + w / 2} ${yBase - h - 12})`}>
-              <path d="M0 0 C-11 -12 -11 -26 0 -26 C11 -26 11 -12 0 0Z" fill={BRAND} />
-              <circle cx="0" cy="-17" r="4.5" fill="#fff" />
-            </g>
-          )}
         </g>
       );
     });
@@ -178,17 +172,16 @@ export function PlaceView({ place, files, highlight, onPickSpot, onPickFile, com
     );
   };
 
-  const PIN = (x: number, y: number) => (
-    <g transform={`translate(${x} ${y})`}><path d="M0 0 C-11 -12 -11 -26 0 -26 C11 -26 11 -12 0 0Z" fill={BRAND} /><circle cx="0" cy="-17" r="4.5" fill="#fff" /></g>
-  );
+  const GLOW = (x: number, y: number, color?: string) => <circle cx={x} cy={y} r="28" fill={color ?? BRAND} opacity="0.35" className="pulse-ring" />;
   if (place.kind === "person") {
     return (
       <svg viewBox="0 0 300 200" className={compact ? "h-28 w-full" : "h-52 w-full"}>
         <circle cx="140" cy="86" r="48" fill={person?.color ?? "#1E5B4F"} />
         <text x="140" y="102" textAnchor="middle" fontSize="44" fontWeight="700" fill="#fff" fontFamily="-apple-system, 'SF Pro Text', 'Inter', 'Noto Sans Devanagari', Arial, sans-serif">{(person?.name ?? "?")[0]}</text>
+        {hl && GLOW(209, 130, hl.color)}
         <rect x="178" y="108" width="62" height="44" rx="7" fill={hl?.color ?? "#1E5B4F"} />
         <rect x="186" y="116" width="46" height="12" rx="3" fill="rgba(255,255,255,0.75)" />
-        {hl && PIN(209, 100)}
+        
         <text x="140" y="180" textAnchor="middle" fontSize="15" fill="#48484D" fontFamily="-apple-system, 'SF Pro Text', 'Inter', 'Noto Sans Devanagari', Arial, sans-serif">{person ? person.city : ""}</text>
       </svg>
     );
@@ -208,9 +201,9 @@ export function PlaceView({ place, files, highlight, onPickSpot, onPickFile, com
               <rect x={open ? 126 : 128} y={d.y + (open ? 40 : 30)} width="44" height="9" rx="4.5" fill="#B08D63" />
               {open && hl && (
                 <g>
+                  {GLOW(206, d.y + 41, hl.color)}
                   <rect x="182" y={d.y + 24} width="48" height="34" rx="5" fill={hl.color} />
                   <rect x="188" y={d.y + 30} width="36" height="9" rx="2" fill="rgba(255,255,255,0.75)" />
-                  {PIN(206, d.y + 18)}
                 </g>
               )}
             </g>
@@ -264,7 +257,10 @@ export function PlaceView({ place, files, highlight, onPickSpot, onPickFile, com
             <circle cx="201" cy="207" r="6" fill="#7E8B84" />
             <rect x="199.5" y="209" width="3" height="10" rx="1.5" fill="#7E8B84" />
             {hl?.spotId === "locker" && (
-              <g transform="translate(201 176)"><path d="M0 0 C-11 -12 -11 -26 0 -26 C11 -26 11 -12 0 0Z" fill={BRAND} /><circle cx="0" cy="-17" r="4.5" fill="#fff" /></g>
+              <>
+                <circle cx="201" cy="211" r="28" fill={hl.color} opacity="0.35" className="pulse-ring" />
+                <rect x="189" y="200" width="24" height="18" rx="3" fill={hl.color} />
+              </>
             )}
           </g>
           {spines("s1", 74, 88, 56, 96)}
@@ -274,15 +270,6 @@ export function PlaceView({ place, files, highlight, onPickSpot, onPickFile, com
       )}
       <rect x="70" y="252" width="14" height="8" rx="3" fill={edge} />
       <rect x="216" y="252" width="14" height="8" rx="3" fill={edge} />
-      {/* the doors swing open when the page appears */}
-      {!onPickSpot && (
-        <>
-          <motion.rect x="54" y="10" width="96" height="244" rx="10" fill={door}
-            style={{ transformOrigin: "54px 132px" }} initial={{ scaleX: 1 }} animate={{ scaleX: 0 }} transition={{ delay: 0.25, duration: 0.7, ease: [0.4, 0, 0.2, 1] }} />
-          <motion.rect x="150" y="10" width="96" height="244" rx="10" fill={door}
-            style={{ transformOrigin: "246px 132px" }} initial={{ scaleX: 1 }} animate={{ scaleX: 0 }} transition={{ delay: 0.25, duration: 0.7, ease: [0.4, 0, 0.2, 1] }} />
-        </>
-      )}
     </svg>
   );
 }
