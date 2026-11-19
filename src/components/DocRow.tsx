@@ -18,7 +18,7 @@ export function DocRow({ doc, onClick, showOwner = true }: { doc: Doc; onClick?:
     <motion.button
       whileTap={{ scale: 0.98 }}
       onClick={onClick ?? (() => go(`doc/${doc.id}`))}
-      className="flex w-full items-center gap-3 rounded-[22px] bg-card p-3 text-left active:bg-paper"
+      className="flex w-full items-center gap-3 rounded-[22px] bg-white lift p-3 text-left active:bg-paper"
     >
       <div className="doc-thumb flex h-14 w-[4.5rem] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-paper">
         {doc.paperOnly ? (

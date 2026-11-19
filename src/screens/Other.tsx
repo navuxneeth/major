@@ -155,7 +155,7 @@ export function Family() {
         {data.activity.slice(0, 14).map((a) => {
           const d = data.docs.find((x) => x.id === a.docId);
           return (
-            <div key={a.id} className="flex items-start gap-3 rounded-[20px] bg-card px-3 py-2.5">
+            <div key={a.id} className="flex items-start gap-3 rounded-[20px] bg-white lift px-3 py-2.5">
               <Avatar person={person(a.who)} size={34} />
               <p className="flex-1 text-[1rem] leading-snug">
                 <b>{personName(a.who)}</b> {verb(a.action)} <b>{d ? docTitle(d) : ""}</b>
@@ -172,7 +172,7 @@ export function Family() {
           <div className="flex flex-col gap-2">
             {ACCESS.map((a) => (
               <button key={a.id} onClick={() => setMember({ ...m, access: a.id, folders: a.id === "some" && !m.folders.length ? ["health"] : m.folders })}
-                className={`flex min-h-16 items-center gap-3 rounded-[22px] border-2 px-4 text-left ${m.access === a.id ? "border-ink bg-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.3)]" : "border-transparent bg-card"}`}>
+                className={`flex min-h-16 items-center gap-3 rounded-[22px] border-2 px-4 text-left ${m.access === a.id ? "border-ink bg-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.3)]" : "border-transparent bg-white lift"}`}>
                 <Icon name={a.icon} size={24} />
                 <span className="flex-1 text-[1.05rem] font-semibold">{t(a.key)}</span>
                 {m.access === a.id && <Check size={24} className="text-brand" />}
@@ -188,7 +188,7 @@ export function Family() {
               </div>
             )}
             {m.access === "emergency" && <p className="text-[0.95rem] text-mute">{personName(m.personId)} {t("emergencyOnlyNote")}</p>}
-            <label className="mt-2 flex min-h-14 items-center gap-3 rounded-[22px] bg-card px-4">
+            <label className="mt-2 flex min-h-14 items-center gap-3 rounded-[22px] bg-white lift px-4">
               <input type="checkbox" className="h-6 w-6 accent-[#1E5B4F]" checked={m.canAdd} onChange={(e) => setMember({ ...m, canAdd: e.target.checked })} />
               <span className="text-[1rem]">{t("canAdd")}</span>
             </label>
@@ -200,8 +200,8 @@ export function Family() {
 
       <Sheet open={inviting} onClose={() => setInviting(false)} title={t("invite")}>
         <p className="text-[1rem] text-mute">{lang === "hi" ? "उन्हें व्हाट्सऐप पर एक लिंक जाएगा। वो अपने नंबर से जुड़ेंगे, और आप तय करेंगी कि वो क्या देखें।" : "They get a link on WhatsApp, join with their own number, and you decide what they can see."}</p>
-        <input placeholder={lang === "hi" ? "नाम" : "Name"} className="mt-3 h-14 w-full rounded-[22px] bg-card px-4 text-[1.1rem]" />
-        <input placeholder={lang === "hi" ? "मोबाइल नंबर" : "Mobile number"} inputMode="tel" className="mt-2 h-14 w-full rounded-[22px] bg-card px-4 text-[1.1rem]" />
+        <input placeholder={lang === "hi" ? "नाम" : "Name"} className="mt-3 h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] px-4 text-[1.1rem]" />
+        <input placeholder={lang === "hi" ? "मोबाइल नंबर" : "Mobile number"} inputMode="tel" className="mt-2 h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] px-4 text-[1.1rem]" />
         <Button big className="mt-3 w-full" icon="MessageCircle" onClick={() => { setInviting(false); showToast(t("inviteToast")); }}>{lang === "hi" ? "व्हाट्सऐप पर बुलाएँ" : "Invite on WhatsApp"}</Button>
       </Sheet>
     </Screen>
@@ -238,9 +238,9 @@ export function Ask() {
         })}
       </div>
       <input value={doc} onChange={(e) => setDoc(e.target.value)} placeholder={lang === "hi" ? "या नाम लिखें" : "Or type a name"}
-        className="mt-3 h-14 w-full rounded-[22px] bg-card px-4 text-[1.1rem] outline-none focus:border-brand" />
+        className="mt-3 h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] px-4 text-[1.1rem] outline-none focus:border-brand" />
       {match && (
-        <div className="mt-2 flex items-start gap-2 rounded-[20px] bg-card p-3 text-[0.98rem]">
+        <div className="mt-2 flex items-start gap-2 rounded-[20px] bg-white lift p-3 text-[0.98rem]">
           <Info size={20} className="mt-0.5 shrink-0 text-brand" />
           <span>{lang === "hi" ? `यह पहले से है: ${docTitle(match)}।` : `Already here: ${docTitle(match)}.`} {match.paperOnly ? (lang === "hi" ? "पर सिर्फ़ कागज़ पर है, मम्मी फ़ोटो लेकर भेजेंगी।" : "But it is only on paper, so Mummy will take a photo and send it.") : (lang === "hi" ? "आप इसे अभी खोल सकते हैं।" : "You can open it now.")}</span>
         </div>
@@ -276,7 +276,7 @@ export function Reminders() {
         {list.map((r) => {
           const n = daysUntil(r.due);
           return (
-            <div key={r.id} className={`rounded-[22px] bg-card p-3 ${r.done ? "opacity-50" : ""}`}>
+            <div key={r.id} className={`rounded-[22px] bg-white lift p-3 ${r.done ? "opacity-50" : ""}`}>
               <div className="flex items-start gap-3">
                 <span className={`flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-[22px] text-center leading-none ${n <= 14 && !r.done ? "bg-white text-danger" : "bg-white"} shadow-[0_4px_12px_-6px_rgba(0,0,0,0.25)]`}>
                   <span className="text-[1.15rem] font-bold">{new Date(r.due).getDate()}</span>
@@ -298,8 +298,8 @@ export function Reminders() {
       </div>
       <Button variant="secondary" icon="Plus" className="mt-3 w-full" onClick={() => setAdding(true)}>{t("addReminder")}</Button>
       <Sheet open={adding} onClose={() => setAdding(false)} title={t("addReminder")}>
-        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={lang === "hi" ? "जैसे: बिजली बिल भरना" : "e.g. Pay electricity bill"} className="h-14 w-full rounded-[22px] border-2 border-transparent bg-card focus:border-ink px-4 text-[1.1rem]" />
-        <input type="date" value={due} onChange={(e) => setDue(e.target.value)} className="mt-2 h-14 w-full rounded-[22px] bg-card px-4 text-[1.1rem]" />
+        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={lang === "hi" ? "जैसे: बिजली बिल भरना" : "e.g. Pay electricity bill"} className="h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:border-ink px-4 text-[1.1rem]" />
+        <input type="date" value={due} onChange={(e) => setDue(e.target.value)} className="mt-2 h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] px-4 text-[1.1rem]" />
         <p className="mt-2 text-[0.95rem] text-mute">{lang === "hi" ? "आपको और राहुल को याद आएगी।" : "You and Rahul will both get it."}</p>
         <Button big className="mt-3 w-full" disabled={!title.trim() || !due} onClick={() => {
           addReminder({ title: title.trim(), titleHi: title.trim(), due, notify: ["sunita", "rahul"] });
@@ -377,7 +377,7 @@ export function Diary() {
         ))}
       </div>
       <Sheet open={editing} onClose={() => setEditing(false)} title={t("diaryWhere")}>
-        <textarea value={text} onChange={(e) => setText(e.target.value)} rows={4} className="w-full rounded-[22px] border-2 border-transparent bg-card focus:border-ink p-3 text-[1.08rem]" />
+        <textarea value={text} onChange={(e) => setText(e.target.value)} rows={4} className="w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:border-ink p-3 text-[1.08rem]" />
         <Button big className="mt-3 w-full" onClick={() => { setDiary(text); setEditing(false); showToast(lang === "hi" ? "सेव हो गया।" : "Saved."); }}>{t("save")}</Button>
       </Sheet>
     </Screen>
@@ -404,7 +404,7 @@ export function More() {
       <div className="flex gap-2">
         {([0, 1, 2] as const).map((s) => (
           <button key={s} onClick={() => setSettings({ scale: s })} aria-pressed={settings.scale === s}
-            className={`flex h-14 flex-1 items-center justify-center rounded-full border-2 font-semibold ${settings.scale === s ? "border-ink bg-brand text-white" : "border-transparent bg-card"}`}
+            className={`flex h-14 flex-1 items-center justify-center rounded-full border-2 font-semibold ${settings.scale === s ? "border-ink bg-brand text-white" : "border-transparent bg-white ring-1 ring-[#D8D8DE]"}`}
             style={{ fontSize: [16, 20, 24][s] }}>A{s > 0 ? "+".repeat(s) : ""}</button>
         ))}
       </div>
@@ -422,7 +422,7 @@ export function More() {
           </Card>
         ))}
       </div>
-      <label className="mt-4 flex min-h-14 items-center gap-3 rounded-[22px] bg-card px-4">
+      <label className="mt-4 flex min-h-14 items-center gap-3 rounded-[22px] bg-white lift px-4">
         <Lock size={22} className="text-brand" />
         <span className="flex-1 text-[1rem]">{t("lockApp")}</span>
         <input type="checkbox" className="h-6 w-6 accent-[#1E5B4F]" checked={settings.lock} onChange={(e) => { setSettings({ lock: e.target.checked }); if (!e.target.checked) setUnlocked(true); }} />

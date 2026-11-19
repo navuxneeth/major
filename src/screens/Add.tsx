@@ -156,7 +156,7 @@ export function Add() {
               <div className="flex items-center gap-2">
                 <input value={title} onChange={(e) => { setTitle(e.target.value); const g = guessFromName(e.target.value); if (g) { setCategory(g.category); setArt(g.art); } }}
                   placeholder={t("typeOrSpeak")} disabled={!!existing}
-                  className="h-14 min-w-0 flex-1 rounded-[22px] border-2 border-transparent bg-card focus:border-ink px-4 text-[1.15rem] outline-none disabled:opacity-60" />
+                  className="h-14 min-w-0 flex-1 rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:border-ink px-4 text-[1.15rem] outline-none disabled:opacity-60" />
                 {!existing && <MicButton onText={(txt) => { setTitle(txt); const g = guessFromName(txt); if (g) { setCategory(g.category); setArt(g.art); } }} />}
               </div>
               {!existing && (
@@ -170,7 +170,7 @@ export function Add() {
               <div className="flex gap-2">
                 {people.map((pp) => (
                   <button key={pp.id} disabled={!!existing} onClick={() => setPersonId(pp.id)}
-                    className={`flex min-h-16 flex-1 items-center gap-2 rounded-[22px] border-2 px-3 ${personId === pp.id ? "border-ink bg-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.3)]" : "border-transparent bg-card"}`}>
+                    className={`flex min-h-16 flex-1 items-center gap-2 rounded-[22px] border-2 px-3 ${personId === pp.id ? "border-ink bg-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.3)]" : "border-transparent bg-white lift"}`}>
                     <Avatar person={pp} size={36} />
                     <span className="text-[1.05rem] font-semibold">{personName(pp.id)}</span>
                   </button>
@@ -212,7 +212,7 @@ export function Add() {
               {hasDate && (
                 <>
                   <input type="date" value={expiry} onChange={(e) => setExpiry(e.target.value)} min={new Date().toISOString().slice(0, 10)}
-                    className="mt-3 h-14 w-full rounded-[22px] border-2 border-transparent bg-card focus:border-ink px-4 text-[1.1rem]" aria-label={t("expires")} />
+                    className="mt-3 h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:border-ink px-4 text-[1.1rem]" aria-label={t("expires")} />
                   <p className="mt-4 mb-2 font-semibold">{t("remindAlso")}</p>
                   <div className="flex flex-wrap gap-2">
                     {data.people.filter((x) => x.id !== personId && x.id !== "meena").map((x) => (
@@ -229,7 +229,7 @@ export function Add() {
           {step === 5 && (
             <div>
               <h2 className="title-tight mb-3 text-[1.5rem] font-bold">{lang === "hi" ? "एक बार देख लें" : "Check once and save"}</h2>
-              <div className="rounded-[22px] bg-card p-3">
+              <div className="rounded-[22px] bg-white lift p-3">
                 {method === "paper" && !image ? (
                   <p className="rounded-2xl bg-paper p-4 text-center text-mute">{t("onlyPaper")}</p>
                 ) : (
@@ -283,7 +283,7 @@ export function Add() {
             <button key={d.title} onClick={() => {
               setDigi(d); setTitle(lang === "hi" ? d.titleHi : d.title); setArt(d.art); setCategory(d.category); setPersonId(d.personId);
               setMethod("digilocker"); setDlOpen(false); setStep(3);
-            }} className="flex min-h-16 items-center gap-3 rounded-[22px] bg-card px-3 text-left">
+            }} className="flex min-h-16 items-center gap-3 rounded-[22px] bg-white lift px-3 text-left">
               <ShieldCheck size={24} className="text-brand" />
               <span className="flex-1">
                 <span className="block font-semibold">{lang === "hi" ? d.titleHi : d.title}</span>

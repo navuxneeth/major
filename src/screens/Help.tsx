@@ -23,7 +23,7 @@ export function Help() {
       <StickerBand tone="bg-[#FFF4DC]" art={<HelpArt className="h-36 w-36" />}
         title={hi ? "पूछिए, “यह कैसे करूँ?”" : "Ask, “How do I…?”"} />
 
-      <div className="flex items-center gap-3 rounded-full bg-card p-2 pr-5">
+      <div className="flex items-center gap-3 rounded-full bg-white ring-1 ring-[#D8D8DE] p-2 pr-5">
         <MicButton onText={(text, final) => {
           setHeard(text);
           if (!final) return;

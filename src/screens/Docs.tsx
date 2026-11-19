@@ -36,7 +36,7 @@ export function Find() {
   return (
     <Screen title={t("find")}>
       <div className="flex items-center gap-2">
-        <div className="flex h-14 min-w-0 flex-1 items-center gap-2 rounded-full bg-card px-4 focus-within:ring-2 focus-within:ring-ink">
+        <div className="flex h-14 min-w-0 flex-1 items-center gap-2 rounded-full bg-white ring-1 ring-[#D8D8DE] px-4 focus-within:ring-2 focus-within:ring-ink">
           <Search size={24} className="shrink-0 text-mute" aria-hidden />
           <input
             ref={inputRef}
@@ -146,7 +146,7 @@ export function DocDetail({ id }: { id: string }) {
             }} />
         </div>
       ) : (
-        <motion.button whileTap={{ scale: 0.98 }} onClick={() => go(`counter/${doc.id}`)} className="relative block w-full rounded-[28px] bg-card p-3 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.45)]" aria-label={t("showCounter")}
+        <motion.button whileTap={{ scale: 0.98 }} onClick={() => go(`counter/${doc.id}`)} className="relative block w-full rounded-[28px] bg-white lift p-3 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.45)]" aria-label={t("showCounter")}
           initial={{ rotateX: 18, y: 16, opacity: 0 }} animate={{ rotateX: 0, y: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 160, damping: 18 }} style={{ transformPerspective: 800 }}>
           <DocArt doc={doc} ownerName={(owner?.name ?? "") + " Sharma"} className="h-auto w-full" />
           <span className="absolute right-3 bottom-3 flex h-10 w-10 items-center justify-center rounded-full bg-ink/70 text-white"><Maximize2 size={20} /></span>
@@ -170,7 +170,7 @@ export function DocDetail({ id }: { id: string }) {
       <SectionTitle>{t("originalKept")}</SectionTitle>
       <div className="overflow-hidden rounded-[22px] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05),0_10px_28px_-16px_rgba(40,70,20,0.28)]">
         {loc?.place && (
-          <div className="bg-card px-4 pt-5 pb-6">
+          <div className="bg-[#F6F9F2] px-4 pt-5 pb-6">
             <PlaceView place={loc.place} files={data.files} highlight={doc.fileId} person={loc.place.personId ? person(loc.place.personId) : undefined} />
           </div>
         )}
@@ -194,7 +194,7 @@ export function DocDetail({ id }: { id: string }) {
         ) : (
           <p className="px-4 pt-4 text-mute">{lang === "hi" ? "जगह अभी नहीं लिखी" : "Place not noted yet"}</p>
         )}
-        {doc.note && <p className="mx-4 mb-2 rounded-2xl bg-card p-3 text-[0.94rem] text-mute">{doc.note}</p>}
+        {doc.note && <p className="mx-4 mb-2 rounded-2xl bg-[#F6F9F2] p-3 text-[0.94rem] text-mute">{doc.note}</p>}
         <div className="border-t border-[#ECECF0] px-2 py-1">
           <button onClick={() => { setNewFile(doc.fileId); setMoving(true); }} className="flex min-h-12 items-center gap-2 px-2 text-[1rem] font-semibold text-brand">
             <MapPin size={18} /> {t("changePlace")}
@@ -258,7 +258,7 @@ export function Counter({ id }: { id: string }) {
       <div className="w-full">
         <DocArt doc={doc} ownerName={(owner?.name ?? "") + " Sharma"} className="h-auto w-full" />
       </div>
-      {doc.number && <p className="rounded-full bg-card px-6 py-2 text-[2rem] font-bold tracking-widest">{doc.number}</p>}
+      {doc.number && <p className="rounded-full bg-white ring-1 ring-[#D8D8DE] px-6 py-2 text-[2rem] font-bold tracking-widest">{doc.number}</p>}
       <p className="text-[1rem] text-mute">{t("tapToClose")}</p>
     </motion.button>
   );
@@ -316,11 +316,11 @@ export function Share({ id }: { id: string }) {
       </div>
       {purpose === "__custom" && (
         <input value={custom} onChange={(e) => setCustom(e.target.value)} autoFocus placeholder={lang === "hi" ? "जैसे: पोस्ट ऑफिस" : "e.g. Post office"}
-          className="mt-3 h-14 w-full rounded-[22px] border-2 border-transparent bg-card focus:border-ink px-4 text-[1.1rem] outline-none" />
+          className="mt-3 h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:border-ink px-4 text-[1.1rem] outline-none" />
       )}
 
       {doc.art === "aadhaar" && (
-        <label className="mt-4 flex min-h-14 cursor-pointer items-center gap-3 rounded-[22px] bg-card px-3">
+        <label className="mt-4 flex min-h-14 cursor-pointer items-center gap-3 rounded-[22px] bg-white lift px-3">
           <input type="checkbox" checked={masked} onChange={(e) => setMasked(e.target.checked)} className="h-6 w-6 accent-[#1E5B4F]" />
           <span className="text-[1rem]">{t("maskAadhaar")}</span>
         </label>

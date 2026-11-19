@@ -59,7 +59,7 @@ function OwnerLend() {
           title={hi ? "सिर्फ़ एक ऐप, सिर्फ़ 15 मिनट" : "One app, 15 minutes"}
           sub={hi ? "कभी भी बंद करें। ओटीपी आप ख़ुद डालेंगी।" : "End it any time. You type the OTP yourself."} />
         <p className="mt-5 mb-2 text-[1.1rem] font-semibold">{hi ? "किससे मदद?" : "Who should help?"}</p>
-        <div data-guide="lend-rahul" className="flex items-center gap-3 rounded-[22px] bg-card p-3">
+        <div data-guide="lend-rahul" className="flex items-center gap-3 rounded-[22px] bg-white lift p-3">
           <Avatar person={rahul} size={44} />
           <span className="flex-1"><b className="text-[1.1rem]">{hi ? "राहुल" : "Rahul"}</b><span className="block text-[0.92rem] text-mute">{hi ? "बेटा · बेंगलुरु" : "Son · Bengaluru"}</span></span>
           <Check size={24} className="text-brand" />
@@ -68,7 +68,7 @@ function OwnerLend() {
         <div className="grid grid-cols-2 gap-2">
           {APPS.map((a) => (
             <motion.button key={a.id} whileTap={{ scale: 0.96 }} onClick={() => setApp(a.id)} data-guide={`lend-app-${a.id}`}
-              className={`flex min-h-32 flex-col justify-between rounded-[26px] p-3 text-left ${app === a.id ? "bg-brand text-white" : "bg-card"}`}>
+              className={`flex min-h-32 flex-col justify-between rounded-[26px] p-3 text-left ${app === a.id ? "bg-brand text-white" : "bg-white lift"}`}>
               <span className={`flex h-12 w-12 items-center justify-center rounded-full ${app === a.id ? "bg-white/15" : "bg-white"}`}><a.icon size={24} /></span>
               <span>
                 <span className="block text-[1.08rem] font-semibold">{hi ? a.hi : a.en}</span>
@@ -252,7 +252,7 @@ function MockApp({ app, mode, onDone }: { app: AppId; mode: "watch" | "control";
 
   return (
     <div className="relative px-4 pt-4 pb-28" ref={box}>
-      <div className="overflow-hidden rounded-[28px] bg-card shadow-sm">
+      <div className="overflow-hidden rounded-[28px] bg-white lift shadow-sm">
         <div className={`px-4 py-3 text-white ${app === "train" ? "bg-[#2E6E9E]" : "bg-[#2F6B4E]"}`}>
           <p className="text-[1.15rem] font-bold">{app === "train" ? (hi ? "ट्रेन टिकट" : "Train tickets") : (hi ? "बैंक ऐप" : "Bank app")}</p>
           <p className="text-[0.8rem] text-white/80">{hi ? "नमूना ऐप" : "Sample app"}</p>
@@ -300,11 +300,11 @@ function MockApp({ app, mode, onDone }: { app: AppId; mode: "watch" | "control";
             <p className="text-[0.85rem] text-white/70">{hi ? "मैसेज · BK-MYBANK" : "Message · BK-MYBANK"}</p>
             <p className="text-[1rem]"><b className="rounded bg-saffron px-1 text-ink">482913</b> {hi ? "आपका ₹1,240 का ओटीपी है। किसी को न बताएँ।" : "is your OTP for ₹1,240. Do not share it."}</p>
           </motion.div>
-          <div className="rounded-[22px] bg-card p-3">
+          <div className="rounded-[22px] bg-white lift p-3">
             <p className="flex items-center gap-2 text-[1.05rem] font-semibold"><ShieldCheck size={22} className="text-brand" />{hi ? "राहुल यह नहीं देख सकते। ओटीपी आप ख़ुद डालिए।" : "Rahul can't see this. Type the OTP yourself."}</p>
             <div className="mt-3 flex justify-center gap-2">
               {Array.from({ length: 6 }, (_, i) => (
-                <span key={i} className={`flex h-12 w-10 items-center justify-center rounded-2xl border-2 text-[1.4rem] font-bold ${otp[i] ? "border-brand bg-white" : "border-transparent bg-card"}`}>{otp[i] ? "•" : ""}</span>
+                <span key={i} className={`flex h-12 w-10 items-center justify-center rounded-2xl border-2 text-[1.4rem] font-bold ${otp[i] ? "border-brand bg-white" : "border-transparent bg-white lift"}`}>{otp[i] ? "•" : ""}</span>
               ))}
             </div>
             <div className="mt-3 grid grid-cols-3 gap-2">

@@ -9,7 +9,7 @@ export function stampText(purpose: string, dateLabel: string, lang: "en" | "hi")
 /** On-screen preview of the copy that will be sent: diagonal stamp + footer band. */
 export function WatermarkPreview({ doc, stamp, masked, ownerName }: { doc: Doc; stamp: string; masked: boolean; ownerName: string }) {
   return (
-    <div className="relative overflow-hidden rounded-[22px] bg-card">
+    <div className="relative overflow-hidden rounded-[22px] bg-white lift">
       <div className="p-3">
         <DocArt doc={doc} masked={masked} ownerName={ownerName} className="h-auto w-full" />
       </div>

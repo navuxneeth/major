@@ -40,7 +40,7 @@ export function Button({ children, onClick, variant = "primary", className = "",
 }) {
   const v = {
     primary: "bg-brand text-white active:bg-brand-dark",
-    secondary: "bg-card text-ink active:bg-hair",
+    secondary: "bg-white text-ink ring-1 ring-[#D8D8DE] active:bg-[#F6F9F2]",
     ghost: "bg-transparent text-ink underline-offset-4 active:bg-card",
     danger: "bg-danger-soft text-danger active:brightness-95",
     saffron: "bg-saffron text-ink active:brightness-95",
@@ -66,7 +66,7 @@ export function Card({ children, className = "", onClick, tone = "bg-white", gui
     <C
       {...(onClick ? { whileTap: { scale: 0.98 }, onClick } : {})}
       data-guide={guide}
-      className={`block w-full rounded-[22px] ${tone === "bg-white" ? "bg-card" : tone} p-4 text-left ${onClick ? "active:brightness-[0.97]" : ""} ${className}`}
+      className={`block w-full rounded-[22px] ${tone === "bg-white" ? "bg-white lift" : tone} p-4 text-left ${onClick ? "active:brightness-[0.97]" : ""} ${className}`}
     >
       {children}
     </C>
@@ -80,7 +80,7 @@ export function Chip({ children, onClick, active = false, icon, className = "", 
       whileTap={{ scale: 0.96 }}
       layout
       onClick={onClick}
-      className={`inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full px-5 text-[1rem] font-medium ${active ? "bg-brand text-white" : "bg-card text-ink"} ${className}`}
+      className={`inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full px-5 text-[1rem] font-medium ${active ? "bg-brand text-white" : "bg-white ring-1 ring-[#D8D8DE] text-ink"} ${className}`}
     >
       {icon && <Icon name={icon} size={20} />}
       {children}
@@ -225,7 +225,7 @@ function VoiceFallback({ open, onPick, onClose }: { open: boolean; onPick: (s: s
 
 export function EmptyNote({ icon = "Info", children }: { icon?: string; children: ReactNode }) {
   return (
-    <div className="flex items-start gap-3 rounded-[22px] bg-card p-4 text-[1rem]">
+    <div className="flex items-start gap-3 rounded-[22px] bg-white lift p-4 text-[1rem]">
       <Icon name={icon} size={24} className="mt-0.5 shrink-0" />
       <div>{children}</div>
     </div>

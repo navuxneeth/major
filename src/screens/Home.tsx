@@ -16,7 +16,7 @@ const rise = (i: number) => ({ initial: { opacity: 0, y: 16 }, animate: { opacit
 export function LangToggle({ dark = false }: { dark?: boolean }) {
   const { settings, setSettings } = useStore();
   return (
-    <div className={`relative flex rounded-full p-1 text-[0.92rem] font-semibold ${dark ? "bg-white/15" : "bg-card"}`} role="group" aria-label="Language">
+    <div className={`relative flex rounded-full p-1 text-[0.92rem] font-semibold ${dark ? "bg-white/15" : "bg-white ring-1 ring-[#D8D8DE]"}`} role="group" aria-label="Language">
       {(["en", "hi"] as const).map((l) => (
         <button key={l} onClick={() => setSettings({ lang: l })} aria-pressed={settings.lang === l}
           className={`relative z-10 h-11 min-w-12 rounded-full px-3 ${settings.lang === l ? "text-white" : "text-ink"}`}>
@@ -46,7 +46,7 @@ function Top({ hello, title }: { hello: string; title: string }) {
       <h1 className="title-tight mt-1 text-[2rem] leading-[1.12] font-bold">{title}</h1>
       <div className="mt-4 flex items-center gap-2">
         <motion.button whileTap={{ scale: 0.98 }} onClick={() => go("find")} data-guide="home-find"
-          className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-full bg-card px-5 text-left text-[1.05rem] text-mute">
+          className="flex h-14 min-w-0 flex-1 items-center gap-3 rounded-full bg-white ring-1 ring-[#D8D8DE] px-5 text-left text-[1.05rem] text-mute">
           <Search size={22} className="shrink-0 text-ink" aria-hidden />
           <span className="truncate">{t("findPlaceholder")}</span>
         </motion.button>
@@ -57,7 +57,7 @@ function Top({ hello, title }: { hello: string; title: string }) {
 }
 
 /* ---------- a card in the "My Lists" style: meta row, big centred title, stickers peeking out ---------- */
-function StickerCard({ metaLeft, metaRight, title, sub, onClick, children, guide, index = 0, tone = "bg-card" }: {
+function StickerCard({ metaLeft, metaRight, title, sub, onClick, children, guide, index = 0, tone = "bg-white lift" }: {
   metaLeft: React.ReactNode; metaRight?: React.ReactNode; title: string; sub?: string; onClick?: () => void; children?: React.ReactNode; guide?: string; index?: number; tone?: string;
 }) {
   return (
@@ -117,7 +117,7 @@ function FilterChips({ value, onChange }: { value: Filter; onChange: (f: Filter)
   return (
     <div className="no-scrollbar -mx-4 mt-4 flex gap-2 overflow-x-auto px-4">
       {opts.map((o) => <Chip key={o.id} active={value === o.id} onClick={() => onChange(o.id)}>{o.label}</Chip>)}
-      <span className="flex shrink-0 items-center gap-1 rounded-full bg-card px-3">
+      <span className="flex shrink-0 items-center gap-1 rounded-full bg-white ring-1 ring-[#D8D8DE] px-3">
         <span className="text-[0.95rem] font-medium">{hi ? "साझा" : "Shared"}</span>
         <span className="flex -space-x-2">{["ramesh", "rahul", "priya"].map((p) => <Avatar key={p} person={person(p)} size={26} ring />)}</span>
       </span>
@@ -140,7 +140,7 @@ function Folders({ docs, view }: { docs: Doc[]; view: "grid" | "list" }) {
       <div className="flex flex-col gap-2">
         {cats.map(({ c, ds }, i) => (
           <motion.button key={c.id} {...rise(i)} whileTap={{ scale: 0.98 }} onClick={() => go(`cat/${c.id}`)}
-            className="flex min-h-20 items-center gap-3 rounded-[22px] bg-card px-4 text-left">
+            className="flex min-h-20 items-center gap-3 rounded-[22px] bg-white lift px-4 text-left">
             <span className="sticker block"><CatArt id={c.id} className="h-11 w-11" /></span>
             <span className="flex-1 text-[1.1rem] font-semibold">{lang === "hi" ? c.hi : c.en}</span>
             <span className="rounded-full bg-white px-2.5 py-0.5 text-[0.9rem] font-semibold text-mute">{ds.length}</span>
@@ -173,7 +173,7 @@ function SectionLabel({ children, right }: { children: React.ReactNode; right?: 
 function ViewToggle({ view, onChange }: { view: "grid" | "list"; onChange: (v: "grid" | "list") => void }) {
   const { lang } = useStore();
   return (
-    <div className="relative flex rounded-full bg-card p-1">
+    <div className="relative flex rounded-full bg-white ring-1 ring-[#D8D8DE] p-1">
       {(["grid", "list"] as const).map((v) => (
         <button key={v} onClick={() => onChange(v)} aria-pressed={view === v} aria-label={v === "grid" ? (lang === "hi" ? "ग्रिड" : "Grid") : lang === "hi" ? "लिस्ट" : "List"}
           className="relative z-10 flex h-11 w-12 items-center justify-center rounded-full">
@@ -221,7 +221,7 @@ function Reminders({ limit = 3 }: { limit?: number }) {
           const urgent = n <= 14;
           return (
             <motion.button key={r.id} {...rise(i)} whileTap={{ scale: 0.98 }} onClick={() => (r.docId ? go(`doc/${r.docId}`) : go("reminders"))}
-              className="flex min-h-18 items-center gap-3 rounded-[22px] bg-card px-4 py-3 text-left">
+              className="flex min-h-18 items-center gap-3 rounded-[22px] bg-white lift px-4 py-3 text-left">
               <span className={`flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-[22px] leading-none ${urgent ? "bg-danger text-white" : "bg-white"}`}>
                 <span className="text-[1.15rem] font-bold">{new Date(r.due).getDate()}</span>
                 <span className="text-[0.68rem] uppercase">{new Date(r.due).toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN", { month: "short" })}</span>
@@ -296,7 +296,7 @@ function PlaceLine({ fileId }: { fileId: string | null }) {
   const { locationLine, file } = useStore();
   const f = file(fileId);
   return (
-    <div className="mt-2 flex items-start gap-2 rounded-[22px] bg-card p-3 text-[1rem]">
+    <div className="mt-2 flex items-start gap-2 rounded-[22px] bg-white lift p-3 text-[1rem]">
       <span className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-black/20" style={{ background: f?.color }} />
       {locationLine(fileId)}
     </div>
@@ -315,7 +315,7 @@ function HelpCards() {
           : { id: "ask", to: "ask", guide: "home-ask", art: <span className="block"><CatArt id="home" className="h-20 w-20" /></span>, en: "Ask Mummy", hi: "मम्मी से माँगें", subEn: "For a document", subHi: "कोई कागज़" },
       ].map((x, i) => (
         <motion.button key={x.id} {...rise(i)} whileTap={{ scale: 0.97 }} whileHover="lift" onClick={() => go(x.to)} data-guide={x.guide}
-          className="relative flex min-h-48 flex-col justify-start overflow-hidden rounded-[26px] bg-card px-3 pt-3 text-left">
+          className="relative flex min-h-48 flex-col justify-start overflow-hidden rounded-[26px] bg-white lift px-3 pt-3 text-left">
           <span className="title-tight block text-[1.15rem] leading-tight font-bold">{hi ? x.hi : x.en}</span>
           <motion.span className="sticker relative -mb-3 mt-auto block self-center pt-2" variants={{ lift: { y: -6 } }}>{x.art}</motion.span>
         </motion.button>
@@ -328,7 +328,7 @@ function AlmirahCard() {
   const { data, lang, go } = useStore();
   const hi = lang === "hi";
   return (
-    <StickerCard tone="bg-card" onClick={() => go("print")}
+    <StickerCard onClick={() => go("print")}
       metaLeft={<><LayoutGrid size={15} /> {data.files.length} {hi ? "फ़ाइलें" : "files"}</>}
       metaRight={<>{data.places.length} {hi ? "जगहें" : "places"}</>}
       title={hi ? "क्या कहाँ रखा है" : "What is where"}
@@ -346,7 +346,7 @@ function QuickLinks() {
     ...(settings.role === "keeper" ? [{ icon: Printer, label: t("printIndex"), to: "print" }] : []),
   ];
   return (
-    <div className="mt-8 overflow-hidden rounded-[24px] bg-card">
+    <div className="mt-8 overflow-hidden rounded-[24px] bg-white lift">
       {items.map((i, k) => (
         <motion.button key={i.to} whileTap={{ scale: 0.98 }} onClick={() => go(i.to)} className={`flex min-h-16 w-full items-center gap-3 px-4 text-left ${k ? "border-t border-white" : ""}`}>
           <i.icon size={22} aria-hidden />
@@ -562,7 +562,7 @@ export function SimpleHome() {
         <H2>{hi ? "मेरी फ़ाइलें" : "My files"}</H2>
         <Folders docs={data.docs} view="grid" />
         <H2>{hi ? "किसके लिए तैयारी?" : "Get ready for"}</H2>
-        <GetReady docs={data.docs} />
+        <ReadyCards docs={data.docs} />
         <ComingUp />
         <H2>{hi ? "घर का हिसाब" : "Just in case"}</H2>
         <SafetyLinks />
@@ -700,7 +700,7 @@ export function HelperHome() {
                     <span className="min-w-0 flex-1">
                       <span className="block text-[1.06rem] leading-snug font-semibold">{doc ? docTitle(doc) : q.docName}</span>
                       <span className="block text-[0.94rem] leading-snug text-mute">{q.purpose} · {timeAgo(q.at, lang)}</span>
-                      <span className={`mt-1.5 inline-block rounded-full px-3 py-0.5 text-[0.88rem] font-semibold ${q.status === "sent" ? "bg-brand-soft text-brand" : "bg-card text-ink"}`}>
+                      <span className={`mt-1.5 inline-block rounded-full px-3 py-0.5 text-[0.88rem] font-semibold ${q.status === "sent" ? "bg-brand-soft text-brand" : "bg-white ring-1 ring-[#D8D8DE] text-ink"}`}>
                         {q.status === "sent" ? t("received") : q.status === "declined" ? (hi ? "बाद में" : "Later") : t("waiting")}
                       </span>
                     </span>
@@ -718,7 +718,7 @@ export function HelperHome() {
         <Folders docs={docs} view="grid" />
         <ComingUp limit={4} />
         <H2>{hi ? "किसके लिए तैयारी?" : "Get ready for"}</H2>
-        <GetReady docs={docs} />
+        <ReadyCards docs={docs} />
         <H2>{hi ? "अगर ज़रूरत पड़े" : "Just in case"}</H2>
         <SafetyLinks />
       </div>
