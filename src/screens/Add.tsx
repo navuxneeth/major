@@ -79,7 +79,8 @@ export function Add() {
     true,
   ][step];
   const canSave = hasDate !== true || !!expiry;
-  const flow = [0, 1, ...(skipFolder ? [] : [2]), 3, 5];
+  const willSkip = step <= 1 ? !!existing || !!category : skipFolder;
+  const flow = [0, 1, ...(willSkip ? [] : [2]), 3, 5];
   const pos = Math.max(0, flow.indexOf(step));
   function next() {
     if (step === 1) {
