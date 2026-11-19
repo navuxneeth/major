@@ -40,7 +40,7 @@ export function Button({ children, onClick, variant = "primary", className = "",
 }) {
   const v = {
     primary: "bg-brand text-white active:bg-brand-dark",
-    secondary: "bg-white text-ink ring-1 ring-[#D8D8DE] active:bg-[#F6F9F2]",
+    secondary: "bg-white text-ink ring-1 ring-inset ring-[#D8D8DE] active:bg-[#F6F9F2]",
     ghost: "bg-transparent text-ink underline-offset-4 active:bg-card",
     danger: "bg-danger-soft text-danger active:brightness-95",
     saffron: "bg-saffron text-ink active:brightness-95",
@@ -52,7 +52,7 @@ export function Button({ children, onClick, variant = "primary", className = "",
       whileTap={{ scale: 0.97 }}
       disabled={disabled}
       onClick={onClick}
-      className={`flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 font-semibold transition-colors disabled:opacity-35 ${big ? "min-h-16 text-[1.15rem]" : "min-h-14 text-[1.05rem]"} ${v} ${className}`}
+      className={`flex items-center justify-center gap-2 rounded-full px-5 py-2 text-center leading-tight font-semibold transition-colors disabled:opacity-35 ${big ? "min-h-16 text-[1.15rem]" : "min-h-14 text-[1.05rem]"} ${v} ${className}`}
     >
       {icon && <Icon name={icon} size={big ? 22 : 20} className="shrink-0" />}
       {children}
@@ -80,7 +80,7 @@ export function Chip({ children, onClick, active = false, icon, className = "", 
       whileTap={{ scale: 0.96 }}
       layout
       onClick={onClick}
-      className={`inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full px-5 text-[1rem] font-medium ${active ? "bg-brand text-white" : "bg-white ring-1 ring-[#D8D8DE] text-ink"} ${className}`}
+      className={`inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full px-5 text-[1rem] font-medium ${active ? "bg-brand text-white" : "bg-white ring-1 ring-inset ring-[#D8D8DE] text-ink"} ${className}`}
     >
       {icon && <Icon name={icon} size={20} />}
       {children}
@@ -131,7 +131,7 @@ export function Toast({ fixed = false }: { fixed?: boolean }) {
         <motion.div
           key={toast}
           initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 30, opacity: 0 }}
-          className={`pointer-events-none ${fixed ? "fixed" : "absolute"} inset-x-6 bottom-32 z-[60] rounded-full bg-ink/90 px-5 py-3 text-center text-[1rem] text-white shadow-xl backdrop-blur`}
+          className={`pointer-events-none ${fixed ? "fixed" : "absolute"} inset-x-6 bottom-32 z-[60] rounded-full bg-brand-dark px-5 py-3 text-center text-[1rem] text-white shadow-xl backdrop-blur`}
           role="status"
         >
           {toast}
@@ -191,12 +191,12 @@ export function MicButton({ onText, size = "lg" }: { onText: (text: string, fina
       <motion.button
         whileTap={{ scale: 0.92 }}
         onClick={() => (v.listening ? v.stop() : v.start())}
-        className={`flex ${dim} shrink-0 items-center justify-center rounded-full ${v.listening ? "bg-saffron text-ink" : "bg-brand text-white"}`}
+        className={`flex ${dim} shrink-0 items-center justify-center rounded-full ${v.listening ? "bg-brand-soft text-brand-dark" : "bg-brand text-white"}`}
         aria-label={t("speak")}
       >
         {v.listening ? (
           <span className="flex h-6 items-center gap-1">
-            {[0, 1, 2, 3].map((i) => <span key={i} className="mic-bar block h-6 w-1 rounded bg-ink" style={{ animationDelay: `${i * 0.12}s` }} />)}
+            {[0, 1, 2, 3].map((i) => <span key={i} className="mic-bar block h-6 w-1 rounded bg-brand" style={{ animationDelay: `${i * 0.12}s` }} />)}
           </span>
         ) : (
           <Mic size={size === "lg" ? 28 : 24} />

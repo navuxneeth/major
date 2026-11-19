@@ -161,7 +161,7 @@ export function GuideOverlay({ rootId }: { rootId: string }) {
             style={{ left: rect.x + rect.w / 2 - 22, top: rect.y + rect.h / 2 - 22 }}
             animate={{ scale: [1, 0.82, 1] }} transition={{ duration: 1.1, repeat: Infinity }}
           >
-            <span className="block h-7 w-7 rounded-full border-4 border-white bg-saffron/80 shadow-lg" />
+            <span className="block h-7 w-7 rounded-full border-4 border-white bg-brand/80 shadow-lg" />
           </motion.div>
         </>
       )}
@@ -169,22 +169,22 @@ export function GuideOverlay({ rootId }: { rootId: string }) {
         <motion.div
           key={guide.step}
           initial={{ opacity: 0, y: below ? -10 : 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-          className="pointer-events-auto absolute inset-x-3 rounded-[28px] bg-ink p-4 text-white shadow-2xl"
+          className="pointer-events-auto absolute inset-x-3 rounded-[28px] bg-white p-4 text-ink shadow-2xl"
           style={rect ? (below ? { top: Math.min(rect.y + rect.h + pad + 14, rect.H - 190) } : { top: Math.max(rect.y - pad - 170, 12) }) : { bottom: 110 }}
         >
           <div className="flex items-start gap-3">
-            <span className="flex h-9 min-w-9 items-center justify-center rounded-full bg-saffron px-2 text-[0.95rem] font-bold text-ink">{guide.step + 1}/{def.steps.length}</span>
+            <span className="flex h-9 min-w-9 items-center justify-center rounded-full bg-brand-soft px-2 text-[0.95rem] font-bold text-brand-dark">{guide.step + 1}/{def.steps.length}</span>
             <p className="flex-1 text-[1.15rem] leading-snug font-semibold">{text}</p>
           </div>
           <div className="mt-3 flex gap-2">
-            <button onClick={() => speak(text, lang)} className="flex h-11 flex-1 items-center justify-center gap-2 rounded-[22px] bg-white/15 font-semibold">
+            <button onClick={() => speak(text, lang)} className="flex h-11 flex-1 items-center justify-center gap-2 rounded-full bg-brand font-semibold text-white">
               <Volume2 size={20} /> {lang === "hi" ? "फिर से सुनें" : "Say it again"}
             </button>
-            <button onClick={() => { stopGuide(); window.speechSynthesis?.cancel(); }} className="flex h-11 items-center justify-center gap-1 rounded-[22px] bg-white/15 px-4 font-semibold">
+            <button onClick={() => { stopGuide(); window.speechSynthesis?.cancel(); }} className="flex h-11 items-center justify-center gap-1 rounded-full bg-white px-4 font-semibold ring-1 ring-inset ring-[#D8D8DE]">
               <X size={20} /> {lang === "hi" ? "बंद" : "Stop"}
             </button>
           </div>
-          {!rect && <p className="mt-2 text-[0.9rem] text-white/70">{lang === "hi" ? "स्क्रीन बदल रही है…" : "Getting the screen ready…"}</p>}
+          {!rect && <p className="mt-2 text-[0.9rem] text-mute">{lang === "hi" ? "स्क्रीन बदल रही है…" : "Getting the screen ready…"}</p>}
         </motion.div>
       </AnimatePresence>
     </div>

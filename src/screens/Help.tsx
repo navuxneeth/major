@@ -20,7 +20,7 @@ export function Help() {
 
   return (
     <Screen title={hi ? "मदद" : "Help"} >
-      <StickerBand tone="bg-[#FFF4DC]" art={<HelpArt className="h-36 w-36" />}
+      <StickerBand tone="bg-brand-soft" art={<HelpArt className="h-36 w-36" />}
         title={hi ? "पूछिए, “यह कैसे करूँ?”" : "Ask, “How do I…?”"} />
 
       <div className="flex items-center gap-3 rounded-full bg-white ring-1 ring-[#D8D8DE] p-2 pr-5">
@@ -76,8 +76,8 @@ export function PhoneMessages() {
   return (
     <div className="min-h-full bg-white">
       <div className="pt-safe sticky top-0 z-10 flex items-center gap-2 border-b border-hair bg-white px-3 pb-3">
-        <button onClick={back} className="h-11 rounded-full px-3 font-semibold text-brand">{hi ? "← पीछे" : "← Back"}</button>
-        <h1 className="text-[1.3rem] font-semibold">{hi ? "मैसेज" : "Messages"}</h1>
+        <button onClick={back} className="h-11 shrink-0 whitespace-nowrap rounded-full px-3 font-semibold text-brand">{hi ? "← पीछे" : "← Back"}</button>
+        <h1 className="shrink-0 text-[1.3rem] font-semibold">{hi ? "मैसेज" : "Messages"}</h1>
         <span className="ml-auto rounded-full bg-paper px-2 py-1 text-[0.75rem] text-mute">{hi ? "फ़ोन का मैसेज ऐप (नमूना)" : "Phone's Messages app (sample)"}</span>
       </div>
       {!open ? (

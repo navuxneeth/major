@@ -82,7 +82,7 @@ const S = {
   shareForNote: ["We print this on the copy, like you write on a photocopy.", "यह कॉपी पर छपेगा, जैसे फ़ोटोकॉपी पर लिखते हैं।"],
   maskAadhaar: ["Hide Aadhaar number (show last 4 digits only)", "आधार नंबर छुपाएँ (सिर्फ़ आख़िरी 4 अंक)"],
   shareWhatsapp: ["Share on WhatsApp", "व्हाट्सऐप पर भेजें"],
-  shareLink: ["Send a link that stops working in 24 hours", "ऐसा लिंक भेजें जो 24 घंटे में बंद हो जाए"],
+  shareLink: ["Send a 24-hour link", "24 घंटे वाला लिंक भेजें"],
   forOnly: ["only", "के लिए"],
   sharedToast: ["Shared. It is in your activity list.", "भेज दिया। यह आपकी गतिविधि में दिखेगा।"],
   linkToast: ["Link copied. It stops working in 24 hours.", "लिंक कॉपी हो गया। 24 घंटे में बंद हो जाएगा।"],

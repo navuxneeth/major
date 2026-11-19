@@ -105,8 +105,8 @@ function PhoneApp() {
       )}
       {showHelpFab && (
         <motion.button initial={{ scale: 0 }} animate={{ scale: 1 }} whileTap={{ scale: 0.9 }} onClick={() => go("help")}
-          className="absolute right-4 bottom-28 z-30 flex h-12 items-center gap-2 rounded-full bg-[#F7D27A] px-4 font-semibold text-ink shadow-[0_12px_28px_-10px_rgba(0,0,0,0.35)]" aria-label="Help">
-          <motion.span animate={{ rotate: [0, 18, -12, 0] }} transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 3 }}><Sparkles size={22} /></motion.span>
+          className="absolute right-4 bottom-28 z-30 flex h-12 items-center gap-2 rounded-full bg-white lift px-4 font-semibold text-ink" aria-label="Help">
+          <motion.span className="text-brand" animate={{ rotate: [0, 18, -12, 0] }} transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 3 }}><Sparkles size={22} /></motion.span>
           {settings.lang === "hi" ? "मदद" : "Help"}
         </motion.button>
       )}

@@ -7,7 +7,6 @@ import { matchBundleItem } from "../search";
 import { Avatar, PlaceView } from "../art";
 import { Button, Card, Chip, EmptyNote, Icon, Screen, SectionTitle, Sheet, StickerBand } from "../components/ui";
 import { DocRow, LocationDot } from "../components/DocRow";
-import { LangToggle } from "./Home";
 import { CatArt, FamilyArt, ReadyArt, SuccessBurst } from "../illustrations";
 import { daysUntil, fmtDate, timeAgo } from "../i18n";
 
@@ -85,7 +84,7 @@ export function Ready({ id }: { id: string }) {
               </div>
               <div className="mt-2 flex flex-col gap-2">
                 {found.length ? found.map((d) => <DocRow key={d.id} doc={d} />) : (
-                  <button onClick={() => go(`add?name=${encodeURIComponent(lang === "hi" ? it.hi : it.en)}`)} className="flex min-h-12 items-center gap-2 rounded-full bg-[#FFF4DC] px-4 text-left font-semibold">
+                  <button onClick={() => go(`add?name=${encodeURIComponent(lang === "hi" ? it.hi : it.en)}`)} className="flex min-h-12 items-center gap-2 rounded-full bg-brand-soft px-4 text-left font-semibold">
                     <Plus size={20} /> {t("notAdded")} · {t("addIt")}
                   </button>
                 )}
@@ -172,7 +171,7 @@ export function Family() {
           <div className="flex flex-col gap-2">
             {ACCESS.map((a) => (
               <button key={a.id} onClick={() => setMember({ ...m, access: a.id, folders: a.id === "some" && !m.folders.length ? ["health"] : m.folders })}
-                className={`flex min-h-16 items-center gap-3 rounded-[22px] border-2 px-4 text-left ${m.access === a.id ? "border-ink bg-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.3)]" : "border-transparent bg-white lift"}`}>
+                className={`flex min-h-16 items-center gap-3 rounded-[22px] border-2 px-4 text-left ${m.access === a.id ? "border-brand bg-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.3)]" : "border-transparent bg-white lift"}`}>
                 <Icon name={a.icon} size={24} />
                 <span className="flex-1 text-[1.05rem] font-semibold">{t(a.key)}</span>
                 {m.access === a.id && <Check size={24} className="text-brand" />}
@@ -238,7 +237,7 @@ export function Ask() {
         })}
       </div>
       <input value={doc} onChange={(e) => setDoc(e.target.value)} placeholder={lang === "hi" ? "या नाम लिखें" : "Or type a name"}
-        className="mt-3 h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] px-4 text-[1.1rem] outline-none focus:border-brand" />
+        className="mt-3 h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] px-4 text-[1.1rem] outline-none focus:ring-2 focus:ring-brand" />
       {match && (
         <div className="mt-2 flex items-start gap-2 rounded-[20px] bg-white lift p-3 text-[0.98rem]">
           <Info size={20} className="mt-0.5 shrink-0 text-brand" />
@@ -298,7 +297,7 @@ export function Reminders() {
       </div>
       <Button variant="secondary" icon="Plus" className="mt-3 w-full" onClick={() => setAdding(true)}>{t("addReminder")}</Button>
       <Sheet open={adding} onClose={() => setAdding(false)} title={t("addReminder")}>
-        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={lang === "hi" ? "जैसे: बिजली बिल भरना" : "e.g. Pay electricity bill"} className="h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:border-ink px-4 text-[1.1rem]" />
+        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={lang === "hi" ? "जैसे: बिजली बिल भरना" : "e.g. Pay electricity bill"} className="h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:ring-2 focus:ring-brand outline-none px-4 text-[1.1rem]" />
         <input type="date" value={due} onChange={(e) => setDue(e.target.value)} className="mt-2 h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] px-4 text-[1.1rem]" />
         <p className="mt-2 text-[0.95rem] text-mute">{lang === "hi" ? "आपको और राहुल को याद आएगी।" : "You and Rahul will both get it."}</p>
         <Button big className="mt-3 w-full" disabled={!title.trim() || !due} onClick={() => {
@@ -318,13 +317,13 @@ export function Unwell() {
   const key = ["d9", "d10", "d7", "d11", "d14", "d1", "d3"].map((id) => data.docs.find((d) => d.id === id)).filter(Boolean);
   return (
     <Screen title={settings.role === "keeper" ? t("unwellTitle") : lang === "hi" ? "अगर मम्मी-पापा की तबियत ख़राब हो" : "If Mummy or Papa is unwell"} sub={t("unwellSub")}>
-      <div className="rounded-[28px] bg-[#FDECEA] p-4">
-        <p className="flex items-center gap-2 text-[1.1rem] font-semibold"><HeartHandshake size={24} /> {t("callFirst")}</p>
+      <div className="rounded-[28px] bg-white lift p-4">
+        <p className="flex items-center gap-2 text-[1.1rem] font-semibold"><HeartHandshake size={24} className="text-brand" /> {t("callFirst")}</p>
         <ol className="mt-2 flex flex-col gap-2">
           {u.call.map((pid, i) => {
             const p = person(pid)!;
             return (
-              <li key={pid} className="flex items-center gap-3 rounded-2xl bg-white p-2.5">
+              <li key={pid} className="flex items-center gap-3 rounded-2xl bg-[#F6F9F2] p-2.5">
                 <span className="w-6 text-center text-[1.2rem] font-bold">{i + 1}</span>
                 <Avatar person={p} size={36} />
                 <span className="flex-1 font-semibold">{personName(pid)} <span className="font-normal text-mute">· {lang === "hi" ? p.relationHi : p.relation}</span></span>
@@ -338,7 +337,7 @@ export function Unwell() {
         <Card><p className="text-[0.9rem] text-mute">{t("doctor")}</p><p className="text-[1.05rem] font-semibold">{u.doctor}</p></Card>
         <Card><p className="text-[0.9rem] text-mute">{t("hospital")}</p><p className="text-[1.05rem] font-semibold">{u.hospital}</p></Card>
       </div>
-      <div className="mt-3 rounded-[22px] bg-[#FFF4DC] p-4 text-[1.02rem]">{lang === "hi" ? u.noteHi : u.note}</div>
+      <div className="mt-3 rounded-[22px] bg-brand-soft p-4 text-[1.02rem]">{lang === "hi" ? u.noteHi : u.note}</div>
       <SectionTitle>{t("importantPapers")}</SectionTitle>
       <div className="flex flex-col gap-2">{key.map((d) => <DocRow key={d!.id} doc={d!} />)}</div>
       <SectionTitle>{t("passwordDiary")}</SectionTitle>
@@ -358,13 +357,13 @@ export function Diary() {
   const [text, setText] = useState(lang === "hi" ? data.diary.hi : data.diary.en);
   return (
     <Screen title={t("diaryTitle")}>
-      <div className="flex items-start gap-3 rounded-[22px] bg-brand text-white p-4">
-        <ShieldAlert size={28} className="shrink-0" />
+      <div className="flex items-start gap-3 rounded-[22px] bg-brand-soft p-4">
+        <ShieldAlert size={28} className="shrink-0 text-brand" />
         <p className="text-[1.02rem] leading-snug">{t("diaryNever")}</p>
       </div>
       <SectionTitle right={settings.role === "keeper" ? <button className="min-h-10 font-semibold text-brand" onClick={() => setEditing(true)}>{t("edit")}</button> : undefined}>{t("diaryWhere")}</SectionTitle>
       <Card className="flex items-start gap-3">
-        <KeyRound size={26} className="mt-0.5 shrink-0 text-saffron" />
+        <KeyRound size={26} className="mt-0.5 shrink-0 text-brand" />
         <p className="text-[1.08rem]">{lang === "hi" ? data.diary.hi : data.diary.en}</p>
       </Card>
       <SectionTitle>{t("accountsTitle")}</SectionTitle>
@@ -377,7 +376,7 @@ export function Diary() {
         ))}
       </div>
       <Sheet open={editing} onClose={() => setEditing(false)} title={t("diaryWhere")}>
-        <textarea value={text} onChange={(e) => setText(e.target.value)} rows={4} className="w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:border-ink p-3 text-[1.08rem]" />
+        <textarea value={text} onChange={(e) => setText(e.target.value)} rows={4} className="w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:ring-2 focus:ring-brand outline-none p-3 text-[1.08rem]" />
         <Button big className="mt-3 w-full" onClick={() => { setDiary(text); setEditing(false); showToast(lang === "hi" ? "सेव हो गया।" : "Saved."); }}>{t("save")}</Button>
       </Sheet>
     </Screen>
@@ -399,12 +398,19 @@ export function More() {
   return (
     <Screen title={t("moreTitle")} noBack>
       <SectionTitle>{t("language")}</SectionTitle>
-      <LangToggle />
+      <div className="flex gap-2">
+        {(["en", "hi"] as const).map((l) => (
+          <button key={l} onClick={() => setSettings({ lang: l })} aria-pressed={settings.lang === l}
+            className={`flex h-14 flex-1 items-center justify-center rounded-full text-[1.05rem] font-semibold ${settings.lang === l ? "bg-brand text-white" : "bg-white ring-1 ring-inset ring-[#D8D8DE]"}`}>
+            {l === "en" ? "English" : "हिन्दी"}
+          </button>
+        ))}
+      </div>
       <SectionTitle>{t("textSize")}</SectionTitle>
       <div className="flex gap-2">
         {([0, 1, 2] as const).map((s) => (
           <button key={s} onClick={() => setSettings({ scale: s })} aria-pressed={settings.scale === s}
-            className={`flex h-14 flex-1 items-center justify-center rounded-full border-2 font-semibold ${settings.scale === s ? "border-ink bg-brand text-white" : "border-transparent bg-white ring-1 ring-[#D8D8DE]"}`}
+            className={`flex h-14 flex-1 items-center justify-center rounded-full border-2 font-semibold ${settings.scale === s ? "border-brand bg-brand text-white" : "border-transparent bg-white ring-1 ring-inset ring-[#D8D8DE]"}`}
             style={{ fontSize: [16, 20, 24][s] }}>A{s > 0 ? "+".repeat(s) : ""}</button>
         ))}
       </div>
@@ -428,7 +434,6 @@ export function More() {
         <Button variant="ghost" icon="RotateCcw" onClick={() => { reset(); showToast(lang === "hi" ? "सैंपल डेटा फिर से शुरू।" : "Sample data reset."); go(""); }}>{t("resetDemo")}</Button>
       </div>
       <p className="mt-6 text-center text-[0.88rem] text-mute">{t("sampleData")}</p>
-      <p className="mt-1 text-center text-[0.88rem] text-mute">Almari · MIT Institute of Design · Group 4 · 2026</p>
     </Screen>
   );
 }

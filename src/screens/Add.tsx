@@ -128,7 +128,7 @@ export function Add() {
       {/* progress */}
       <div className="mb-4 flex gap-1.5" aria-hidden>
         {STEP_KEYS.map((_, i) => (
-          <span key={i} className={`h-2 flex-1 rounded-full ${i <= step ? "bg-ink" : "bg-card"}`} />
+          <span key={i} className={`h-2 flex-1 rounded-full ${i <= step ? "bg-brand" : "bg-card"}`} />
         ))}
       </div>
 
@@ -156,7 +156,7 @@ export function Add() {
               <div className="flex items-center gap-2">
                 <input value={title} onChange={(e) => { setTitle(e.target.value); const g = guessFromName(e.target.value); if (g) { setCategory(g.category); setArt(g.art); } }}
                   placeholder={t("typeOrSpeak")} disabled={!!existing}
-                  className="h-14 min-w-0 flex-1 rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:border-ink px-4 text-[1.15rem] outline-none disabled:opacity-60" />
+                  className="h-14 min-w-0 flex-1 rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:ring-2 focus:ring-brand outline-none px-4 text-[1.15rem] outline-none disabled:opacity-60" />
                 {!existing && <MicButton onText={(txt) => { setTitle(txt); const g = guessFromName(txt); if (g) { setCategory(g.category); setArt(g.art); } }} />}
               </div>
               {!existing && (
@@ -170,7 +170,7 @@ export function Add() {
               <div className="flex gap-2">
                 {people.map((pp) => (
                   <button key={pp.id} disabled={!!existing} onClick={() => setPersonId(pp.id)}
-                    className={`flex min-h-16 flex-1 items-center gap-2 rounded-[22px] border-2 px-3 ${personId === pp.id ? "border-ink bg-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.3)]" : "border-transparent bg-white lift"}`}>
+                    className={`flex min-h-16 flex-1 items-center gap-2 rounded-[22px] border-2 px-3 ${personId === pp.id ? "border-brand bg-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.3)]" : "border-transparent bg-white lift"}`}>
                     <Avatar person={pp} size={36} />
                     <span className="text-[1.05rem] font-semibold">{personName(pp.id)}</span>
                   </button>
@@ -212,7 +212,7 @@ export function Add() {
               {hasDate && (
                 <>
                   <input type="date" value={expiry} onChange={(e) => setExpiry(e.target.value)} min={new Date().toISOString().slice(0, 10)}
-                    className="mt-3 h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:border-ink px-4 text-[1.1rem]" aria-label={t("expires")} />
+                    className="mt-3 h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:ring-2 focus:ring-brand outline-none px-4 text-[1.1rem]" aria-label={t("expires")} />
                   <p className="mt-4 mb-2 font-semibold">{t("remindAlso")}</p>
                   <div className="flex flex-wrap gap-2">
                     {data.people.filter((x) => x.id !== personId && x.id !== "meena").map((x) => (
@@ -314,7 +314,7 @@ function SummaryLine({ fileId }: { fileId: string | null }) {
   const { locationLine, file, t } = useStore();
   const f = file(fileId);
   return (
-    <div className="mt-2 flex items-start gap-2 rounded-2xl bg-saffron-soft p-3 text-[1rem]">
+    <div className="mt-2 flex items-start gap-2 rounded-2xl bg-brand-soft p-3 text-[1rem]">
       <span className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-black/20" style={{ background: f?.color }} />
       <span><b>{t("originalKept")}:</b> {locationLine(fileId)}</span>
     </div>

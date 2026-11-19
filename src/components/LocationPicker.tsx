@@ -52,7 +52,7 @@ export function LocationPicker({ value, onChange }: { value: string | null; onCh
             key={p.id}
             whileTap={{ scale: 0.96 }}
             onClick={() => { setPlaceId(p.id); setSpotId(null); setMaking(false); }}
-            className={`flex min-h-20 w-36 shrink-0 flex-col justify-between rounded-[22px] border-2 p-3 text-left ${placeId === p.id ? "border-ink bg-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.3)]" : "border-transparent bg-white lift"}`}
+            className={`flex min-h-20 w-36 shrink-0 flex-col justify-between rounded-[22px] border-2 p-3 text-left ${placeId === p.id ? "border-brand bg-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.3)]" : "border-transparent bg-white lift"}`}
           >
             <Icon name={PLACE_ICON[p.kind]} size={24} />
             <span className="text-[0.98rem] leading-tight font-semibold">{lang === "hi" ? p.nameHi : p.name}</span>
@@ -78,7 +78,7 @@ export function LocationPicker({ value, onChange }: { value: string | null; onCh
           <button
             key={s.id}
             onClick={() => { setSpotId(s.id); setMaking(false); }}
-            className={`min-h-12 rounded-full border-2 px-4 text-[1rem] font-medium ${spotId === s.id ? "border-ink bg-brand text-white" : "border-transparent bg-white ring-1 ring-[#D8D8DE]"}`}
+            className={`min-h-12 rounded-full border-2 px-4 text-[1rem] font-medium ${spotId === s.id ? "border-brand bg-brand text-white" : "border-transparent bg-white ring-1 ring-[#D8D8DE]"}`}
           >
             {lang === "hi" ? s.hi : s.en}
           </button>
@@ -94,7 +94,7 @@ export function LocationPicker({ value, onChange }: { value: string | null; onCh
                 key={f.id}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => onChange(f.id)}
-                className={`flex min-h-14 items-center gap-3 rounded-[22px] border-2 px-3 text-left ${value === f.id ? "border-ink bg-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.3)]" : "border-transparent bg-white lift"}`}
+                className={`flex min-h-14 items-center gap-3 rounded-[22px] border-2 px-3 text-left ${value === f.id ? "border-brand bg-white shadow-[0_8px_20px_-10px_rgba(0,0,0,0.3)]" : "border-transparent bg-white lift"}`}
               >
                 <span className="h-9 w-6 rounded" style={{ background: f.color }} />
                 <span className="flex-1 text-[1.05rem] font-medium">{lang === "hi" ? `${f.colorNameHi} फ़ाइल (${f.labelHi})` : `${f.colorName} file (${f.label})`}</span>
@@ -106,7 +106,7 @@ export function LocationPicker({ value, onChange }: { value: string | null; onCh
                 <Plus size={24} /> {t("newFile")}
               </button>
             ) : (
-              <div className="rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:border-ink p-3">
+              <div className="rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:ring-2 focus:ring-brand outline-none p-3">
                 <p className="mb-2 font-semibold">{lang === "hi" ? "फ़ाइल का रंग" : "File colour"}</p>
                 <div className="flex flex-wrap gap-2">
                   {SWATCHES.map((s) => (
@@ -117,7 +117,7 @@ export function LocationPicker({ value, onChange }: { value: string | null; onCh
                 <p className="mt-3 mb-2 font-semibold">{lang === "hi" ? "फ़ाइल किस चीज़ की है?" : "What is in it?"}</p>
                 <div className="flex flex-wrap gap-2">
                   {LABELS.map((l) => (
-                    <button key={l.en} onClick={() => setLabel(l)} className={`min-h-11 rounded-full border-2 px-3 ${label.en === l.en ? "border-ink bg-brand text-white" : "border-hair"}`}>
+                    <button key={l.en} onClick={() => setLabel(l)} className={`min-h-11 rounded-full border-2 px-3 ${label.en === l.en ? "border-brand bg-brand text-white" : "border-hair"}`}>
                       {lang === "hi" ? l.hi : l.en}
                     </button>
                   ))}

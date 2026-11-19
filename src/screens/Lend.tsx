@@ -51,7 +51,7 @@ function OwnerLend() {
   if (!lend || lend.status === "ended" && !lend.endedBy) {
     return (
       <Screen title={hi ? "फ़ोन उधार दें" : "Lend my phone"}>
-        <div className="mb-4 flex items-start gap-2 rounded-[20px] bg-[#FFF4DC] p-3 text-[0.92rem]">
+        <div className="mb-4 flex items-start gap-2 rounded-[20px] bg-brand-soft p-3 text-[0.92rem]">
           <ShieldCheck size={20} className="mt-0.5 shrink-0" />
           <span>{hi ? "आज़माया गया आइडिया। फ़ोन पर बैंक जैसी निजी चीज़ें होती हैं, इसलिए मुख्य ऐप में नहीं है। रोज़ की मदद के लिए “कैसे करें, दिखाओ” है।" : "An idea we explored. Phones hold bank and other private data, so it is not part of the main app. “Show me how” covers everyday help."}</span>
         </div>
@@ -320,7 +320,7 @@ function MockApp({ app, mode, onDone }: { app: AppId; mode: "watch" | "control";
         </motion.div>
       )}
       {atOtp && mode === "control" && (
-        <div className="mt-4 rounded-[22px] bg-[#FFF4DC] p-4 text-center">
+        <div className="mt-4 rounded-[22px] bg-brand-soft p-4 text-center">
           <p className="text-[1.1rem] font-semibold">{hi ? "मम्मी ओटीपी डाल रही हैं…" : "Mummy is typing the OTP…"}</p>
           <p className="mt-1 text-[0.95rem] text-mute">{hi ? "ओटीपी सिर्फ़ उनके फ़ोन पर दिखता है। आपको माँगना नहीं है।" : "The OTP shows only on her phone. You never need to ask for it."}</p>
           <Button variant="secondary" className="mt-3 w-full" onClick={() => setFinished(true)}>{hi ? "डेमो: मम्मी ने डाल दिया" : "Demo: Mummy typed it"}</Button>

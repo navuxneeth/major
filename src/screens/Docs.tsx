@@ -36,7 +36,7 @@ export function Find() {
   return (
     <Screen title={t("find")}>
       <div className="flex items-center gap-2">
-        <div className="flex h-14 min-w-0 flex-1 items-center gap-2 rounded-full bg-white ring-1 ring-[#D8D8DE] px-4 focus-within:ring-2 focus-within:ring-ink">
+        <div className="flex h-14 min-w-0 flex-1 items-center gap-2 rounded-full bg-white lift px-4 focus-within:ring-2 focus-within:ring-brand">
           <Search size={24} className="shrink-0 text-mute" aria-hidden />
           <input
             ref={inputRef}
@@ -52,7 +52,7 @@ export function Find() {
         <MicButton onText={(text) => setQ(text)} />
       </div>
 
-      <div className="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4">
+      <div className="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 py-1">
         <Chip active={who === "all"} onClick={() => setWho("all")}>{t("everyone")}</Chip>
         <Chip active={who === "sunita"} onClick={() => setWho("sunita")}>{meLabel}</Chip>
         <Chip active={who === "ramesh"} onClick={() => setWho("ramesh")}>{otherLabel}</Chip>
@@ -76,7 +76,7 @@ export function Find() {
               {settings.role === "helper" ? (
                 <motion.button initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} whileTap={{ scale: 0.97 }} data-guide="find-ask"
                   onClick={() => go(`ask?name=${encodeURIComponent(q.trim())}`)}
-                  className="relative flex min-h-24 items-center gap-4 overflow-hidden rounded-[26px] bg-[#FFF4DC] px-4 text-left">
+                  className="relative flex min-h-24 items-center gap-4 overflow-hidden rounded-[26px] bg-brand-soft px-4 text-left">
                   <span className="min-w-0 flex-1">
                     <span className="title-tight block text-[1.25rem] leading-tight font-bold">{lang === "hi" ? "मम्मी से माँगें" : "Ask Mummy for it"}</span>
                     <span className="block text-[0.92rem] text-mute">{lang === "hi" ? `"${q.trim()}" के लिए एक छोटा सा अनुरोध भेजें` : `She gets one card: "${q.trim()}", with a Send button`}</span>
@@ -316,7 +316,7 @@ export function Share({ id }: { id: string }) {
       </div>
       {purpose === "__custom" && (
         <input value={custom} onChange={(e) => setCustom(e.target.value)} autoFocus placeholder={lang === "hi" ? "जैसे: पोस्ट ऑफिस" : "e.g. Post office"}
-          className="mt-3 h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:border-ink px-4 text-[1.1rem] outline-none" />
+          className="mt-3 h-14 w-full rounded-[22px] bg-white ring-1 ring-[#D8D8DE] focus:ring-2 focus:ring-brand outline-none px-4 text-[1.1rem] outline-none" />
       )}
 
       {doc.art === "aadhaar" && (
