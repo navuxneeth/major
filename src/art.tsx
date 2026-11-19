@@ -101,11 +101,11 @@ export function renderArt(doc: Doc, masked: boolean, ownerName: string) {
     case "passbook":
       return (
         <g fontFamily="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif">
-          <rect x="40" y="6" width="240" height="198" rx="10" fill={doc.category === "home" ? "#C25B3C" : "#2F6B4E"} />
-          <rect x="52" y="18" width="216" height="174" rx="6" fill="none" stroke="rgba(255,255,255,0.35)" />
-          <text x="160" y="92" textAnchor="middle" fontSize="20" fontWeight="700" fill="#fff">{doc.title.length > 22 ? doc.title.slice(0, 22) + "…" : doc.title}</text>
-          <text x="160" y="118" textAnchor="middle" fontSize="13" fill="rgba(255,255,255,0.85)">{name}</text>
-          <text x="268" y="186" textAnchor="end" fontSize="9" fill="rgba(255,255,255,0.6)" letterSpacing="1">SAMPLE</text>
+          <rect width="320" height="210" rx="14" fill={doc.category === "home" ? "#C25B3C" : "#2F6B4E"} />
+          <rect x="12" y="12" width="296" height="186" rx="8" fill="none" stroke="rgba(255,255,255,0.35)" />
+          <text x="160" y="98" textAnchor="middle" fontSize="22" fontWeight="700" fill="#fff">{doc.title.length > 22 ? doc.title.slice(0, 22) + "…" : doc.title}</text>
+          <text x="160" y="126" textAnchor="middle" fontSize="14" fill="rgba(255,255,255,0.85)">{name}</text>
+          <text x="294" y="190" textAnchor="end" fontSize="9" fill="rgba(255,255,255,0.6)" letterSpacing="1">SAMPLE</text>
         </g>
       );
     default: {
