@@ -161,12 +161,6 @@ function Shell() {
           <button onClick={() => { setSettings({ role: "keeper", onboarded: true }); go(""); }} className={pill(settings.role === "keeper")}>Sunita's phone</button>
           <button onClick={() => { setSettings({ role: "helper", onboarded: true }); go(""); }} className={pill(settings.role === "helper")}>Rahul's phone</button>
         </div>
-        {settings.role === "keeper" && (
-          <div className="flex flex-wrap gap-2">
-            <button onClick={() => { setSettings({ simple: false }); go(""); }} className={pill(!settings.simple)}>Full home</button>
-            <button onClick={() => { setSettings({ simple: true }); go(""); }} className={pill(settings.simple)}>Simple home</button>
-          </div>
-        )}
         <div className="flex flex-wrap gap-2">
           <button onClick={() => go("lab")} className="h-11 rounded-full border-2 border-hair bg-white px-4 font-semibold">Testing kit</button>
           <button onClick={() => { reset(); showToast("Sample data reset."); go(""); }} className="h-11 rounded-full border-2 border-hair bg-white px-4 font-semibold">Reset sample data</button>

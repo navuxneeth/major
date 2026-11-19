@@ -359,29 +359,124 @@ function QuickLinks() {
 }
 
 export function KeeperHome() {
-  const { data, lang, settings } = useStore();
-  const [filter, setFilter] = useState<Filter>("all");
-  const [view, setView] = useState<"grid" | "list">("grid");
-  const docs = useFiltered(filter);
-  if (settings.simple) return <SimpleHome />;
-  const pending = data.requests.filter((q) => q.to === "sunita" && q.status === "pending");
+  return <SimpleHome />;
+}
+
+/* ================= sections in the clean style ================= */
+const LIFT = "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05),0_10px_28px_-16px_rgba(40,70,20,0.28)]";
+
+function H2({ children, right }: { children: React.ReactNode; right?: React.ReactNode }) {
+  return (
+    <div className="mt-8 mb-3 flex items-center justify-between">
+      <h2 className="title-tight text-[1.3rem] font-bold">{children}</h2>
+      {right}
+    </div>
+  );
+}
+function SeeAllLink({ to }: { to: string }) {
+  const { go, t } = useStore();
+  return <button onClick={() => go(to)} className="min-h-11 px-1 text-[1rem] font-semibold text-brand">{t("seeAll")}</button>;
+}
+
+function GetReady({ docs }: { docs: Doc[] }) {
+  const { lang, go } = useStore();
   const hi = lang === "hi";
   return (
-    <div className="pb-28">
-      <Top hello={`${greeting(lang)}, ${hi ? "सुनीता जी" : "Sunita ji"}`} title={hi ? "मेरे कागज़" : "My papers"} />
-      <div className="px-4">
-        <FilterChips value={filter} onChange={setFilter} />
-        {pending.map((q) => <RequestCard key={q.id} req={q} />)}
-        <SectionLabel right={<ViewToggle view={view} onChange={setView} />}>{hi ? "फ़ाइलें" : "Files"}</SectionLabel>
-        <Folders docs={docs} view={view} />
-        <SectionLabel>{hi ? "मदद" : "Help"}</SectionLabel>
-        <HelpCards />
-        <SectionLabel>{hi ? "किसके लिए तैयारी?" : "Ready for…"}</SectionLabel>
-        <ReadyCards docs={docs} />
-        <Reminders />
-        <div className="mt-8"><AlmirahCard /></div>
-        <QuickLinks />
+    <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pt-1 pb-3">
+      {READY_FOR.map((r, i) => {
+        const have = r.items.filter((it) => matchBundleItem(docs, it.match).length).length;
+        const all = have === r.items.length;
+        return (
+          <motion.button key={r.id} {...rise(i)} whileTap={{ scale: 0.97 }} onClick={() => go(`ready/${r.id}`)} data-guide={`ready-${r.id}`}
+            className={`flex w-[10.5rem] shrink-0 flex-col rounded-[22px] p-4 text-left ${LIFT}`}>
+            <span className="flex h-14 items-center"><ReadyArt id={r.id} className="h-14 w-16" /></span>
+            <span className="mt-3 block text-[1.06rem] leading-tight font-semibold">{hi ? r.hi : r.en}</span>
+            <span className={`mt-1 block text-[0.94rem] ${all ? "text-brand" : "text-mute"}`}>{all ? (hi ? "सब तैयार" : "All ready") : `${have} ${hi ? "में से" : "of"} ${r.items.length} ${hi ? "तैयार" : "ready"}`}</span>
+            <span className="mt-2 block h-1.5 overflow-hidden rounded-full bg-card"><span className="block h-full rounded-full bg-brand" style={{ width: `${(have / r.items.length) * 100}%` }} /></span>
+          </motion.button>
+        );
+      })}
+    </div>
+  );
+}
+
+function ComingUp({ limit = 3 }: { limit?: number }) {
+  const { data, lang, t, go, personName } = useStore();
+  const list = data.reminders.filter((r) => !r.done).sort((a, b) => a.due.localeCompare(b.due)).slice(0, limit);
+  if (!list.length) return null;
+  return (
+    <>
+      <H2 right={<SeeAllLink to="reminders" />}>{t("comingUp")}</H2>
+      <div className={`overflow-hidden rounded-[22px] ${LIFT}`}>
+        {list.map((r, i) => {
+          const n = daysUntil(r.due);
+          const urgent = n <= 14;
+          const d = new Date(r.due);
+          return (
+            <motion.button key={r.id} whileTap={{ scale: 0.99 }} onClick={() => (r.docId ? go(`doc/${r.docId}`) : go("reminders"))}
+              className={`flex w-full items-center gap-3 px-4 py-3 text-left ${i ? "border-t border-[#ECECF0]" : ""}`}>
+              <span className={`flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-2xl leading-none ${urgent ? "bg-danger text-white" : "bg-brand-soft text-brand"}`}>
+                <span className="text-[1.12rem] font-bold">{d.getDate()}</span>
+                <span className="mt-0.5 text-[0.75rem] font-semibold uppercase">{d.toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN", { month: "short" })}</span>
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[1.06rem] leading-snug font-semibold">{lang === "hi" ? r.titleHi : r.title}</span>
+                <span className={`block text-[0.94rem] ${urgent ? "font-semibold text-danger" : "text-mute"}`}>{n} {t("daysLeft")} · {r.notify.map((p) => personName(p)).join(", ")}</span>
+              </span>
+              <ChevronRight size={20} className="shrink-0 text-mute" />
+            </motion.button>
+          );
+        })}
       </div>
+    </>
+  );
+}
+
+function WhatIsWhere() {
+  const { data, lang, go } = useStore();
+  const hi = lang === "hi";
+  return (
+    <motion.button whileTap={{ scale: 0.98 }} onClick={() => go("print")} className={`mt-3 flex w-full items-center gap-4 rounded-[22px] p-3 pr-4 text-left ${LIFT}`}>
+      <span className="flex h-20 w-20 shrink-0 items-end justify-center overflow-hidden rounded-[18px] bg-brand-soft"><HeroScene className="h-[4.75rem] w-[4.75rem]" /></span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-[1.12rem] leading-tight font-semibold">{hi ? "क्या कहाँ रखा है" : "What is where"}</span>
+        <span className="mt-1 block text-[0.94rem] text-mute">{data.files.length} {hi ? "फ़ाइलें" : "files"} · {data.places.length} {hi ? "जगहें" : "places"}</span>
+      </span>
+      <ChevronRight size={20} className="shrink-0 text-mute" />
+    </motion.button>
+  );
+}
+
+function SafetyLinks() {
+  const { t, settings, lang, go } = useStore();
+  const items = [
+    { icon: HeartHandshake, label: settings.role === "keeper" ? t("unwellTitle") : lang === "hi" ? "अगर मम्मी-पापा की तबियत ख़राब हो" : "If Mummy or Papa is unwell", to: "unwell" },
+    { icon: KeyRound, label: t("diaryTitle"), to: "diary" },
+    ...(settings.role === "keeper" ? [{ icon: Printer, label: t("printIndex"), to: "print" }] : []),
+  ];
+  return (
+    <div className={`overflow-hidden rounded-[22px] ${LIFT}`}>
+      {items.map((i, k) => (
+        <motion.button key={i.to} whileTap={{ scale: 0.99 }} onClick={() => go(i.to)} className={`flex min-h-[3.75rem] w-full items-center gap-3 px-4 text-left ${k ? "border-t border-[#ECECF0]" : ""}`}>
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand"><i.icon size={20} aria-hidden /></span>
+          <span className="flex-1 text-[1.06rem] font-semibold">{i.label}</span>
+          <ChevronRight size={20} className="text-mute" aria-hidden />
+        </motion.button>
+      ))}
+    </div>
+  );
+}
+
+function QuickPair({ items }: { items: { icon: any; label: string; to: string; guide?: string }[] }) {
+  const { go } = useStore();
+  return (
+    <div className="mt-4 grid grid-cols-2 gap-3">
+      {items.map((x) => (
+        <motion.button key={x.to} whileTap={{ scale: 0.98 }} onClick={() => go(x.to)} data-guide={x.guide} className={`flex items-center gap-3 rounded-[20px] p-3 pr-4 text-left ${LIFT}`}>
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand"><x.icon size={21} /></span>
+          <span className="text-[1.06rem] leading-tight font-semibold">{x.label}</span>
+        </motion.button>
+      ))}
     </div>
   );
 }
@@ -453,16 +548,26 @@ function SimpleFooter() {
 }
 
 export function SimpleHome() {
-  const { data } = useStore();
+  const { data, lang } = useStore();
+  const hi = lang === "hi";
   const pending = data.requests.filter((q) => q.to === "sunita" && q.status === "pending");
-  const Layout = LAYOUT === "b" ? SimpleB : LAYOUT === "c" ? SimpleC : SimpleA;
+  const Layout = LAYOUT === "a" ? SimpleA : LAYOUT === "c" ? SimpleC : SimpleB;
   return (
     <div className="pb-28">
-      <div className="wash pt-safe px-4 pb-6">
+      <div className="wash pt-safe px-4 pb-2">
         <SimpleTop />
         <Layout pending={pending} />
       </div>
-      <div className="px-4"><SimpleFooter /></div>
+      <div className="px-4">
+        <H2>{hi ? "मेरी फ़ाइलें" : "My files"}</H2>
+        <Folders docs={data.docs} view="grid" />
+        <H2>{hi ? "किसके लिए तैयारी?" : "Get ready for"}</H2>
+        <GetReady docs={data.docs} />
+        <ComingUp />
+        <H2>{hi ? "घर का हिसाब" : "Just in case"}</H2>
+        <SafetyLinks />
+        <WhatIsWhere />
+      </div>
     </div>
   );
 }
@@ -509,16 +614,10 @@ function SimpleB({ pending }: { pending: Request[] }) {
           </motion.button>
         ))}
       </div>
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        <motion.button whileTap={{ scale: 0.98 }} onClick={() => go("help")} data-guide="home-help" className="flex items-center gap-3 rounded-[20px] bg-white p-3 pr-4 text-left shadow-[0_8px_22px_-16px_rgba(0,0,0,0.3)]">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand"><Sparkles size={21} /></span>
-          <span className="text-[1rem] leading-tight font-semibold">{hi ? "कैसे करें" : "Show me how"}</span>
-        </motion.button>
-        <motion.button whileTap={{ scale: 0.98 }} onClick={() => go("add")} data-guide="home-add" className="flex items-center gap-3 rounded-[20px] bg-white p-3 pr-4 text-left shadow-[0_8px_22px_-16px_rgba(0,0,0,0.3)]">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand"><Plus size={21} /></span>
-          <span className="text-[1rem] leading-tight font-semibold">{hi ? "कागज़ जोड़ें" : "Add a paper"}</span>
-        </motion.button>
-      </div>
+      <QuickPair items={[
+        { icon: Sparkles, label: hi ? "कैसे करें" : "Show me how", to: "help", guide: "home-help" },
+        { icon: Plus, label: hi ? "कागज़ जोड़ें" : "Add a paper", to: "add", guide: "home-add" },
+      ]} />
     </>
   );
 }
@@ -549,47 +648,61 @@ function SimpleC({ pending }: { pending: Request[] }) {
 }
 
 export function HelperHome() {
-  const { data, t, lang, go, docTitle, startLend } = useStore();
+  const { data, t, lang, go, docTitle, startLend, person } = useStore();
   const hi = lang === "hi";
   const [filter, setFilter] = useState<Filter>("all");
-  const [view, setView] = useState<"grid" | "list">("grid");
   const docs = useFiltered(filter);
   const mine = data.requests.filter((q) => q.from === "rahul").slice(0, 3);
   const lend = data.lend;
+  const due = data.reminders.filter((r) => !r.done && daysUntil(r.due) <= 14).length;
   return (
     <div className="pb-28">
-      <Top hello={hi ? "नागपुर · बेंगलुरु से" : "Nagpur · from Bengaluru"} title={hi ? "मम्मी-पापा के कागज़" : "Mummy & Papa's papers"} />
-      <div className="px-4">
+      <div className="wash pt-safe px-4 pb-2">
+        <div className="flex items-center justify-between gap-3">
+          <p className="min-w-0 text-[1rem] text-mute">{hi ? "नागपुर · बेंगलुरु से" : "Nagpur · from Bengaluru"}</p>
+          <div className="flex items-center gap-2">
+            <LangToggle />
+            <motion.button whileTap={{ scale: 0.92 }} onClick={() => go("reminders")} aria-label="Reminders" className="relative flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-[0_6px_16px_-10px_rgba(0,0,0,0.35)]">
+              <Bell size={20} />{due > 0 && <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-danger" />}
+            </motion.button>
+          </div>
+        </div>
+        <h1 className="title-tight mt-1 text-[2rem] leading-[1.12] font-bold">{hi ? "मम्मी-पापा के कागज़" : "Mummy & Papa's papers"}</h1>
+        <div className="mt-3"><FindField /></div>
         <FilterChips value={filter} onChange={setFilter} />
+      </div>
+      <div className="px-4">
         {lend?.status === "waiting" && (
-          <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="mt-5 overflow-hidden rounded-[28px] bg-ink p-4 text-white">
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className={`mt-5 rounded-[22px] p-4 ${LIFT}`}>
             <div className="flex items-center gap-3">
-              <span className="sticker block"><LendArt className="h-16 w-24" live /></span>
-              <div>
-                <p className="title-tight text-[1.25rem] font-bold">{hi ? "मम्मी को मदद चाहिए" : "Mummy needs your help"}</p>
-                <p className="text-[0.95rem] text-white/75">{lend.app === "train" ? (hi ? "ट्रेन टिकट" : "Train tickets") : hi ? "बैंक ऐप" : "Bank app"} · 15 {hi ? "मिनट" : "min"}</p>
+              <span className="block"><LendArt className="h-14 w-20" live /></span>
+              <div className="min-w-0 flex-1">
+                <p className="text-[1.12rem] font-semibold">{hi ? "मम्मी को मदद चाहिए" : "Mummy needs your help"}</p>
+                <p className="text-[0.94rem] text-mute">{lend.app === "train" ? (hi ? "ट्रेन टिकट" : "Train tickets") : hi ? "बैंक ऐप" : "Bank app"} · 15 {hi ? "मिनट" : "min"}</p>
               </div>
             </div>
-            <Button big variant="secondary" className="mt-3 w-full bg-white" icon="Check" onClick={() => { startLend(); go("lend"); }}>{hi ? "मदद करें" : "Accept and help"}</Button>
+            <motion.button whileTap={{ scale: 0.96 }} onClick={() => { startLend(); go("lend"); }} className="mt-3 ml-[5.75rem] flex h-11 items-center rounded-full bg-brand px-5 font-semibold text-white">{hi ? "मदद करें" : "Help now"}</motion.button>
           </motion.div>
         )}
-        {lend?.status === "active" && <Button big className="mt-5 w-full" icon="HandHelping" onClick={() => go("lend")}>{hi ? "मम्मी के फ़ोन पर वापस जाएँ" : "Back to Mummy's phone"}</Button>}
+        {lend?.status === "active" && (
+          <motion.button whileTap={{ scale: 0.96 }} onClick={() => go("lend")} className="mt-5 flex h-12 items-center rounded-full bg-brand px-5 font-semibold text-white">{hi ? "मम्मी के फ़ोन पर वापस जाएँ" : "Back to Mummy's phone"}</motion.button>
+        )}
         {mine.length > 0 && (
           <>
-            <SectionLabel>{t("yourRequests")}</SectionLabel>
-            <div className="flex flex-col gap-2">
+            <H2>{t("yourRequests")}</H2>
+            <div className={`overflow-hidden rounded-[22px] ${LIFT}`}>
               {mine.map((q, i) => {
                 const doc = data.docs.find((d) => d.id === q.docId);
                 return (
-                  <motion.button key={q.id} {...rise(i)} whileTap={{ scale: 0.98 }} onClick={doc && q.status === "sent" ? () => go(`doc/${doc.id}`) : undefined}
-                    className="flex min-h-16 w-full items-center gap-3 rounded-[22px] bg-card px-4 text-left">
-                    <Send size={20} className="shrink-0" aria-hidden />
-                    <span className="min-w-0 flex-1 py-3">
-                      <span className="block font-semibold leading-snug">{doc ? docTitle(doc) : q.docName}</span>
+                  <motion.button key={q.id} whileTap={{ scale: 0.99 }} onClick={doc && q.status === "sent" ? () => go(`doc/${doc.id}`) : undefined}
+                    className={`flex w-full items-center gap-3 px-4 py-3.5 text-left ${i ? "border-t border-[#ECECF0]" : ""}`}>
+                    <Avatar person={person("sunita")} size={40} />
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[1.06rem] leading-snug font-semibold">{doc ? docTitle(doc) : q.docName}</span>
                       <span className="block text-[0.94rem] leading-snug text-mute">{q.purpose} · {timeAgo(q.at, lang)}</span>
-                    <span className={`mt-1.5 inline-block rounded-full px-3 py-0.5 text-[0.88rem] font-semibold ${q.status === "sent" ? "bg-white text-ink ring-1 ring-[#D8D8DE]" : "bg-white text-mute ring-1 ring-[#D8D8DE]"}`}>
-                      {q.status === "sent" ? t("received") : q.status === "declined" ? (hi ? "बाद में" : "Later") : t("waiting")}
-                    </span>
+                      <span className={`mt-1.5 inline-block rounded-full px-3 py-0.5 text-[0.88rem] font-semibold ${q.status === "sent" ? "bg-brand-soft text-brand" : "bg-card text-ink"}`}>
+                        {q.status === "sent" ? t("received") : q.status === "declined" ? (hi ? "बाद में" : "Later") : t("waiting")}
+                      </span>
                     </span>
                   </motion.button>
                 );
@@ -597,16 +710,18 @@ export function HelperHome() {
             </div>
           </>
         )}
-        <SectionLabel right={<ViewToggle view={view} onChange={setView} />}>{hi ? "फ़ाइलें" : "Files"}</SectionLabel>
-        <Folders docs={docs} view={view} />
-        <SectionLabel>{hi ? "मदद" : "Help"}</SectionLabel>
-        <HelpCards />
-        <Reminders limit={4} />
-        <SectionLabel>{hi ? "किसके लिए तैयारी?" : "Ready for…"}</SectionLabel>
-        <ReadyCards docs={docs} />
-        <QuickLinks />
+        <QuickPair items={[
+          { icon: Send, label: hi ? "मम्मी से माँगें" : "Ask Mummy", to: "ask", guide: "home-ask" },
+          { icon: Sparkles, label: hi ? "कैसे करें" : "Show me how", to: "help", guide: "home-help" },
+        ]} />
+        <H2>{hi ? "फ़ाइलें" : "Files"}</H2>
+        <Folders docs={docs} view="grid" />
+        <ComingUp limit={4} />
+        <H2>{hi ? "किसके लिए तैयारी?" : "Get ready for"}</H2>
+        <GetReady docs={docs} />
+        <H2>{hi ? "अगर ज़रूरत पड़े" : "Just in case"}</H2>
+        <SafetyLinks />
       </div>
     </div>
   );
 }
-

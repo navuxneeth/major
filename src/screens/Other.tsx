@@ -397,7 +397,7 @@ export function More() {
     { icon: Printer, label: t("printIndex"), to: "print" },
   ];
   return (
-    <Screen title={t("moreTitle")} noBack={!(settings.role === "keeper" && settings.simple)}>
+    <Screen title={t("moreTitle")} noBack>
       <SectionTitle>{t("language")}</SectionTitle>
       <LangToggle />
       <SectionTitle>{t("textSize")}</SectionTitle>
@@ -408,15 +408,6 @@ export function More() {
             style={{ fontSize: [16, 20, 24][s] }}>A{s > 0 ? "+".repeat(s) : ""}</button>
         ))}
       </div>
-      {settings.role === "keeper" && (
-        <>
-          <SectionTitle>{lang === "hi" ? "होम स्क्रीन" : "Home screen"}</SectionTitle>
-          <div className="flex gap-2">
-            <Chip active={settings.simple} onClick={() => { setSettings({ simple: true }); go(""); }} icon="Sparkles">{lang === "hi" ? "आसान (4 बटन)" : "Simple (4 buttons)"}</Chip>
-            <Chip active={!settings.simple} onClick={() => { setSettings({ simple: false }); go(""); }} icon="LayoutGrid">{lang === "hi" ? "पूरा" : "Full"}</Chip>
-          </div>
-        </>
-      )}
       <SectionTitle>{t("whoIsUsing")}</SectionTitle>
       <div className="flex gap-2">
         <Chip active={settings.role === "keeper"} onClick={() => { setSettings({ role: "keeper" }); go(""); }}>{lang === "hi" ? "सुनीता (मम्मी)" : "Sunita (Mummy)"}</Chip>
