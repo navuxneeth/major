@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Home as HomeIcon, Search, Plus, Users, Menu, HandHelping, Bell, Sparkles } from "lucide-react";
 import { StoreProvider, useStore } from "./store";
-import { Toast } from "./components/ui";
+import { AppMark, Toast } from "./components/ui";
 import { GuideOverlay } from "./components/Guide";
 import { HelperHome, KeeperHome } from "./screens/Home";
 import { Counter, DocDetail, Find, Share } from "./screens/Docs";
@@ -154,7 +154,7 @@ function Shell() {
   return (
     <div className="flex h-full items-center justify-center gap-12 bg-[radial-gradient(circle_at_20%_20%,#F6E7C8_0,transparent_45%),radial-gradient(circle_at_85%_80%,#D7E9E2_0,transparent_40%)] lg:px-8">
       <aside className="no-print hidden max-w-sm flex-col gap-4 lg:flex">
-        <span className="font-serif text-[3.6rem] leading-none text-brand">Almari</span>
+        <span className="flex items-center gap-3"><AppMark size={56} /><span className="text-[2.6rem] leading-none font-bold tracking-[-0.02em]">Almari</span></span>
         <p className="text-[1.25rem] leading-snug">Know what important papers your family has, and exactly where each original is kept: on the phone or in the almirah.</p>
         <p className="text-[1rem] text-mute">Best on a phone. Open this page on your phone, or try it here.</p>
         <div className="flex flex-wrap gap-2">
@@ -165,7 +165,6 @@ function Shell() {
           <button onClick={() => go("lab")} className="h-11 rounded-full border-2 border-hair bg-white px-4 font-semibold">Testing kit</button>
           <button onClick={() => { reset(); showToast("Sample data reset."); go(""); }} className="h-11 rounded-full border-2 border-hair bg-white px-4 font-semibold">Reset sample data</button>
         </div>
-        <p className="text-[0.9rem] text-mute">Major Project, Group 4 · MIT Institute of Design · Sample family; every name and number is made up.</p>
       </aside>
       <div className="h-full w-full sm:h-[min(880px,calc(100vh-48px))] sm:w-[400px] sm:overflow-hidden sm:rounded-[44px] sm:border-[10px] sm:border-ink sm:shadow-2xl">
         <PhoneApp />
