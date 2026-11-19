@@ -2,13 +2,13 @@
 
 @theme {
   --color-paper: #FFFFFF;
-  --color-card: #F4F4F5;
-  --color-ink: #111111;
+  --color-card: #F2F2F7;
+  --color-ink: #1C1C1E;
   --color-mute: #48484D;
   --color-hair: #EBEBED;
-  --color-brand: var(--brand, #B5482A);
-  --color-brand-dark: var(--brand-dark, #963A21);
-  --color-brand-soft: var(--brand-soft, #FBEAE4);
+  --color-brand: var(--brand, #1C1C1E);
+  --color-brand-dark: var(--brand-dark, #000000);
+  --color-brand-soft: var(--brand-soft, #E9E9EE);
   --color-glass: rgba(242, 242, 244, 0.72);
   --color-saffron: #E8A33D;
   --color-saffron-soft: #FFF4DC;

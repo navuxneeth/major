@@ -252,16 +252,16 @@ function RequestCard({ req }: { req: Request }) {
   return (
     <>
       <motion.div initial={{ y: 16, opacity: 0, scale: 0.98 }} animate={{ y: 0, opacity: 1, scale: 1 }} transition={{ type: "spring", stiffness: 220, damping: 20, delay: 0.2 }}
-        className="relative mt-5 overflow-hidden rounded-[28px] bg-[#FFF4DC] px-4 pt-3.5 pb-4 text-center">
+        className="relative mt-5 overflow-hidden rounded-[24px] bg-white px-4 pt-3.5 pb-4 text-center ring-1 ring-[#D8D8DE] shadow-[0_8px_24px_-16px_rgba(0,0,0,0.25)]">
         <div className="flex items-center justify-between text-[0.94rem] text-mute">
           <span className="flex items-center gap-1.5"><Clock size={16} /> {timeAgo(req.at, lang)}</span>
-          <span className="flex items-center gap-1.5"><span className="relative"><Avatar person={from} size={24} /><motion.span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-[#FFF4DC] bg-[#34C759]" animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.6, repeat: Infinity }} /></span>{fromName}</span>
+          <span className="flex items-center gap-1.5"><span className="relative"><Avatar person={from} size={24} /><motion.span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-[#34C759]" animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.6, repeat: Infinity }} /></span>{fromName}</span>
         </div>
         <p className="title-tight mt-2 text-center text-[1.5rem] leading-tight font-bold">{lang === "hi" ? `${fromName} को ${doc ? docTitle(doc) : req.docName} चाहिए` : `${fromName} needs your ${doc ? docTitle(doc).toLowerCase() : req.docName}`}</p>
         <p className="mt-1 text-center text-[0.98rem] text-mute">{t("forPurpose")}: {req.purpose}</p>
         <div className="mt-4 flex flex-wrap gap-2">
           <Button big className="min-w-[9rem] flex-[2]" icon="Send" onClick={() => setOpen(true)}>{t("sendOne")}</Button>
-          <Button big variant="secondary" className="min-w-[7rem] flex-1 bg-white" onClick={() => answerRequest(req.id, "declined")}>{t("notNow")}</Button>
+          <Button big variant="secondary" className="min-w-[7rem] flex-1" onClick={() => answerRequest(req.id, "declined")}>{t("notNow")}</Button>
         </div>
       </motion.div>
       <Sheet open={open} onClose={() => setOpen(false)} title={doc ? docTitle(doc) : req.docName}>
@@ -324,7 +324,7 @@ function AlmirahCard() {
   const { data, lang, go } = useStore();
   const hi = lang === "hi";
   return (
-    <StickerCard tone="bg-[#EEF3F1]" onClick={() => go("print")}
+    <StickerCard tone="bg-card" onClick={() => go("print")}
       metaLeft={<><LayoutGrid size={15} /> {data.files.length} {hi ? "फ़ाइलें" : "files"}</>}
       metaRight={<>{data.places.length} {hi ? "जगहें" : "places"}</>}
       title={hi ? "क्या कहाँ रखा है" : "What is where"}
@@ -390,7 +390,7 @@ export function SimpleHome() {
   const id = data.docs.find((d) => d.id === "d1");
   const tiles = [
     { key: "find", en: "Find a paper", hi: "कागज़ ढूँढें", to: "find", guide: "home-find", dark: true,
-      art: <span className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full bg-white text-brand"><Mic size={34} /></span> },
+      art: <span className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full bg-white text-ink shadow-[0_6px_16px_-8px_rgba(0,0,0,0.25)]"><Mic size={34} /></span> },
     { key: "id", en: "Show my ID", hi: "मेरा आईडी", to: "counter/d1", guide: "home-id",
       art: id ? <span className="sticker block w-[7.5rem]"><DocArt doc={id} ownerName={(person(id.personId)?.name ?? "") + " Sharma"} className="block h-auto w-full rounded-lg" /></span> : <IdCard size={40} /> },
     { key: "how", en: "Show me how", hi: "कैसे करें", to: "help", guide: "home-help", art: <span className="sticker block"><HelpArt className="h-[5.5rem] w-[5.5rem]" /></span> },
@@ -411,7 +411,7 @@ export function SimpleHome() {
         <div className="mt-5 grid grid-cols-2 gap-3">
           {tiles.map((x, i) => (
             <motion.button key={x.key} {...rise(i)} whileTap={{ scale: 0.97 }} onClick={() => go(x.to)} data-guide={x.guide}
-              className={`flex aspect-square flex-col items-center justify-between rounded-[28px] px-3 pt-5 pb-4 ${x.dark ? "bg-brand text-white" : "bg-card"}`}>
+              className={`flex aspect-square flex-col items-center justify-between rounded-[28px] px-3 pt-5 pb-4 ${"bg-card"}`}>
               <span className="flex flex-1 items-center justify-center">{x.art}</span>
               <span className="title-tight text-center text-[1.15rem] leading-tight font-bold">{hi ? x.hi : x.en}</span>
             </motion.button>
@@ -471,7 +471,7 @@ export function HelperHome() {
                       <span className="block font-semibold leading-snug">{doc ? docTitle(doc) : q.docName}</span>
                       <span className="block text-[0.94rem] leading-snug text-mute">{q.purpose} · {timeAgo(q.at, lang)}</span>
                     </span>
-                    <span className={`shrink-0 rounded-full px-3 py-1 text-[0.88rem] font-semibold ${q.status === "sent" ? "bg-[#34C759] text-white" : q.status === "declined" ? "bg-white" : "bg-[#F7D27A]"}`}>
+                    <span className={`shrink-0 rounded-full px-3 py-1 text-[0.88rem] font-semibold ${q.status === "sent" ? "bg-white text-ink ring-1 ring-[#D8D8DE]" : "bg-white text-mute ring-1 ring-[#D8D8DE]"}`}>
                       {q.status === "sent" ? t("received") : q.status === "declined" ? (hi ? "बाद में" : "Later") : t("waiting")}
                     </span>
                   </motion.button>
