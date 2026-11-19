@@ -422,11 +422,7 @@ export function More() {
           </Card>
         ))}
       </div>
-      <label className="mt-4 flex min-h-14 items-center gap-3 rounded-[22px] bg-white lift px-4">
-        <Lock size={22} className="text-brand" />
-        <span className="flex-1 text-[1rem]">{t("lockApp")}</span>
-        <input type="checkbox" className="h-6 w-6 accent-[#1E5B4F]" checked={settings.lock} onChange={(e) => { setSettings({ lock: e.target.checked }); if (!e.target.checked) setUnlocked(true); }} />
-      </label>
+      
       <div className="mt-6 flex flex-col gap-2">
         <Button variant="secondary" icon="FlaskConical" onClick={() => go("lab")}>{t("testKit")}</Button>
         <Button variant="ghost" icon="RotateCcw" onClick={() => { reset(); showToast(lang === "hi" ? "सैंपल डेटा फिर से शुरू।" : "Sample data reset."); go(""); }}>{t("resetDemo")}</Button>

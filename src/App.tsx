@@ -11,7 +11,7 @@ import { Ask, Category, Diary, Family, More, PrintSheet, Ready, Reminders, Unwel
 import { Help, PhoneMessages } from "./screens/Help";
 import { Lend } from "./screens/Lend";
 import { Lab } from "./screens/Lab";
-import { Lock, Onboard } from "./screens/Gate";
+import { Onboard } from "./screens/Gate";
 import type { CategoryId } from "./data";
 
 function Nav() {
@@ -124,7 +124,6 @@ function PhoneApp() {
       <GuideOverlay rootId="phone-root" />
       <Toast />
       {!settings.onboarded && <Onboard />}
-      {settings.onboarded && settings.lock && !unlocked && <Lock />}
     </div>
   );
 }
