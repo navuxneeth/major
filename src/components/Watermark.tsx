@@ -3,7 +3,7 @@ import type { Doc } from "../data";
 import { DocArt, renderArt } from "../art";
 
 export function stampText(purpose: string, dateLabel: string, lang: "en" | "hi") {
-  return lang === "hi" ? `सिर्फ़ ${purpose} के लिए · ${dateLabel}` : `For ${purpose} only · ${dateLabel}`;
+  return lang === "hi" ? `सिर्फ़ ${purpose} के लिए · ${dateLabel} को भेजा` : `For ${purpose} only · Sent ${dateLabel}`;
 }
 
 /** On-screen preview of the copy that will be sent: diagonal stamp + footer band. */

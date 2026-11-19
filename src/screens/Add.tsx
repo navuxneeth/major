@@ -15,11 +15,11 @@ const ALL_SUGGESTIONS = CATEGORIES.flatMap((c) => c.suggest.map((s) => ({ ...s, 
 
 function guessFromName(name: string): { category: CategoryId; art: Art } | null {
   const n = name.toLowerCase();
-  const hit = ALL_SUGGESTIONS.find((s) => n.includes(s.en.toLowerCase().split(" ")[0]) || name.includes(s.hi.split(" ")[0]));
+  const hit = ALL_SUGGESTIONS.find((s) => n.includes(s.en.toLowerCase()) || name.includes(s.hi))
+    ?? ALL_SUGGESTIONS.find((s) => n.includes(s.en.toLowerCase().split(" ")[0]) || name.includes(s.hi.split(" ")[0]));
   return hit ? { category: hit.category, art: hit.art } : null;
 }
 
-const STEP_KEYS = ["stepPhoto", "stepWhat", "stepFolder", "stepWhere", "stepDate", "save"] as const;
 
 export function Add() {
   const { data, t, lang, route, go, addDoc, updateDoc, addReminder, answerRequest, showToast, viewerId, settings, person, personName } = useStore();
@@ -32,6 +32,7 @@ export function Add() {
   const preArt = (p.get("art") as Art) || null;
 
   const [step, setStep] = useState(0);
+  const [skipFolder, setSkipFolder] = useState(false);
   const [method, setMethod] = useState<Method | null>(null);
   const [image, setImage] = useState<string | undefined>();
   const [title, setTitle] = useState(existing?.title ?? preName);
@@ -40,7 +41,7 @@ export function Add() {
   const [art, setArt] = useState<Art>(existing?.art ?? preArt ?? (preName ? guessFromName(preName)?.art ?? "paper" : "paper"));
   const [fileId, setFileId] = useState<string | null>(existing?.fileId ?? null);
   const [expiry, setExpiry] = useState<string>("");
-  const [hasDate, setHasDate] = useState<boolean | null>(null);
+  const [hasDate, setHasDate] = useState<boolean | null>(false);
   const [notify, setNotify] = useState<string[]>(["rahul"]);
   const [dlOpen, setDlOpen] = useState(false);
   const [waOpen, setWaOpen] = useState(false);
@@ -74,9 +75,32 @@ export function Add() {
     title.trim().length > 1,
     !!category,
     !!fileId,
-    hasDate === false || (hasDate === true && !!expiry),
+    true,
     true,
   ][step];
+  const canSave = hasDate !== true || !!expiry;
+  const flow = [0, 1, ...(skipFolder ? [] : [2]), 3, 5];
+  const pos = Math.max(0, flow.indexOf(step));
+  function next() {
+    if (step === 1) {
+      if (existing) return setStep(3);
+      if (category) { setSkipFolder(true); return setStep(3); }
+      setSkipFolder(false); return setStep(2);
+    }
+    if (step === 3) return setStep(5);
+    setStep((s) => s + 1);
+  }
+  function prev() {
+    if (step === 5) return setStep(3);
+    if (step === 3) return setStep(existing || skipFolder ? 1 : 2);
+    setStep((s) => Math.max(0, s - 1));
+  }
+  const blockedHint = !canNext ? [
+    "",
+    lang === "hi" ? "आगे बढ़ने के लिए नाम लिखें या चुनें।" : "Type or pick a name to go on.",
+    lang === "hi" ? "आगे बढ़ने के लिए एक फ़ोल्डर चुनें।" : "Pick a folder to go on.",
+    lang === "hi" ? "आगे बढ़ने के लिए जगह, खाना और फ़ाइल चुनें।" : "Pick the place, the shelf and the file to go on.",
+  ][step] : !canSave && step === 5 ? (lang === "hi" ? "तारीख़ चुनें, या 'कोई तारीख़ नहीं' दबाएँ।" : "Pick the date, or choose no date.") : "";
 
   function save() {
     const isHi = /[ऀ-ॿ]/.test(title);
@@ -124,11 +148,11 @@ export function Add() {
   const owner = person(personId);
 
   return (
-    <Screen title={existing ? (lang === "hi" ? "फ़ोटो जोड़ें" : "Add a photo") : t("addTitle")} sub={`${step + 1} / ${STEP_KEYS.length}`}>
+    <Screen title={existing ? (lang === "hi" ? "फ़ोटो जोड़ें" : "Add a photo") : t("addTitle")} sub={`${pos + 1} / ${flow.length}`}>
       {/* progress */}
       <div className="mb-4 flex gap-1.5" aria-hidden>
-        {STEP_KEYS.map((_, i) => (
-          <span key={i} className={`h-2 flex-1 rounded-full ${i <= step ? "bg-brand" : "bg-card"}`} />
+        {flow.map((_, i) => (
+          <span key={i} className={`h-2 flex-1 rounded-full ${i <= pos ? "bg-brand" : "bg-card"}`} />
         ))}
       </div>
 
@@ -202,9 +226,30 @@ export function Add() {
             </div>
           )}
 
-          {step === 4 && (
+          {step === 5 && (
             <div>
-              <h2 className="title-tight mb-3 text-[1.5rem] font-bold">{t("stepDate")}</h2>
+              <h2 className="title-tight mb-3 text-[1.5rem] font-bold">{lang === "hi" ? "एक बार देख लें" : "Check once and save"}</h2>
+              <div className="rounded-[22px] bg-white lift p-3">
+                {method === "paper" && !image ? (
+                  <p className="rounded-2xl bg-paper p-4 text-center text-mute">{t("onlyPaper")}</p>
+                ) : (
+                  <DocArt doc={previewDoc} ownerName={(owner?.name ?? "") + " Sharma"} className="h-auto w-full" />
+                )}
+                <p className="mt-3 text-[1.2rem] font-semibold">{title}</p>
+                <p className="flex flex-wrap items-center gap-x-2 text-mute">{personName(personId)} · {CATEGORIES.find((c) => c.id === category)?.[lang === "hi" ? "hi" : "en"]}
+                  {!existing && <button onClick={() => { setSkipFolder(false); setStep(2); }} className="min-h-10 font-semibold text-brand">{lang === "hi" ? "फ़ोल्डर बदलें" : "Change folder"}</button>}</p>
+                <SummaryLine fileId={fileId} />
+                {hasDate && expiry && <p className="mt-2 text-[1rem]">🔔 {t("expires")}: {fmtDate(expiry, lang)}</p>}
+              </div>
+              <p className="mt-3 text-[0.98rem] text-mute">
+                {lang === "hi" ? "ये लोग इसे देख सकेंगे: " : "Who will be able to see it: "}
+                {data.members.filter((m) => m.access === "all" || (m.access === "some" && category && m.folders.includes(category))).map((m) => personName(m.personId)).join(", ")}
+              </p>
+            </div>
+          )}
+          {step === 5 && (
+            <div>
+              <h2 className="mt-5 mb-2 text-[1.2rem] font-semibold">{t("stepDate")} <span className="font-normal text-mute">{lang === "hi" ? "(ज़रूरी नहीं)" : "(optional)"}</span></h2>
               <div className="flex flex-col gap-2">
                 <Chip active={hasDate === false} onClick={() => { setHasDate(false); setExpiry(""); }} className="justify-start">{t("noDate")}</Chip>
                 <Chip active={hasDate === true} onClick={() => setHasDate(true)} icon="CalendarDays" className="justify-start">{lang === "hi" ? "हाँ, तारीख़ चुनें" : "Yes, pick the date"}</Chip>
@@ -226,36 +271,17 @@ export function Add() {
             </div>
           )}
 
-          {step === 5 && (
-            <div>
-              <h2 className="title-tight mb-3 text-[1.5rem] font-bold">{lang === "hi" ? "एक बार देख लें" : "Check once and save"}</h2>
-              <div className="rounded-[22px] bg-white lift p-3">
-                {method === "paper" && !image ? (
-                  <p className="rounded-2xl bg-paper p-4 text-center text-mute">{t("onlyPaper")}</p>
-                ) : (
-                  <DocArt doc={previewDoc} ownerName={(owner?.name ?? "") + " Sharma"} className="h-auto w-full" />
-                )}
-                <p className="mt-3 text-[1.2rem] font-semibold">{title}</p>
-                <p className="text-mute">{personName(personId)} · {CATEGORIES.find((c) => c.id === category)?.[lang === "hi" ? "hi" : "en"]}</p>
-                <SummaryLine fileId={fileId} />
-                {hasDate && expiry && <p className="mt-2 text-[1rem]">🔔 {t("expires")}: {fmtDate(expiry, lang)}</p>}
-              </div>
-              <p className="mt-3 text-[0.98rem] text-mute">
-                {lang === "hi" ? "ये लोग इसे देख सकेंगे: " : "Who will be able to see it: "}
-                {data.members.filter((m) => m.access === "all" || (m.access === "some" && category && m.folders.includes(category))).map((m) => personName(m.personId)).join(", ")}
-              </p>
-            </div>
-          )}
         </motion.div>
       </AnimatePresence>
 
       {step > 0 && (
-        <div className="sticky bottom-0 z-10 -mx-4 mt-6 flex gap-2 border-t border-hair bg-paper px-4 pt-3 pb-4">
-          <Button variant="secondary" onClick={() => setStep((s) => Math.max(0, s - 1))}>{t("back")}</Button>
+        <div className="sticky bottom-0 z-10 -mx-4 mt-6 flex flex-wrap gap-2 border-t border-hair bg-paper px-4 pt-3 pb-4">
+          {blockedHint && <p role="status" className="w-full text-[0.95rem] text-mute">{blockedHint}</p>}
+          <Button variant="secondary" onClick={prev}>{t("back")}</Button>
           {step < 5 ? (
-            <Button big className="flex-1" disabled={!canNext} onClick={() => setStep((s) => (existing && s === 1 ? 3 : s + 1))}>{t("next")}</Button>
+            <Button big className="flex-1" disabled={!canNext} onClick={next}>{t("next")}</Button>
           ) : (
-            <Button big className="flex-1" icon="Check" onClick={save}>{reqId ? (lang === "hi" ? "सेव करें और भेजें" : "Save and send") : t("save")}</Button>
+            <Button big className="flex-1" icon="Check" disabled={!canSave} onClick={save}>{reqId ? (lang === "hi" ? "सेव करें और भेजें" : "Save and send") : t("save")}</Button>
           )}
         </div>
       )}

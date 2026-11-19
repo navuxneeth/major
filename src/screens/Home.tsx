@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { Search, ChevronRight, Bell, HeartHandshake, KeyRound, Printer, Mic, Sparkles, HandHelping, IdCard, LayoutGrid, Rows3, Clock, FileText, Send, Plus } from "lucide-react";
-import { CATEGORIES, READY_FOR, type CategoryId, type Doc, type Request } from "../data";
+import { CATEGORIES, READY_FOR, readyDefaultWho, type CategoryId, type Doc, type Request } from "../data";
 import { useStore } from "../store";
 import { Button, Chip, MicButton, Sheet } from "../components/ui";
 import { DocRow } from "../components/DocRow";
@@ -191,14 +191,16 @@ function ReadyCards({ docs }: { docs: Doc[] }) {
   return (
     <div className="flex flex-col gap-3">
       {READY_FOR.map((r, i) => {
-        const found = r.items.flatMap((it) => matchBundleItem(docs, it.match).slice(0, 1));
-        const missing = r.items.length - r.items.filter((it) => matchBundleItem(docs, it.match).length).length;
+        const forWho = docs.filter((d) => d.personId === readyDefaultWho(r.id));
+        const found = r.items.flatMap((it) => matchBundleItem(forWho, it.match).slice(0, 1));
+        const have = r.items.filter((it) => matchBundleItem(forWho, it.match).length).length;
+        const missing = r.items.length - have;
         return (
           <StickerCard key={r.id} index={i} guide={`ready-${r.id}`} onClick={() => go(`ready/${r.id}`)}
             metaLeft={<><Clock size={15} /> {hi ? "तैयारी" : "Get ready"}</>}
             metaRight={<><FileText size={15} /> {r.items.length}</>}
             title={hi ? r.hi : r.en}
-            sub={missing ? (hi ? `${missing} अभी जोड़ना है` : `${missing} still to add`) : hi ? "सब मिल गया, फ़ाइलों के साथ" : "All found, with their files"}>
+            sub={missing ? (hi ? `${r.items.length} में से ${have} ऐप में मिले` : `${have} of ${r.items.length} found in the app`) : hi ? "सब मिल गया, फ़ाइलों के साथ" : "All found, with their files"}>
             <span className="sticker mb-6 block"><ReadyArt id={r.id} className="h-20 w-24" /></span>
             {found.slice(0, 2).map((d, k) => <DocSticker key={d.id + k} doc={d} tilt={[4, -3][k]} w={104} />)}
           </StickerCard>
@@ -384,14 +386,15 @@ function GetReady({ docs }: { docs: Doc[] }) {
   return (
     <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pt-1 pb-3">
       {READY_FOR.map((r, i) => {
-        const have = r.items.filter((it) => matchBundleItem(docs, it.match).length).length;
+        const forWho = docs.filter((d) => d.personId === readyDefaultWho(r.id));
+        const have = r.items.filter((it) => matchBundleItem(forWho, it.match).length).length;
         const all = have === r.items.length;
         return (
           <motion.button key={r.id} {...rise(i)} whileTap={{ scale: 0.97 }} onClick={() => go(`ready/${r.id}`)} data-guide={`ready-${r.id}`}
             className={`flex w-[10.5rem] shrink-0 flex-col rounded-[22px] p-4 text-left ${LIFT}`}>
             <span className="flex h-14 items-center"><ReadyArt id={r.id} className="h-14 w-16" /></span>
             <span className="mt-3 block text-[1.06rem] leading-tight font-semibold">{hi ? r.hi : r.en}</span>
-            <span className={`mt-1 block text-[0.94rem] ${all ? "text-brand" : "text-mute"}`}>{all ? (hi ? "सब तैयार" : "All ready") : `${have} ${hi ? "में से" : "of"} ${r.items.length} ${hi ? "तैयार" : "ready"}`}</span>
+            <span className={`mt-1 block text-[0.94rem] ${all ? "text-brand" : "text-mute"}`}>{all ? (hi ? "सब मिल गया" : "All found") : hi ? `${r.items.length} में से ${have} मिले` : `${have} of ${r.items.length} found`}</span>
             <span className="mt-2 block h-1.5 overflow-hidden rounded-full bg-card"><span className="block h-full rounded-full bg-brand" style={{ width: `${(have / r.items.length) * 100}%` }} /></span>
           </motion.button>
         );

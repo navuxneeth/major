@@ -16,19 +16,19 @@ interface Session {
   date: string;
   pre: { q1: string; q2: string; q3: string };
   results: Record<string, TaskResult>;
-  post: { use: string; stop: string; trust: string };
+  post: { use: string; stop: string; trust: string; away?: string };
 }
 
-const TASKS: { id: string; who: "all" | "caregiver" | "older"; en: string; hi: string; tests: string; start: string }[] = [
-  { id: "T1", who: "all", en: "You are at a railway counter and need your Aadhaar. Show it, then tell me where the original is kept.", hi: "आप रेलवे काउंटर पर हैं और आधार दिखाना है। उसे दिखाइए, फिर बताइए असली कागज़ कहाँ रखा है।", tests: "Find, show at counter, read location", start: "Home (Sunita)" },
-  { id: "T2", who: "all", en: "Tomorrow you are going to the hospital. What do you need to take, and where is each one?", hi: "कल आपको अस्पताल जाना है। क्या-क्या ले जाना है, और हर चीज़ कहाँ है?", tests: "Ready-for bundle", start: "Home (Sunita)" },
-  { id: "T3", who: "all", en: "Add your ration card. The original is in the orange file on the top shelf of the bedroom almirah.", hi: "अपना राशन कार्ड जोड़िए। असली कागज़ बेडरूम की अलमारी के ऊपर वाले खाने में नारंगी फ़ाइल में है।", tests: "Add flow + location picker", start: "Home (Sunita)" },
-  { id: "T4", who: "all", en: "The bank wants your Aadhaar for KYC. Send it to them safely.", hi: "बैंक को केवाईसी के लिए आपका आधार चाहिए। उसे सुरक्षित तरीके से भेजिए।", tests: "Share safely: purpose stamp, masking", start: "Home (Sunita)" },
-  { id: "T5", who: "caregiver", en: "Your mother is unwell. Find out which file your father's LIC policy is in.", hi: "आपकी मम्मी की तबियत ख़राब है। पता कीजिए पापा की एलआईसी पॉलिसी किस फ़ाइल में है।", tests: "Helper view, takeover", start: "Home (Rahul)" },
-  { id: "T6a", who: "caregiver", en: "Ask your mother to send you her gas connection book. It is for a KYC update.", hi: "मम्मी से उनकी गैस कनेक्शन बुक माँगिए। केवाईसी अपडेट के लिए चाहिए।", tests: "Search → not found → Ask Mummy", start: "Home (Rahul)" },
-  { id: "T7", who: "older", en: "You are not sure how to send your Aadhaar to the bank. Ask the app to show you how, and do it.", hi: "आपको नहीं पता बैंक को आधार कैसे भेजें। ऐप से पूछिए कि कैसे करें, और कर के दिखाइए।", tests: "Show me how (guided ring + voice)", start: "Home (Sunita)" },
-  { id: "T9", who: "all", en: "Compare: do T1 again on the full home screen (Show all features). Which one was easier?", hi: "तुलना: T1 फिर से पूरी होम स्क्रीन पर कीजिए। कौन सा आसान था?", tests: "Simple vs full home (Drishti's concern)", start: "Home → Show all features" },
-  { id: "T6b", who: "older", en: "Rahul has asked you for something. Please send it to him.", hi: "राहुल ने आपसे कुछ माँगा है। उन्हें भेज दीजिए।", tests: "Answer a request (paper-only document)", start: "Home (Sunita)" },
+const TASKS: { id: string; who: "all" | "caregiver" | "older"; en: string; hi: string; tests: string; start: string; target: string; note?: string }[] = [
+  { id: "T1", who: "all", target: "90 s", en: "You are at a railway counter and need your Aadhaar. Show it, then tell me where the original is kept.", hi: "आप रेलवे काउंटर पर हैं और आधार दिखाना है। उसे दिखाइए, फिर बताइए असली कागज़ कहाँ रखा है।", tests: "Find, full screen, read the place", start: "Home" },
+  { id: "T2", who: "all", target: "60 s helper, 90 s older adult", en: "This month's gas bill has come. Add it to the app. The paper goes in the white Bills file in the kitchen drawer.", hi: "इस महीने का गैस बिल आया है। इसे ऐप में जोड़िए। कागज़ रसोई की दराज़ में सफ़ेद बिल वाली फ़ाइल में रखा है।", tests: "Add flow, folder, place picker", start: "Home", note: "Typing \"Gas bill\" picks the Bills folder by itself, so that step is skipped. If Next is greyed out, the app now says what is missing: note whether they read it." },
+  { id: "T3", who: "all", target: "60 s", en: "The bank wants your Aadhaar for KYC. Send it to them safely.", hi: "बैंक को केवाईसी के लिए आपका आधार चाहिए। उसे सुरक्षित तरीके से भेजिए।", tests: "Share safely: purpose stamp, masking", start: "Home" },
+  { id: "T4", who: "all", target: "120 s", en: "When is the next pension life certificate due, and what does Ramesh (Papa) have to do for it?", hi: "पेंशन का अगला जीवन प्रमाण कब है, और रमेश जी (पापा) को उसके लिए क्या करना होगा?", tests: "Reminders, with what to do", start: "Home", note: "Success needs both parts: the date, and that he must go himself for the face scan or thumb." },
+  { id: "T5", who: "caregiver", target: "180 s", en: "The app has an idea for helping your parent from another city. Find it, and tell me in your own words what it would let you do, and what it would not.", hi: "ऐप में दूसरे शहर से मम्मी-पापा की मदद का एक आइडिया है। उसे ढूँढिए, और अपने शब्दों में बताइए इससे आप क्या कर पाएँगे, और क्या नहीं।", tests: "Concept check: Lend my phone (explored idea, not built)", start: "Home", note: "This is a concept, not a working feature. Score on finding it and explaining it: the helper sees and points, the parent types the OTP, and it can be ended any time. Never score on switching into a helper view: none exists. Then ask: would you use it, and what would worry you?" },
+  { id: "T6a", who: "caregiver", target: "60 s", en: "You need Mummy's ration card for a KYC update. Get it from her using the app.", hi: "केवाईसी अपडेट के लिए आपको मम्मी का राशन कार्ड चाहिए। ऐप से उनसे मँगवाइए।", tests: "Search, nothing found, Ask Mummy", start: "Home", note: "The ration card is not in the app on purpose. The empty search shows Ask Mummy for it. Asking from Home also counts." },
+  { id: "T6b", who: "older", target: "90 s", en: "Rahul has asked you for something. Send it to him, or tell him where it is.", hi: "राहुल ने आपसे कुछ माँगा है। उन्हें भेज दीजिए, या बता दीजिए कहाँ रखा है।", tests: "Answer a request for a paper-only document", start: "Home", note: "The gas book is only on paper. Take a photo now and Just tell where it is both count as success." },
+  { id: "T7", who: "older", target: "120 s", en: "You are not sure how to send your Aadhaar to the bank. Ask the app to show you how, and do it.", hi: "आपको नहीं पता बैंक को आधार कैसे भेजें। ऐप से पूछिए कि कैसे करें, और कर के दिखाइए।", tests: "Show me how (guided ring and voice)", start: "Home" },
+  { id: "T9", who: "all", target: "180 s", en: "Tomorrow is a hospital visit for Mummy (you). Get ready: what do you take, and where is each one? What would you do about anything missing?", hi: "कल मम्मी (आप) को अस्पताल जाना है। तैयारी कीजिए: क्या ले जाना है, और हर चीज़ कहाँ है? जो नहीं है उसका क्या करेंगे?", tests: "Get ready for: found and packed counts, missing papers", start: "Home", note: "Two papers are not in the app for her. Ticking them once in the bag, asking Mummy (helper), or adding them all count as success. Skipping them without a plan is H2." },
 ];
 
 const KEY = "almari-lab-v1";
@@ -96,13 +96,13 @@ export function Lab() {
   }, [sessions]);
 
   function csv() {
-    const head = ["code", "type", "mode", "lang", "date", "pre_where_papers", "pre_last_lost", "pre_who_knows", "task", "outcome", "time_s", "seq", "notes", "quote", "post_would_use", "post_what_stops", "post_trust"];
+    const head = ["code", "type", "mode", "lang", "date", "pre_where_papers", "pre_last_lost", "pre_who_knows", "task", "outcome", "time_s", "seq", "notes", "quote", "post_would_use", "post_what_stops", "post_trust", "post_if_away"];
     const rows = [head];
     for (const x of sessions)
       for (const tk of TASKS) {
         const r = x.results[tk.id];
         if (!r) continue;
-        rows.push([x.code, x.type, x.mode, x.lang, x.date, x.pre.q1, x.pre.q2, x.pre.q3, tk.id, r.outcome, String(Math.round(r.ms / 1000)), String(r.seq || ""), r.notes, r.quote, x.post.use, x.post.stop, x.post.trust]);
+        rows.push([x.code, x.type, x.mode, x.lang, x.date, x.pre.q1, x.pre.q2, x.pre.q3, tk.id, r.outcome, String(Math.round(r.ms / 1000)), String(r.seq || ""), r.notes, r.quote, x.post.use, x.post.stop, x.post.trust, x.post.away ?? ""]);
       }
     const text = rows.map((r) => r.map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
     const a = document.createElement("a");
@@ -126,8 +126,6 @@ export function Lab() {
   const links = [
     { label: "Older adult, English (fresh data)", url: `${base}?fresh=1&as=keeper&lang=en#/` },
     { label: "Older adult, Hindi (fresh data)", url: `${base}?fresh=1&as=keeper&lang=hi#/` },
-    { label: "Older adult, Simple home, English", url: `${base}?fresh=1&as=keeper&lang=en&simple=1#/` },
-    { label: "Older adult, Simple home, Hindi", url: `${base}?fresh=1&as=keeper&lang=hi&simple=1#/` },
     { label: "Caregiver, English (fresh data)", url: `${base}?fresh=1&as=helper&lang=en#/` },
     { label: "Caregiver, Hindi (fresh data)", url: `${base}?fresh=1&as=helper&lang=hi#/` },
   ];
@@ -155,6 +153,8 @@ export function Lab() {
             ))}
           </ul>
           <p className="mt-3 text-mute">Script: 1) Consent: "We are testing the app, not you. You can stop any time." 2) Three short questions. 3) Tasks: read each one exactly, start the timer when they start, stop when they finish or give up. Hint ladder: H1 neutral nudge ("What would you try next?"), H2 narrowed nudge, H3 you show them. 4) After each task: "How easy was that, 1 (very hard) to 7 (very easy)?" 5) Closing questions.</p>
+          <p className="mt-2 text-mute">Outcome codes: I = on their own. H1 or H2 = finished after a nudge (counts as success). H3 = you showed them. F = could not finish. S = skipped. Helpers who are not a son still use the Family helper's phone: tell them the app calls the helper Rahul.</p>
+          <p className="mt-2 text-mute">One week later (optional): ask the older adult to open the app on their own and find one paper. Log it as a new participant with the same code plus W1.</p>
         </div>
 
         <div className="mb-4 flex flex-wrap gap-2">
@@ -195,7 +195,8 @@ export function Lab() {
                     <div className="min-w-0 flex-1">
                       <p className="text-[1.05rem] font-semibold">“{tk.en}”</p>
                       <p className="text-[1rem] text-mute">“{tk.hi}”</p>
-                      <p className="mt-1 text-[0.85rem] text-mute">Tests: {tk.tests} · Start on: {tk.start}</p>
+                      <p className="mt-1 text-[0.85rem] text-mute">Tests: {tk.tests} · Start on: {tk.start} · Target: {tk.target}</p>
+                      {tk.note && <p className="mt-1 rounded-lg bg-paper px-2 py-1 text-[0.85rem]">Moderator note: {tk.note}</p>}
                     </div>
                     <button onClick={() => startStop(tk.id)} className={`flex h-12 items-center gap-2 rounded-xl px-4 font-semibold ${running?.task === tk.id ? "bg-saffron" : "bg-brand text-white"}`}>
                       {running?.task === tk.id ? <Square size={18} /> : <Play size={18} />} {fmt(r.ms + live)}
@@ -221,10 +222,11 @@ export function Lab() {
 
             <div className="rounded-2xl border border-hair bg-white p-4">
               <p className="mb-2 font-semibold">Closing questions</p>
-              <div className="grid gap-2 sm:grid-cols-3">
+              <div className="grid gap-2 sm:grid-cols-2">
                 <label className="text-[0.85rem] text-mute">Would you use this? Why?<textarea rows={2} className={field} value={s.post.use} onChange={(e) => upd({ post: { ...s.post, use: e.target.value } })} /></label>
                 <label className="text-[0.85rem] text-mute">What would stop you?<textarea rows={2} className={field} value={s.post.stop} onChange={(e) => upd({ post: { ...s.post, stop: e.target.value } })} /></label>
                 <label className="text-[0.85rem] text-mute">Who would you let see it?<textarea rows={2} className={field} value={s.post.trust} onChange={(e) => upd({ post: { ...s.post, trust: e.target.value } })} /></label>
+                <label className="text-[0.85rem] text-mute">{s.type === "Caregiver" ? "If you were unwell or away for 3 days, what would happen?" : "If Rahul could not help for a week, who would you ask?"}<textarea rows={2} className={field} value={s.post.away ?? ""} onChange={(e) => upd({ post: { ...s.post, away: e.target.value } })} /></label>
               </div>
             </div>
             <button onClick={() => { if (confirmDelete()) { setSessions((a) => a.filter((x) => x.id !== s.id)); setActiveId(null); } else showToast("Tap again within 3 seconds to delete"); }} className="flex h-11 w-fit items-center gap-2 rounded-xl px-3 text-danger"><Trash2 size={18} /> Delete this participant</button>

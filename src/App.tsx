@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Home as HomeIcon, Search, Plus, Users, Menu, HandHelping, Bell, Sparkles } from "lucide-react";
 import { StoreProvider, useStore } from "./store";
@@ -158,16 +158,34 @@ function Shell() {
         <p className="text-[1.25rem] leading-snug">Know what important papers your family has, and exactly where each original is kept: on the phone or in the almirah.</p>
         <p className="text-[1rem] text-mute">Best on a phone. Open this page on your phone, or try it here.</p>
         <div className="flex flex-wrap gap-2">
-          <button onClick={() => { setSettings({ role: "keeper", onboarded: true }); go(""); }} className={pill(settings.role === "keeper")}>Sunita's phone</button>
-          <button onClick={() => { setSettings({ role: "helper", onboarded: true }); go(""); }} className={pill(settings.role === "helper")}>Rahul's phone</button>
+          <button onClick={() => { setSettings({ role: "keeper", onboarded: true }); go(""); }} className={pill(settings.role === "keeper")}>Sunita’s phone</button>
+          <button onClick={() => { setSettings({ role: "helper", onboarded: true }); go(""); }} className={pill(settings.role === "helper")}>Family helper’s phone</button>
         </div>
         <div className="flex flex-wrap gap-2">
           <button onClick={() => go("lab")} className="h-11 rounded-full border-2 border-hair bg-white px-4 font-semibold">Testing kit</button>
           <button onClick={() => { reset(); showToast("Sample data reset."); go(""); }} className="h-11 rounded-full border-2 border-hair bg-white px-4 font-semibold">Reset sample data</button>
         </div>
       </aside>
-      <div className="h-full w-full sm:h-[min(880px,calc(100vh-48px))] sm:w-[400px] sm:overflow-hidden sm:rounded-[44px] sm:border-[10px] sm:border-ink sm:shadow-2xl">
-        <PhoneApp />
+      <PhoneFrame><PhoneApp /></PhoneFrame>
+    </div>
+  );
+}
+
+/** On a computer the phone keeps its real shape (an iPhone screen plus the frame) and scales to about 90% of the window height, so it never looks squished. On a phone it fills the screen. */
+const FRAME_W = 412, FRAME_H = 864;
+function PhoneFrame({ children }: { children: ReactNode }) {
+  const [vp, setVp] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }));
+  useEffect(() => {
+    const on = () => setVp({ w: window.innerWidth, h: window.innerHeight });
+    window.addEventListener("resize", on);
+    return () => window.removeEventListener("resize", on);
+  }, []);
+  if (vp.w < 640) return <div className="h-full w-full">{children}</div>;
+  const scale = Math.min(1.15, (vp.h * 0.9) / FRAME_H);
+  return (
+    <div className="shrink-0" style={{ width: FRAME_W * scale, height: FRAME_H * scale }}>
+      <div className="overflow-hidden rounded-[44px] border-[10px] border-ink shadow-2xl" style={{ width: FRAME_W, height: FRAME_H, transform: `scale(${scale})`, transformOrigin: "top left" }}>
+        {children}
       </div>
     </div>
   );

@@ -343,6 +343,7 @@ export function Share({ id }: { id: string }) {
           <Link2 size={24} className="text-brand" />
           <span className="flex-1 truncate font-mono text-[0.95rem]">almari.link/s/{doc.id}-{Math.random().toString(36).slice(2, 6)}</span>
         </div>
+        <p className="mt-3 rounded-[18px] bg-brand-soft px-3 py-2 text-[1rem] font-semibold">{lang === "hi" ? "चलेगा: " : "Works until "}{new Date(Date.now() + 864e5).toLocaleString(lang === "hi" ? "hi-IN" : "en-IN", { day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit" })}</p>
         <p className="mt-3 text-[0.98rem] text-mute">{lang === "hi" ? "लिंक खोलने वाले को सिर्फ़ ठप्पे वाली कॉपी दिखेगी। 24 घंटे बाद लिंक बंद। आप कभी भी पहले बंद कर सकते हैं।" : "Whoever opens it sees only the stamped copy. The link stops working after 24 hours, and you can stop it earlier."}</p>
         <Button big className="mt-4 w-full" icon="Copy" onClick={() => { log({ who: viewerId, action: "shared", docId: doc.id, detail: stamp + " (link)" }); setLinkOpen(false); showToast(t("linkToast")); back(); }}>
           {lang === "hi" ? "लिंक कॉपी करें" : "Copy link"}

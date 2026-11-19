@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { HandHelping, Smartphone, Check, Plus, Phone, KeyRound, ShieldAlert, Printer, Bell, Users, FlaskConical, RotateCcw, ChevronRight, ChevronDown, Lock, HeartHandshake, Info } from "lucide-react";
-import { CATEGORIES, READY_FOR, type Access, type CategoryId } from "../data";
+import { HandHelping, Smartphone, Check, Plus, Send, Phone, KeyRound, ShieldAlert, Printer, Bell, Users, FlaskConical, RotateCcw, ChevronRight, ChevronDown, Lock, HeartHandshake, Info } from "lucide-react";
+import { CATEGORIES, READY_FOR, readyDefaultWho, type Access, type CategoryId } from "../data";
 import { useStore } from "../store";
 import { matchBundleItem } from "../search";
 import { Avatar, PlaceView } from "../art";
@@ -48,14 +48,16 @@ export function Ready({ id }: { id: string }) {
   const b = READY_FOR.find((r) => r.id === id)!;
   const [packed, setPacked] = useState<string[]>([]);
   const { settings } = useStore();
-  const [who, setWho] = useState<"sunita" | "ramesh" | "both">(id === "pension" ? "ramesh" : "sunita");
+  const [who, setWho] = useState<"sunita" | "ramesh" | "both">(readyDefaultWho(id));
   const nameOf = (p: "sunita" | "ramesh") => settings.role === "keeper" ? (p === "sunita" ? t("me") : lang === "hi" ? "रमेश जी" : "Ramesh") : p === "sunita" ? (lang === "hi" ? "मम्मी" : "Mummy") : lang === "hi" ? "पापा" : "Papa";
   const docs = who === "both" ? data.docs : data.docs.filter((d) => d.personId === who);
+  const foundCount = b.items.filter((it) => matchBundleItem(docs, it.match).length).length;
+  const helper = settings.role === "helper";
   return (
     <Screen title={lang === "hi" ? b.hi : b.en}>
       <StickerBand art={<ReadyArt id={b.id} className="h-32 w-40" />}
         title={lang === "hi" ? "क्या ले जाना है, और कहाँ रखा है" : "What to take, and which file it's in"}
-        sub={`${packed.length} / ${b.items.length} ${t("packed").toLowerCase()}`} />
+        sub={lang === "hi" ? `${b.items.length} में से ${foundCount} ऐप में मिले · ${packed.length} रख लिए` : `${foundCount} of ${b.items.length} found in the app · ${packed.length} packed`} />
       <p className="mb-2 text-[1.05rem] font-semibold">{lang === "hi" ? "किसके लिए?" : "Who is going?"}</p>
       <div className="mb-4 flex flex-wrap gap-2">
         <Chip active={who === "sunita"} onClick={() => setWho("sunita")}>{nameOf("sunita")}</Chip>
@@ -84,9 +86,12 @@ export function Ready({ id }: { id: string }) {
               </div>
               <div className="mt-2 flex flex-col gap-2">
                 {found.length ? found.map((d) => <DocRow key={d.id} doc={d} />) : (
-                  <button onClick={() => go(`add?name=${encodeURIComponent(lang === "hi" ? it.hi : it.en)}`)} className="flex min-h-12 items-center gap-2 rounded-full bg-brand-soft px-4 text-left font-semibold">
-                    <Plus size={20} /> {t("notAdded")} · {t("addIt")}
-                  </button>
+                  <>
+                    <button onClick={() => go(helper ? `ask?name=${encodeURIComponent(lang === "hi" ? it.hi : it.en)}` : `add?name=${encodeURIComponent(lang === "hi" ? it.hi : it.en)}`)} className="flex min-h-12 items-center gap-2 rounded-full bg-brand-soft px-4 text-left font-semibold">
+                      {helper ? <Send size={20} /> : <Plus size={20} />} {t("notAdded")} · {helper ? (lang === "hi" ? "मम्मी से माँगें" : "Ask Mummy for it") : t("addIt")}
+                    </button>
+                    <p className="px-1 text-[0.92rem] text-mute">{lang === "hi" ? "कागज़ बैग में रख लें तो ऊपर टिक कर दें, ऐप में न हो तब भी।" : "Tick it once the paper is in the bag, even if it is not in the app."}</p>
+                  </>
                 )}
               </div>
             </motion.div>
@@ -94,7 +99,7 @@ export function Ready({ id }: { id: string }) {
         })}
       </div>
       <div className="mt-4 h-3 overflow-hidden rounded-full bg-hair"><motion.div className="h-full rounded-full bg-brand" animate={{ width: `${(packed.length / b.items.length) * 100}%` }} transition={{ type: "spring", stiffness: 200, damping: 25 }} /></div>
-      <p className="mt-2 text-center text-[1rem] font-semibold text-brand">{packed.length} / {b.items.length} {t("packed").toLowerCase()}</p>
+      <p className="mt-2 text-center text-[1rem] font-semibold text-brand">{lang === "hi" ? `${b.items.length} में से ${packed.length} रख लिए` : `${packed.length} of ${b.items.length} packed`}</p>
       {packed.length === b.items.length && <div className="mt-2 flex justify-center"><SuccessBurst size={110} /></div>}
     </Screen>
   );
@@ -287,9 +292,11 @@ export function Reminders() {
                   <span className="mt-1 flex items-center gap-1 text-[0.9rem] text-mute"><Bell size={16} /> {r.notify.map((p) => personName(p)).join(", ")}</span>
                 </span>
               </div>
+              {r.note && !r.done && <p className="mt-2 flex gap-2 rounded-[18px] bg-brand-soft p-3 text-[0.98rem] leading-snug"><Info size={20} className="mt-0.5 shrink-0 text-brand-dark" />{lang === "hi" ? r.noteHi : r.note}</p>}
               <div className="mt-2 flex gap-2">
                 <Button variant={r.done ? "secondary" : "primary"} icon="Check" onClick={() => toggleReminder(r.id)}>{r.done ? (lang === "hi" ? "वापस करें" : "Undo") : t("markDone")}</Button>
                 {r.docId && <Button variant="secondary" icon="FileText" onClick={() => go(`doc/${r.docId}`)}>{lang === "hi" ? "कागज़" : "Paper"}</Button>}
+                {r.readyId && <Button variant="secondary" icon="FileText" onClick={() => go(`ready/${r.readyId}`)}>{lang === "hi" ? "क्या ले जाना है" : "What to take"}</Button>}
               </div>
             </div>
           );
@@ -338,6 +345,7 @@ export function Unwell() {
         <Card><p className="text-[0.9rem] text-mute">{t("hospital")}</p><p className="text-[1.05rem] font-semibold">{u.hospital}</p></Card>
       </div>
       <div className="mt-3 rounded-[22px] bg-brand-soft p-4 text-[1.02rem]">{lang === "hi" ? u.noteHi : u.note}</div>
+      <AwayPlan />
       <SectionTitle>{t("importantPapers")}</SectionTitle>
       <div className="flex flex-col gap-2">{key.map((d) => <DocRow key={d!.id} doc={d!} />)}</div>
       <SectionTitle>{t("passwordDiary")}</SectionTitle>
@@ -347,6 +355,49 @@ export function Unwell() {
       </Card>
       <p className="mt-4 text-[0.95rem] text-mute">{t("visibleTo")}: {u.visibleTo.map((p) => personName(p)).join(", ")}</p>
     </Screen>
+  );
+}
+
+/** The plan for when the usual helper is unwell or away: who covers, what they can see, and what falls due meanwhile. */
+function AwayPlan() {
+  const { data, lang, person, personName, settings } = useStore();
+  const hi = lang === "hi";
+  const cover = data.unwell.call.filter((pid) => pid !== "rahul");
+  const accessOf = (pid: string) => {
+    const m = data.members.find((x) => x.personId === pid);
+    if (!m) return "";
+    if (m.access === "all") return hi ? "सब कुछ देख सकते हैं" : "Sees everything";
+    if (m.access === "emergency") return hi ? "सिर्फ़ यह पेज, ज़रूरत पड़ने पर" : "Opens only this page, in an emergency";
+    return hi ? "चुने हुए फ़ोल्डर" : "Sees chosen folders";
+  };
+  const due = data.reminders.filter((r) => !r.done && daysUntil(r.due) <= 14).sort((a, b) => a.due.localeCompare(b.due));
+  return (
+    <>
+      <SectionTitle>{settings.role === "keeper" ? (hi ? "अगर राहुल मदद न कर पाए" : "If Rahul can’t help") : hi ? "जब आप दूर हों या बीमार हों" : "While you are away or unwell"}</SectionTitle>
+      <div className="rounded-[22px] bg-white lift p-3">
+        <p className="px-1 text-[0.95rem] text-mute">{hi ? "इनसे बात हो चुकी है:" : "These people cover, in this order:"}</p>
+        <ol className="mt-2 flex flex-col gap-2">
+          {cover.map((pid, i) => {
+            const pp = person(pid)!;
+            return (
+              <li key={pid} className="flex items-center gap-3 rounded-2xl bg-[#F6F9F2] p-2.5">
+                <span className="w-6 text-center text-[1.1rem] font-bold">{i + 1}</span>
+                <Avatar person={pp} size={34} />
+                <span className="min-w-0 flex-1"><span className="block font-semibold">{personName(pid)} <span className="font-normal text-mute">· {hi ? pp.relationHi : pp.relation}</span></span><span className="block text-[0.92rem] text-mute">{accessOf(pid)}</span></span>
+              </li>
+            );
+          })}
+        </ol>
+        {due.length > 0 && (
+          <>
+            <p className="mt-3 px-1 text-[0.95rem] text-mute">{hi ? "अगले 2 हफ़्तों में:" : "Due in the next 2 weeks:"}</p>
+            <ul className="mt-1 flex flex-col gap-1 px-1">
+              {due.map((r) => <li key={r.id} className="flex justify-between gap-3 text-[1rem]"><span className="font-semibold">{hi ? r.titleHi : r.title}</span><span className="shrink-0 text-danger">{fmtDate(r.due, lang)}</span></li>)}
+            </ul>
+          </>
+        )}
+      </div>
+    </>
   );
 }
 
@@ -417,7 +468,7 @@ export function More() {
       <SectionTitle>{t("whoIsUsing")}</SectionTitle>
       <div className="flex gap-2">
         <Chip active={settings.role === "keeper"} onClick={() => { setSettings({ role: "keeper" }); go(""); }}>{lang === "hi" ? "सुनीता (मम्मी)" : "Sunita (Mummy)"}</Chip>
-        <Chip active={settings.role === "helper"} onClick={() => { setSettings({ role: "helper" }); go(""); }}>{lang === "hi" ? "राहुल (बेटा)" : "Rahul (son)"}</Chip>
+        <Chip active={settings.role === "helper"} onClick={() => { setSettings({ role: "helper" }); go(""); }}>{lang === "hi" ? "परिवार का मददगार (राहुल)" : "Family helper (Rahul)"}</Chip>
       </div>
       <div className="mt-6 flex flex-col gap-2">
         {links.map((l) => (

@@ -2,7 +2,7 @@
 
 export type Lang = "en" | "hi";
 export type Role = "keeper" | "helper";
-export type CategoryId = "identity" | "health" | "money" | "home" | "vehicle" | "work" | "travel";
+export type CategoryId = "identity" | "health" | "money" | "home" | "bills" | "vehicle" | "work" | "travel";
 export type Art = "aadhaar" | "pan" | "voter" | "passbook" | "policy" | "report" | "prescription" | "card" | "licence" | "paper" | "passport" | "photo";
 export type Access = "all" | "some" | "emergency";
 
@@ -65,6 +65,9 @@ export interface Reminder {
   due: string; // ISO date
   notify: string[]; // person ids
   done?: boolean;
+  note?: string;
+  noteHi?: string;
+  readyId?: string;
 }
 
 export interface Request {
@@ -185,6 +188,16 @@ export const CATEGORIES: {
       { en: "Property tax receipt", hi: "प्रॉपर्टी टैक्स रसीद", art: "paper" },
       { en: "Gas connection book", hi: "गैस कनेक्शन बुक", art: "passbook" },
       { en: "Electricity bill", hi: "बिजली बिल", art: "paper" },
+    ],
+  },
+  {
+    id: "bills", en: "Bills", hi: "बिल", tone: "bg-card", icon: "ReceiptText",
+    suggest: [
+      { en: "Gas bill", hi: "गैस बिल", art: "paper" },
+      { en: "Electricity bill", hi: "बिजली बिल", art: "paper" },
+      { en: "Water bill", hi: "पानी का बिल", art: "paper" },
+      { en: "Phone bill", hi: "फ़ोन बिल", art: "paper" },
+      { en: "Property tax receipt", hi: "प्रॉपर्टी टैक्स रसीद", art: "paper" },
     ],
   },
   {
@@ -313,6 +326,7 @@ export function seed(): AppData {
       { id: "f-orange", placeId: "almirah", spotId: "s1", color: "#D9822B", colorName: "Orange", colorNameHi: "नारंगी", label: "ID cards", labelHi: "पहचान पत्र" },
       { id: "f-locker", placeId: "almirah", spotId: "locker", color: "#6B5B95", colorName: "Purple pouch", colorNameHi: "बैंगनी थैली", label: "Originals", labelHi: "असली कागज़" },
       { id: "f-yellow", placeId: "kitchen", spotId: "d1", color: "#D8B23A", colorName: "Yellow", colorNameHi: "पीली", label: "Kitchen business", labelHi: "किचन बिज़नेस" },
+      { id: "f-white", placeId: "kitchen", spotId: "d1", color: "#9AA0A6", colorName: "White", colorNameHi: "सफ़ेद", label: "Bills", labelHi: "बिल" },
       { id: "f-grey", placeId: "office", spotId: "o1", color: "#7D7D7D", colorName: "Grey", colorNameHi: "स्लेटी", label: "Vehicle & travel", labelHi: "गाड़ी और यात्रा" },
       { id: "f-rahul", placeId: "withrahul", spotId: "p1", color: "#1E5B4F", colorName: "Rahul's", colorNameHi: "राहुल की", label: "Copies", labelHi: "कॉपी" },
     ],
@@ -335,10 +349,14 @@ export function seed(): AppData {
       { id: "d16", title: "FSSAI licence", titleHi: "एफएसएसएआई लाइसेंस", aliases: ["fssai", "food licence", "kitchen licence", "license", "लाइसेंस", "फूड"], personId: "sunita", category: "work", art: "licence", fileId: "f-yellow", source: "camera", expiry: daysFromNow(58), addedBy: "rahul", addedOn: daysAgo(30) },
       { id: "d17", title: "Driving licence", titleHi: "ड्राइविंग लाइसेंस", aliases: ["driving", "dl", "licence", "license", "ड्राइविंग", "लाइसेंस"], personId: "ramesh", category: "vehicle", art: "licence", fileId: "f-grey", source: "digilocker", expiry: daysFromNow(420), addedBy: "rahul", addedOn: daysAgo(40) },
       { id: "d18", title: "Passport", titleHi: "पासपोर्ट", aliases: ["passport", "पासपोर्ट"], personId: "ramesh", category: "identity", art: "passport", fileId: "f-rahul", source: "camera", expiry: daysFromNow(130), addedBy: "rahul", addedOn: daysAgo(50), note: "Original is with Rahul since the visa visit" },
+      { id: "d19", title: "Electricity bill (Oct)", titleHi: "बिजली बिल (अक्टूबर)", aliases: ["electricity", "bijli", "light bill", "bill", "बिजली", "बिल"], personId: "sunita", category: "bills", art: "paper", fileId: "f-white", source: "camera", addedBy: "sunita", addedOn: daysAgo(18) },
+      { id: "d20", title: "Water bill (Oct)", titleHi: "पानी का बिल (अक्टूबर)", aliases: ["water", "pani", "bill", "पानी", "बिल"], personId: "sunita", category: "bills", art: "paper", fileId: "f-white", source: "paper", paperOnly: true, addedBy: "sunita", addedOn: daysAgo(18) },
     ],
     reminders: [
       { id: "r1", docId: "d9", title: "LIC premium due", titleHi: "एलआईसी प्रीमियम भरना है", due: daysFromNow(10), notify: ["ramesh", "rahul"] },
-      { id: "r2", title: "Life certificate for pension (Ramesh)", titleHi: "पेंशन का जीवन प्रमाण (रमेश जी)", due: daysFromNow(12), notify: ["ramesh", "rahul"] },
+      { id: "r2", title: "Life certificate for pension (Ramesh)", titleHi: "पेंशन का जीवन प्रमाण (रमेश जी)", due: daysFromNow(12), notify: ["ramesh", "rahul"], readyId: "pension",
+        note: "Ramesh must go himself: it needs his own face scan or thumb. Take the Pension PPO and his Aadhaar. If the scan fails, ask the bank to do it by hand.",
+        noteHi: "रमेश जी को ख़ुद जाना होगा: उनका चेहरा या अँगूठा लगेगा। पेंशन पीपीओ और आधार साथ ले जाएँ। स्कैन न हो तो बैंक से हाथ से करने को कहें।" },
       { id: "r3", docId: "d11", title: "Health insurance renewal", titleHi: "हेल्थ इंश्योरेंस रिन्यू", due: daysFromNow(17), notify: ["sunita", "rahul"] },
       { id: "r4", docId: "d16", title: "FSSAI licence renewal", titleHi: "एफएसएसएआई लाइसेंस रिन्यू", due: daysFromNow(58), notify: ["sunita", "rahul"] },
       { id: "r5", docId: "d18", title: "Passport renewal (Ramesh)", titleHi: "पासपोर्ट रिन्यू (रमेश जी)", due: daysFromNow(130), notify: ["ramesh", "rahul"] },
@@ -380,3 +398,6 @@ export function seed(): AppData {
     },
   };
 }
+
+/** Who a "Get ready for" list is for when it first opens. Home uses the same rule, so the numbers match. */
+export const readyDefaultWho = (id: string): "sunita" | "ramesh" => (id === "pension" ? "ramesh" : "sunita");

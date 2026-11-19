@@ -105,6 +105,13 @@ export function CatArt({ id, className = "h-14 w-14" }: { id: CategoryId; classN
         <rect x="28" y="30" width="8" height="8" rx="1.5" fill="#FFFFFF" {...S} />
       </>
     ),
+    bills: (
+      <>
+        <path d="M16 8 h32 v48 l-5 -4 l-5 4 l-6 -4 l-6 4 l-5 -4 l-5 4 Z" fill="#FFFFFF" {...S} />
+        <path d="M23 20 h18 M23 28 h18 M23 36 h10" {...S} />
+        <circle cx="40" cy="40" r="7" fill="#9AA0A6" {...S} />
+      </>
+    ),
     travel: (
       <>
         <rect x="14" y="10" width="36" height="38" rx="8" fill="#3F9AA6" {...S} />
@@ -259,6 +266,7 @@ export const FOLDER_COLOR: Record<CategoryId, { body: string; tab: string; text:
   home: { body: "#B9524A", tab: "#B8473B", text: "#FFFFFF" },
   vehicle: { body: "#7A7784", tab: "#7D7D7D", text: "#FFFFFF" },
   work: { body: "#E4C254", tab: "#D8B23A", text: "#2A2208" },
+  bills: { body: "#9AA0A6", tab: "#80868B", text: "#FFFFFF" },
   travel: { body: "#2F8790", tab: "#3F9AA6", text: "#FFFFFF" },
 };
 
