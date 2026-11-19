@@ -2,7 +2,7 @@
 
 Almari keeps a copy of a family's important papers on the phone, and remembers where each original is kept at home: which almirah, which shelf, which file.
 
-A Major Project on aging and digital inclusion at MIT Institute of Design, Pune, by Anubhuti Raj, Drishti Mishra, Navaneeth Sankar K P, Padmashree Naik and Vikhyat Kaushik, guided by Prof. Sohnit Kumar with Vinay.
+A Major Project on aging and digital inclusion at MIT Institute of Design, Pune, by Anubhuti Raj, Drishti Mishra, Navaneeth Sankar K P, Padmashree Naik and Vikhyat Kaushik.
 
 The prototype opens with sample papers for one family, Sunita and her son Rahul, and everything stays on your own device.
 
