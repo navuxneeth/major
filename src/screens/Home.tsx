@@ -391,8 +391,8 @@ const LAYOUT = (() => {
   try {
     const q = new URLSearchParams(window.location.search).get("layout");
     if (q) localStorage.setItem("almari-layout", q);
-    return localStorage.getItem("almari-layout") ?? "a";
-  } catch { return "a"; }
+    return localStorage.getItem("almari-layout") ?? "b";
+  } catch { return "b"; }
 })();
 
 function SimpleTop() {
