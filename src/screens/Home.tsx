@@ -603,7 +603,7 @@ function SimpleB({ pending }: { pending: Request[] }) {
     <>
       <div className="mt-6"><FindField /></div>
       {pending.map((q) => <RequestCard key={q.id} req={q} />)}
-      <p className="mt-6 mb-3 text-[1.12rem] font-semibold">{hi ? "अक्सर चाहिए" : "Often needed"}</p>
+      <p className="mt-6 mb-3 text-[1.12rem] font-semibold">{hi ? "जल्दी खोलें" : "Quick access"}</p>
       <div className="no-scrollbar -mx-4 flex items-start gap-3 overflow-x-auto px-4 pb-1">
         {often.map((d, i) => (
           <motion.button key={d.id} {...rise(i)} whileTap={{ scale: 0.97 }} onClick={() => go(`doc/${d.id}`)} className="flex w-[8.5rem] shrink-0 flex-col text-left">
