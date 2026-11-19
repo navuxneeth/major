@@ -20,7 +20,7 @@ export function LangToggle({ dark = false }: { dark?: boolean }) {
       {(["en", "hi"] as const).map((l) => (
         <button key={l} onClick={() => setSettings({ lang: l })} aria-pressed={settings.lang === l}
           className={`relative z-10 h-11 min-w-12 rounded-full px-3 ${settings.lang === l ? "text-white" : "text-ink"}`}>
-          {settings.lang === l && <motion.span layoutId="lang-pill" className="absolute inset-0 -z-10 rounded-full bg-ink" transition={{ type: "spring", stiffness: 420, damping: 30 }} />}
+          {settings.lang === l && <motion.span layoutId="lang-pill" className="absolute inset-0 -z-10 rounded-full bg-brand" transition={{ type: "spring", stiffness: 420, damping: 30 }} />}
           {l === "en" ? "EN" : "हिं"}
         </button>
       ))}
@@ -253,8 +253,8 @@ function RequestCard({ req }: { req: Request }) {
     <>
       <motion.div initial={{ y: 16, opacity: 0, scale: 0.98 }} animate={{ y: 0, opacity: 1, scale: 1 }} transition={{ type: "spring", stiffness: 220, damping: 20, delay: 0.2 }}
         className="relative mt-5 overflow-hidden rounded-[28px] bg-[#FFF4DC] px-4 pt-3.5 pb-4 text-center">
-        <div className="flex items-center justify-between text-[0.88rem] text-mute">
-          <span className="flex items-center gap-1.5"><Clock size={15} /> {timeAgo(req.at, lang)}</span>
+        <div className="flex items-center justify-between text-[0.94rem] text-mute">
+          <span className="flex items-center gap-1.5"><Clock size={16} /> {timeAgo(req.at, lang)}</span>
           <span className="flex items-center gap-1.5"><span className="relative"><Avatar person={from} size={24} /><motion.span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-[#FFF4DC] bg-[#34C759]" animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.6, repeat: Infinity }} /></span>{fromName}</span>
         </div>
         <p className="title-tight mt-2 text-center text-[1.5rem] leading-tight font-bold">{lang === "hi" ? `${fromName} को ${doc ? docTitle(doc) : req.docName} चाहिए` : `${fromName} needs your ${doc ? docTitle(doc).toLowerCase() : req.docName}`}</p>
@@ -390,7 +390,7 @@ export function SimpleHome() {
   const id = data.docs.find((d) => d.id === "d1");
   const tiles = [
     { key: "find", en: "Find a paper", hi: "कागज़ ढूँढें", to: "find", guide: "home-find", dark: true,
-      art: <span className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full bg-white/15"><Mic size={34} /></span> },
+      art: <span className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full bg-white text-brand"><Mic size={34} /></span> },
     { key: "id", en: "Show my ID", hi: "मेरा आईडी", to: "counter/d1", guide: "home-id",
       art: id ? <span className="sticker block w-[7.5rem]"><DocArt doc={id} ownerName={(person(id.personId)?.name ?? "") + " Sharma"} className="block h-auto w-full rounded-lg" /></span> : <IdCard size={40} /> },
     { key: "how", en: "Show me how", hi: "कैसे करें", to: "help", guide: "home-help", art: <span className="sticker block"><HelpArt className="h-[5.5rem] w-[5.5rem]" /></span> },
@@ -411,7 +411,7 @@ export function SimpleHome() {
         <div className="mt-5 grid grid-cols-2 gap-3">
           {tiles.map((x, i) => (
             <motion.button key={x.key} {...rise(i)} whileTap={{ scale: 0.97 }} onClick={() => go(x.to)} data-guide={x.guide}
-              className={`flex aspect-square flex-col items-center justify-between rounded-[28px] px-3 pt-5 pb-4 ${x.dark ? "bg-ink text-white" : "bg-card"}`}>
+              className={`flex aspect-square flex-col items-center justify-between rounded-[28px] px-3 pt-5 pb-4 ${x.dark ? "bg-brand text-white" : "bg-card"}`}>
               <span className="flex flex-1 items-center justify-center">{x.art}</span>
               <span className="title-tight text-center text-[1.15rem] leading-tight font-bold">{hi ? x.hi : x.en}</span>
             </motion.button>
@@ -469,7 +469,7 @@ export function HelperHome() {
                     <Send size={20} className="shrink-0" aria-hidden />
                     <span className="min-w-0 flex-1 py-3">
                       <span className="block font-semibold leading-snug">{doc ? docTitle(doc) : q.docName}</span>
-                      <span className="block text-[0.9rem] leading-snug text-mute">{q.purpose} · {timeAgo(q.at, lang)}</span>
+                      <span className="block text-[0.94rem] leading-snug text-mute">{q.purpose} · {timeAgo(q.at, lang)}</span>
                     </span>
                     <span className={`shrink-0 rounded-full px-3 py-1 text-[0.88rem] font-semibold ${q.status === "sent" ? "bg-[#34C759] text-white" : q.status === "declined" ? "bg-white" : "bg-[#F7D27A]"}`}>
                       {q.status === "sent" ? t("received") : q.status === "declined" ? (hi ? "बाद में" : "Later") : t("waiting")}

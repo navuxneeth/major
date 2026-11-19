@@ -301,7 +301,7 @@ export function Add() {
 function MethodBtn({ icon: I, title, sub, onClick, primary }: { icon: any; title: string; sub: string; onClick: () => void; primary?: boolean }) {
   return (
     <motion.button whileTap={{ scale: 0.98 }} onClick={onClick}
-      className={`flex min-h-[88px] items-center gap-4 rounded-[28px] px-4 text-left ${primary ? "bg-ink text-white" : "bg-card"}`}>
+      className={`flex min-h-[88px] items-center gap-4 rounded-[28px] px-4 text-left ${primary ? "bg-brand text-white" : "bg-card"}`}>
       <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full ${primary ? "bg-white/15" : "bg-white"}`}><I size={26} aria-hidden /></span>
       <span>
         <span className="title-tight block text-[1.25rem] leading-tight font-bold">{title}</span>

@@ -68,7 +68,7 @@ function OwnerLend() {
         <div className="grid grid-cols-2 gap-2">
           {APPS.map((a) => (
             <motion.button key={a.id} whileTap={{ scale: 0.96 }} onClick={() => setApp(a.id)} data-guide={`lend-app-${a.id}`}
-              className={`flex min-h-32 flex-col justify-between rounded-[26px] p-3 text-left ${app === a.id ? "bg-ink text-white" : "bg-card"}`}>
+              className={`flex min-h-32 flex-col justify-between rounded-[26px] p-3 text-left ${app === a.id ? "bg-brand text-white" : "bg-card"}`}>
               <span className={`flex h-12 w-12 items-center justify-center rounded-full ${app === a.id ? "bg-white/15" : "bg-white"}`}><a.icon size={24} /></span>
               <span>
                 <span className="block text-[1.08rem] font-semibold">{hi ? a.hi : a.en}</span>

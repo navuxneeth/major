@@ -29,7 +29,7 @@ export function Onboard() {
             <div className="flex flex-col gap-3">
               {(["en", "hi"] as const).map((l) => (
                 <motion.button key={l} whileTap={{ scale: 0.97 }} onClick={() => { setSettings({ lang: l }); setStep(1); }}
-                  className={`h-16 rounded-full text-[1.25rem] font-semibold ${l === "en" ? "bg-ink text-white" : "bg-card text-ink"}`}>{l === "en" ? "English" : "हिंदी"}</motion.button>
+                  className={`h-16 rounded-full text-[1.25rem] font-semibold ${l === "en" ? "bg-brand text-white" : "bg-card text-ink"}`}>{l === "en" ? "English" : "हिंदी"}</motion.button>
               ))}
             </div>
           </>

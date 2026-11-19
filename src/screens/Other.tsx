@@ -409,7 +409,7 @@ export function More() {
       <div className="flex gap-2">
         {([0, 1, 2] as const).map((s) => (
           <button key={s} onClick={() => setSettings({ scale: s })} aria-pressed={settings.scale === s}
-            className={`flex h-14 flex-1 items-center justify-center rounded-full border-2 font-semibold ${settings.scale === s ? "border-ink bg-ink text-white" : "border-transparent bg-card"}`}
+            className={`flex h-14 flex-1 items-center justify-center rounded-full border-2 font-semibold ${settings.scale === s ? "border-ink bg-brand text-white" : "border-transparent bg-card"}`}
             style={{ fontSize: [16, 20, 24][s] }}>A{s > 0 ? "+".repeat(s) : ""}</button>
         ))}
       </div>

@@ -39,7 +39,7 @@ export function Button({ children, onClick, variant = "primary", className = "",
   children: ReactNode; onClick?: () => void; variant?: BtnVariant; className?: string; icon?: string; disabled?: boolean; type?: "button" | "submit"; big?: boolean; guide?: string;
 }) {
   const v = {
-    primary: "bg-ink text-white active:bg-black shadow-[0_10px_20px_-12px_rgba(0,0,0,0.6)]",
+    primary: "bg-brand text-white active:bg-brand-dark",
     secondary: "bg-card text-ink active:bg-hair",
     ghost: "bg-transparent text-ink underline-offset-4 active:bg-card",
     danger: "bg-danger-soft text-danger active:brightness-95",
@@ -80,7 +80,7 @@ export function Chip({ children, onClick, active = false, icon, className = "", 
       whileTap={{ scale: 0.96 }}
       layout
       onClick={onClick}
-      className={`inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full px-5 text-[1rem] font-medium ${active ? "bg-ink text-white" : "bg-card text-ink"} ${className}`}
+      className={`inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full px-5 text-[1rem] font-medium ${active ? "bg-brand text-white" : "bg-card text-ink"} ${className}`}
     >
       {icon && <Icon name={icon} size={20} />}
       {children}

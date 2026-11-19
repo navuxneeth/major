@@ -4,11 +4,11 @@
   --color-paper: #FFFFFF;
   --color-card: #F4F4F5;
   --color-ink: #111111;
-  --color-mute: #5E5E63;
+  --color-mute: #48484D;
   --color-hair: #EBEBED;
-  --color-brand: #111111;
-  --color-brand-dark: #000000;
-  --color-brand-soft: #F1F1F3;
+  --color-brand: var(--brand, #B5482A);
+  --color-brand-dark: var(--brand-dark, #963A21);
+  --color-brand-soft: var(--brand-soft, #FBEAE4);
   --color-glass: rgba(242, 242, 244, 0.72);
   --color-saffron: #E8A33D;
   --color-saffron-soft: #FFF4DC;

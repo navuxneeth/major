@@ -78,7 +78,7 @@ export function LocationPicker({ value, onChange }: { value: string | null; onCh
           <button
             key={s.id}
             onClick={() => { setSpotId(s.id); setMaking(false); }}
-            className={`min-h-12 rounded-full border-2 px-4 text-[1rem] font-medium ${spotId === s.id ? "border-ink bg-ink text-white" : "border-transparent bg-card"}`}
+            className={`min-h-12 rounded-full border-2 px-4 text-[1rem] font-medium ${spotId === s.id ? "border-ink bg-brand text-white" : "border-transparent bg-card"}`}
           >
             {lang === "hi" ? s.hi : s.en}
           </button>
@@ -117,7 +117,7 @@ export function LocationPicker({ value, onChange }: { value: string | null; onCh
                 <p className="mt-3 mb-2 font-semibold">{lang === "hi" ? "फ़ाइल किस चीज़ की है?" : "What is in it?"}</p>
                 <div className="flex flex-wrap gap-2">
                   {LABELS.map((l) => (
-                    <button key={l.en} onClick={() => setLabel(l)} className={`min-h-11 rounded-full border-2 px-3 ${label.en === l.en ? "border-ink bg-ink text-white" : "border-hair"}`}>
+                    <button key={l.en} onClick={() => setLabel(l)} className={`min-h-11 rounded-full border-2 px-3 ${label.en === l.en ? "border-ink bg-brand text-white" : "border-hair"}`}>
                       {lang === "hi" ? l.hi : l.en}
                     </button>
                   ))}

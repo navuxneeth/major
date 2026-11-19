@@ -81,7 +81,7 @@ export function Find() {
                     <span className="title-tight block text-[1.25rem] leading-tight font-bold">{lang === "hi" ? "मम्मी से माँगें" : "Ask Mummy for it"}</span>
                     <span className="block text-[0.92rem] text-mute">{lang === "hi" ? `"${q.trim()}" के लिए एक छोटा सा अनुरोध भेजें` : `She gets one card: "${q.trim()}", with a Send button`}</span>
                   </span>
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-ink text-white"><Send size={22} /></span>
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand text-white"><Send size={22} /></span>
                 </motion.button>
               ) : <AddNamed name={q} />}
             </div>
