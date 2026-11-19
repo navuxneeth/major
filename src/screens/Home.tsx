@@ -367,7 +367,7 @@ export function KeeperHome() {
   const pending = data.requests.filter((q) => q.to === "sunita" && q.status === "pending");
   const hi = lang === "hi";
   return (
-    <div className="pb-32">
+    <div className="pb-28">
       <Top hello={`${greeting(lang)}, ${hi ? "सुनीता जी" : "Sunita ji"}`} title={hi ? "मेरे कागज़" : "My papers"} />
       <div className="px-4">
         <FilterChips value={filter} onChange={setFilter} />
@@ -447,10 +447,7 @@ function SimpleFooter() {
     <>
       <SectionLabel>{hi ? "मेरी फ़ाइलें" : "My files"}</SectionLabel>
       <Folders docs={data.docs} view="grid" />
-      <button onClick={() => setSettings({ simple: false })} className="mt-6 flex min-h-12 w-full items-center justify-center gap-2 rounded-full font-semibold text-brand">
-        <LayoutGrid size={20} /> {hi ? "सारे फ़ीचर दिखाएँ" : "Show all features"}
-      </button>
-      <button onClick={() => go("more")} className="flex min-h-12 w-full items-center justify-center rounded-full font-medium text-mute">{hi ? "सेटिंग" : "Settings"}</button>
+
     </>
   );
 }
@@ -460,7 +457,7 @@ export function SimpleHome() {
   const pending = data.requests.filter((q) => q.to === "sunita" && q.status === "pending");
   const Layout = LAYOUT === "b" ? SimpleB : LAYOUT === "c" ? SimpleC : SimpleA;
   return (
-    <div className="pb-16">
+    <div className="pb-28">
       <div className="wash pt-safe px-4 pb-6">
         <SimpleTop />
         <Layout pending={pending} />
@@ -560,8 +557,8 @@ export function HelperHome() {
   const mine = data.requests.filter((q) => q.from === "rahul").slice(0, 3);
   const lend = data.lend;
   return (
-    <div className="pb-32">
-      <Top hello={hi ? "नागपुर · आप बेंगलुरु से देख रहे हैं" : "Nagpur · viewing from Bengaluru"} title={hi ? "मम्मी-पापा के कागज़" : "Mummy & Papa's papers"} />
+    <div className="pb-28">
+      <Top hello={hi ? "नागपुर · बेंगलुरु से" : "Nagpur · from Bengaluru"} title={hi ? "मम्मी-पापा के कागज़" : "Mummy & Papa's papers"} />
       <div className="px-4">
         <FilterChips value={filter} onChange={setFilter} />
         {lend?.status === "waiting" && (
@@ -590,9 +587,9 @@ export function HelperHome() {
                     <span className="min-w-0 flex-1 py-3">
                       <span className="block font-semibold leading-snug">{doc ? docTitle(doc) : q.docName}</span>
                       <span className="block text-[0.94rem] leading-snug text-mute">{q.purpose} · {timeAgo(q.at, lang)}</span>
-                    </span>
-                    <span className={`shrink-0 rounded-full px-3 py-1 text-[0.88rem] font-semibold ${q.status === "sent" ? "bg-white text-ink ring-1 ring-[#D8D8DE]" : "bg-white text-mute ring-1 ring-[#D8D8DE]"}`}>
+                    <span className={`mt-1.5 inline-block rounded-full px-3 py-0.5 text-[0.88rem] font-semibold ${q.status === "sent" ? "bg-white text-ink ring-1 ring-[#D8D8DE]" : "bg-white text-mute ring-1 ring-[#D8D8DE]"}`}>
                       {q.status === "sent" ? t("received") : q.status === "declined" ? (hi ? "बाद में" : "Later") : t("waiting")}
+                    </span>
                     </span>
                   </motion.button>
                 );

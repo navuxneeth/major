@@ -245,3 +245,18 @@ export function StickerBand({ art, title, sub, className = "" }: { art: ReactNod
     </motion.div>
   );
 }
+
+
+/** The app icon: a two-door almirah on leaf green, like an iOS app icon. */
+export function AppMark({ size = 64 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden className="shrink-0 drop-shadow-[0_8px_16px_rgba(42,96,18,0.28)]">
+      <rect width="64" height="64" rx="15" fill="#2A6012" />
+      <rect x="18" y="12" width="28" height="38" rx="3" fill="none" stroke="#FFFFFF" strokeWidth="3" />
+      <path d="M32 12v38" stroke="#FFFFFF" strokeWidth="3" />
+      <rect x="27.5" y="28" width="2.5" height="7" rx="1.25" fill="#F2B544" />
+      <rect x="34" y="28" width="2.5" height="7" rx="1.25" fill="#F2B544" />
+      <path d="M21 50v3.5M43 50v3.5" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  );
+}

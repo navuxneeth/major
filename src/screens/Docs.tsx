@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { Search, X, ShieldCheck, MessageCircle, Camera, Bell, Eye, Link2, Maximize2, Send } from "lucide-react";
+import { Search, X, ShieldCheck, MessageCircle, Camera, Bell, Eye, Link2, Maximize2, Send , MapPin } from "lucide-react";
 import { CATEGORIES } from "../data";
 import { useStore } from "../store";
 import { searchDocs } from "../search";
@@ -168,23 +168,38 @@ export function DocDetail({ id }: { id: string }) {
       )}
 
       <SectionTitle>{t("originalKept")}</SectionTitle>
-      <div className="rounded-[22px] bg-card p-3">
+      <div className="overflow-hidden rounded-[22px] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05),0_10px_28px_-16px_rgba(40,70,20,0.28)]">
         {loc?.place && (
-          <PlaceView place={loc.place} files={data.files} highlight={doc.fileId} person={loc.place.personId ? person(loc.place.personId) : undefined} />
+          <div className="bg-card px-4 pt-5 pb-6">
+            <PlaceView place={loc.place} files={data.files} highlight={doc.fileId} person={loc.place.personId ? person(loc.place.personId) : undefined} />
+          </div>
         )}
         {loc ? (
-          <ol className="mt-2 flex flex-col gap-2 rounded-[18px] bg-white p-3 text-[1.1rem]">
-            <li className="flex items-center gap-2"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink text-[0.85rem] font-bold text-white">1</span><b>{loc.placeName}</b></li>
-            <li className="flex items-center gap-2"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink text-[0.85rem] font-bold text-white">2</span>{loc.spotName}</li>
-            <li className="flex items-center gap-2"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink text-[0.85rem] font-bold text-white">3</span>
-              <span className="inline-block h-5 w-4 rounded-sm border border-black/20" style={{ background: loc.file.color }} />{loc.fileName}
-            </li>
+          <ol className="px-4">
+            {[
+              { k: lang === "hi" ? "जगह" : "Place", v: loc.placeName },
+              { k: lang === "hi" ? "खाना" : "Shelf", v: loc.spotName },
+              { k: lang === "hi" ? "फ़ाइल" : "File", v: loc.fileName, color: loc.file.color },
+            ].map((x, i) => (
+              <li key={x.k} className={`flex items-center gap-3 py-3.5 ${i ? "border-t border-[#ECECF0]" : ""}`}>
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-soft text-[0.94rem] font-bold text-brand">{i + 1}</span>
+                <span className="w-16 shrink-0 text-[0.94rem] text-mute">{x.k}</span>
+                <span className="flex min-w-0 flex-1 items-center gap-2 text-[1.06rem] font-semibold">
+                  {x.color && <span className="inline-block h-5 w-4 shrink-0 rounded-[3px] ring-1 ring-black/15" style={{ background: x.color }} />}
+                  {x.v}
+                </span>
+              </li>
+            ))}
           </ol>
         ) : (
-          <p className="text-mute">{lang === "hi" ? "जगह अभी नहीं लिखी" : "Place not noted yet"}</p>
+          <p className="px-4 pt-4 text-mute">{lang === "hi" ? "जगह अभी नहीं लिखी" : "Place not noted yet"}</p>
         )}
-        {doc.note && <p className="mt-2 rounded-2xl bg-paper p-2 text-[0.95rem] text-mute">{doc.note}</p>}
-        <Button variant="ghost" icon="MapPin" className="mt-1 w-full" onClick={() => { setNewFile(doc.fileId); setMoving(true); }}>{t("changePlace")}</Button>
+        {doc.note && <p className="mx-4 mb-2 rounded-2xl bg-card p-3 text-[0.94rem] text-mute">{doc.note}</p>}
+        <div className="border-t border-[#ECECF0] px-2 py-1">
+          <button onClick={() => { setNewFile(doc.fileId); setMoving(true); }} className="flex min-h-12 items-center gap-2 px-2 text-[1rem] font-semibold text-brand">
+            <MapPin size={18} /> {t("changePlace")}
+          </button>
+        </div>
       </div>
 
       {doc.expiry && n !== null && (

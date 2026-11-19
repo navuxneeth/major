@@ -85,7 +85,7 @@ function PhoneApp() {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => { scroller.current?.scrollTo({ top: 0 }); setScrolled(false); }, [route.path]);
   const top = route.parts[0] ?? "";
-  const hideNav = ["add", "counter", "share", "phone", "lend"].includes(top) || (settings.role === "keeper" && settings.simple);
+  const hideNav = ["add", "counter", "share", "phone", "lend"].includes(top);
   const showHelpFab = false && settings.role === "keeper" && !["", "help", "add", "counter", "share", "phone", "lend"].includes(top) && !guide && !settings.simple;
   const lendActive = settings.role === "keeper" && data.lend?.status === "active" && top !== "lend";
   return (
