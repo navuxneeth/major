@@ -19,10 +19,9 @@ export function Help() {
   }
 
   return (
-    <Screen title={hi ? "मदद" : "Help"} sub={hi ? "हम दिखाएँगे कहाँ दबाना है। दबाएँगे आप ख़ुद।" : "We show you where to tap. You do the tapping."}>
+    <Screen title={hi ? "मदद" : "Help"} >
       <StickerBand tone="bg-[#FFF4DC]" art={<HelpArt className="h-36 w-36" />}
-        title={hi ? "पूछिए, “यह कैसे करूँ?”" : "Ask, “How do I…?”"}
-        sub={hi ? "एक घेरा सही बटन पर आएगा, और आवाज़ बताएगी।" : "A ring lands on the right button and a voice tells you what to do."} />
+        title={hi ? "पूछिए, “यह कैसे करूँ?”" : "Ask, “How do I…?”"} />
 
       <div className="flex items-center gap-3 rounded-full bg-card p-2 pr-5">
         <MicButton onText={(text, final) => {
@@ -76,7 +75,7 @@ export function PhoneMessages() {
   ];
   return (
     <div className="min-h-full bg-white">
-      <div className="sticky top-0 z-10 flex items-center gap-2 border-b border-hair bg-white px-3 py-3">
+      <div className="pt-safe sticky top-0 z-10 flex items-center gap-2 border-b border-hair bg-white px-3 pb-3">
         <button onClick={back} className="h-11 rounded-full px-3 font-semibold text-brand">{hi ? "← पीछे" : "← Back"}</button>
         <h1 className="text-[1.3rem] font-semibold">{hi ? "मैसेज" : "Messages"}</h1>
         <span className="ml-auto rounded-full bg-paper px-2 py-1 text-[0.75rem] text-mute">{hi ? "फ़ोन का मैसेज ऐप (नमूना)" : "Phone's Messages app (sample)"}</span>

@@ -50,7 +50,7 @@ function OwnerLend() {
 
   if (!lend || lend.status === "ended" && !lend.endedBy) {
     return (
-      <Screen title={hi ? "फ़ोन उधार दें" : "Lend my phone"} sub={hi ? "राहुल आपके फ़ोन पर एक ऐप चला सकेंगे" : "Rahul can use one app on your phone"}>
+      <Screen title={hi ? "फ़ोन उधार दें" : "Lend my phone"}>
         <div className="mb-4 flex items-start gap-2 rounded-[20px] bg-[#FFF4DC] p-3 text-[0.92rem]">
           <ShieldCheck size={20} className="mt-0.5 shrink-0" />
           <span>{hi ? "आज़माया गया आइडिया। फ़ोन पर बैंक जैसी निजी चीज़ें होती हैं, इसलिए मुख्य ऐप में नहीं है। रोज़ की मदद के लिए “कैसे करें, दिखाओ” है।" : "An idea we explored. Phones hold bank and other private data, so it is not part of the main app. “Show me how” covers everyday help."}</span>

@@ -38,7 +38,7 @@ function greeting(lang: string) {
 function Top({ hello, title }: { hello: string; title: string }) {
   const { go, t } = useStore();
   return (
-    <div className="pt-safe px-4">
+    <div className="wash pt-safe px-4 pb-1">
       <div className="flex items-center justify-between gap-3">
         <p className="min-w-0 flex-1 text-[1rem] leading-snug text-mute">{hello}</p>
         <LangToggle />

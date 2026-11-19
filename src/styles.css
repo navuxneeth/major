@@ -96,4 +96,4 @@ input.bg-transparent:focus-visible { outline: none; }
 /* Very narrow phones: drop the document thumbnail so names and places get the width */
 @media (max-width: 345px) { .doc-thumb { display: none; } }
 
-.wash { background: linear-gradient(180deg, #DCEFC3 0%, #EEF7E2 55%, #FFFFFF 100%); }
+.wash { background: linear-gradient(180deg, #E9F4DC 0%, #F4F9EE 55%, #FFFFFF 100%); }

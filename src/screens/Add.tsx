@@ -301,11 +301,10 @@ export function Add() {
 function MethodBtn({ icon: I, title, sub, onClick, primary }: { icon: any; title: string; sub: string; onClick: () => void; primary?: boolean }) {
   return (
     <motion.button whileTap={{ scale: 0.98 }} onClick={onClick}
-      className={`flex min-h-[88px] items-center gap-4 rounded-[28px] px-4 text-left ${primary ? "bg-brand text-white" : "bg-card"}`}>
-      <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full ${primary ? "bg-white/15" : "bg-white"}`}><I size={26} aria-hidden /></span>
+      className={`flex min-h-[4.5rem] items-center gap-4 rounded-[22px] px-4 text-left ${primary ? "bg-brand text-white" : "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05),0_8px_22px_-16px_rgba(40,70,20,0.28)]"}`}>
+      <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${primary ? "bg-white text-brand" : "bg-brand-soft text-brand"}`}><I size={24} aria-hidden /></span>
       <span>
-        <span className="title-tight block text-[1.25rem] leading-tight font-bold">{title}</span>
-        <span className={`block text-[0.92rem] ${primary ? "text-white/80" : "text-mute"}`}>{sub}</span>
+        <span className="block text-[1.12rem] leading-tight font-semibold">{title}</span>
       </span>
     </motion.button>
   );

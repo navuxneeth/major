@@ -19,9 +19,7 @@ export function Category({ id }: { id: CategoryId }) {
   const missing = cat.suggest.filter((s) => !docs.some((d) => d.title.toLowerCase().includes(s.en.toLowerCase().split(" ")[0].toLowerCase())));
   return (
     <Screen title={lang === "hi" ? cat.hi : cat.en} sub={`${docs.length} ${t("documents")}`}>
-      <StickerBand art={<CatArt id={cat.id} className="h-32 w-32" />}
-        title={lang === "hi" ? "हर कागज़, और कहाँ रखा है" : "Each paper, and where it’s kept"}
-        sub={`${docs.filter((d) => d.paperOnly).length} ${lang === "hi" ? "सिर्फ़ कागज़ पर" : "only on paper"}`} />
+
       <div className="flex flex-col gap-2">
         {docs.map((d, i) => <motion.div key={d.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i }}><DocRow doc={d} /></motion.div>)}
         {!docs.length && <EmptyNote>{lang === "hi" ? "अभी इस फ़ोल्डर में कुछ नहीं है।" : "Nothing in this folder yet."}</EmptyNote>}
@@ -55,7 +53,7 @@ export function Ready({ id }: { id: string }) {
   const nameOf = (p: "sunita" | "ramesh") => settings.role === "keeper" ? (p === "sunita" ? t("me") : lang === "hi" ? "रमेश जी" : "Ramesh") : p === "sunita" ? (lang === "hi" ? "मम्मी" : "Mummy") : lang === "hi" ? "पापा" : "Papa";
   const docs = who === "both" ? data.docs : data.docs.filter((d) => d.personId === who);
   return (
-    <Screen title={lang === "hi" ? b.hi : b.en} sub={t("bundleNote")}>
+    <Screen title={lang === "hi" ? b.hi : b.en}>
       <StickerBand art={<ReadyArt id={b.id} className="h-32 w-40" />}
         title={lang === "hi" ? "क्या ले जाना है, और कहाँ रखा है" : "What to take, and which file it's in"}
         sub={`${packed.length} / ${b.items.length} ${t("packed").toLowerCase()}`} />
@@ -120,10 +118,7 @@ export function Family() {
   const verb = (a: string) => ({ viewed: t("viewed"), added: t("addedA"), shared: t("shared"), asked: t("asked"), sent: t("sentA"), moved: t("moved"), access: "" } as Record<string, string>)[a] ?? a;
 
   return (
-    <Screen title={t("familyTitle")} sub={isKeeper ? t("familySub") : t("helperNote")}>
-      <StickerBand tone="bg-[#FFF4DC]" art={<FamilyArt className="h-28 w-44" />}
-        title={isKeeper ? (lang === "hi" ? "कौन क्या देखे, आप तय करें" : "You decide who sees what") : (lang === "hi" ? "मम्मी तय करती हैं" : "Mummy decides who sees what")}
-        sub={`${data.members.length} ${lang === "hi" ? "लोग" : "people"}`} />
+    <Screen title={t("familyTitle")}>
       <div className="flex flex-col gap-2">
         {data.people.filter((p) => p.owner && !data.members.some((m) => m.personId === p.id)).map((p) => (
           <Card key={p.id} className="flex items-center gap-3">
@@ -234,7 +229,7 @@ export function Ask() {
   const [why, setWhy] = useState("");
   const match = data.docs.find((d) => d.title.toLowerCase() === doc.toLowerCase() || d.titleHi === doc || d.aliases.includes(doc.toLowerCase()));
   return (
-    <Screen title={t("askTitle")} sub={t("askSub")}>
+    <Screen title={t("askTitle")}>
       <p className="mb-2 text-[1.1rem] font-semibold">{t("askWhich")}</p>
       <div className="flex flex-wrap gap-2">
         {ASK_DOCS.map((d) => {
@@ -276,7 +271,7 @@ export function Reminders() {
   const [due, setDue] = useState("");
   const list = [...data.reminders].sort((a, b) => Number(!!a.done) - Number(!!b.done) || a.due.localeCompare(b.due));
   return (
-    <Screen title={t("remindersTitle")} sub={t("remindersSub")}>
+    <Screen title={t("remindersTitle")}>
       <div className="flex flex-col gap-2">
         {list.map((r) => {
           const n = daysUntil(r.due);
@@ -294,7 +289,7 @@ export function Reminders() {
                 </span>
               </div>
               <div className="mt-2 flex gap-2">
-                <Button variant={r.done ? "secondary" : "primary"} icon="Check" className="flex-1" onClick={() => toggleReminder(r.id)}>{r.done ? (lang === "hi" ? "वापस करें" : "Undo") : t("markDone")}</Button>
+                <Button variant={r.done ? "secondary" : "primary"} icon="Check" onClick={() => toggleReminder(r.id)}>{r.done ? (lang === "hi" ? "वापस करें" : "Undo") : t("markDone")}</Button>
                 {r.docId && <Button variant="secondary" icon="FileText" onClick={() => go(`doc/${r.docId}`)}>{lang === "hi" ? "कागज़" : "Paper"}</Button>}
               </div>
             </div>

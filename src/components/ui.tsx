@@ -15,10 +15,10 @@ export function Screen({ title, children, right, onBack, noBack, sub }: { title?
   return (
     <div className="flex min-h-full flex-col">
       {title !== undefined && (
-        <header className="pt-safe sticky top-0 z-20 bg-white/95 px-4 pb-3 backdrop-blur-xl">
+        <header className="wash pt-safe px-4 pb-4">
           <div className="flex h-12 items-center gap-2">
             {!noBack && (
-              <motion.button whileTap={{ scale: 0.9 }} onClick={onBack ?? back} className="-ml-1 flex h-12 w-12 items-center justify-center rounded-full bg-card text-ink" aria-label={t("back")}>
+              <motion.button whileTap={{ scale: 0.9 }} onClick={onBack ?? back} className="-ml-1 flex h-12 w-12 items-center justify-center rounded-full bg-white text-ink shadow-[0_6px_16px_-10px_rgba(0,0,0,0.35)]" aria-label={t("back")}>
                 <ArrowLeft size={24} />
               </motion.button>
             )}
@@ -233,13 +233,15 @@ export function EmptyNote({ icon = "Info", children }: { icon?: string; children
 }
 
 /** Header card used on inner screens: same language as the home sticker cards (soft card, big tight title, sticker art peeking out). */
-export function StickerBand({ art, title, sub, tone = "bg-card", className = "" }: { art: ReactNode; title: ReactNode; sub?: ReactNode; tone?: string; className?: string }) {
+export function StickerBand({ art, title, sub, className = "" }: { art: ReactNode; title: ReactNode; sub?: ReactNode; tone?: string; className?: string }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className={`relative mb-5 flex min-h-[148px] flex-col justify-start overflow-hidden rounded-[28px] ${tone} p-4 pr-[36%] ${className}`}>
-      <p className="title-tight relative z-10 text-[1.3rem] leading-[1.08] font-bold">{title}</p>
-      {sub && <p className="relative z-10 mt-1 text-[0.92rem] leading-snug text-mute">{sub}</p>}
-      <motion.span initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 180, damping: 16, delay: 0.08 }}
-        className="sticker absolute -right-2 -bottom-3 block">{art}</motion.span>
+    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+      className={`mb-5 flex items-center gap-4 rounded-[22px] bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05),0_10px_28px_-16px_rgba(40,70,20,0.28)] ${className}`}>
+      <div className="min-w-0 flex-1">
+        <p className="text-[1.12rem] leading-snug font-semibold">{title}</p>
+        {sub && <p className="mt-0.5 text-[1rem] leading-snug text-mute">{sub}</p>}
+      </div>
+      <span className="sticker flex h-20 w-24 shrink-0 items-center justify-center [&>*]:max-h-20 [&>*]:max-w-24">{art}</span>
     </motion.div>
   );
 }
