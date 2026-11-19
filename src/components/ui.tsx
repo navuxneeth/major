@@ -52,7 +52,7 @@ export function Button({ children, onClick, variant = "primary", className = "",
       whileTap={{ scale: 0.97 }}
       disabled={disabled}
       onClick={onClick}
-      className={`flex items-center justify-center gap-2 rounded-full px-5 py-2 text-center leading-tight font-semibold transition-colors disabled:opacity-35 ${big ? "min-h-16 text-[1.15rem]" : "min-h-14 text-[1.05rem]"} ${v} ${className}`}
+      className={`flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 font-semibold transition-colors disabled:opacity-35 ${big ? "min-h-16 text-[1.15rem]" : "min-h-14 text-[1.05rem]"} ${v} ${className}`}
     >
       {icon && <Icon name={icon} size={big ? 22 : 20} className="shrink-0" />}
       {children}
