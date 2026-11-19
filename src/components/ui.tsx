@@ -15,7 +15,7 @@ export function Screen({ title, children, right, onBack, noBack, sub }: { title?
   return (
     <div className="flex min-h-full flex-col">
       {title !== undefined && (
-        <header className="sticky top-0 z-20 bg-white/85 px-4 pt-3 pb-3 backdrop-blur-xl">
+        <header className="pt-safe sticky top-0 z-20 bg-white/95 px-4 pb-3 backdrop-blur-xl">
           <div className="flex h-12 items-center gap-2">
             {!noBack && (
               <motion.button whileTap={{ scale: 0.9 }} onClick={onBack ?? back} className="-ml-1 flex h-12 w-12 items-center justify-center rounded-full bg-card text-ink" aria-label={t("back")}>
@@ -25,7 +25,7 @@ export function Screen({ title, children, right, onBack, noBack, sub }: { title?
             <div className="flex-1" />
             {right}
           </div>
-          <h1 className="title-tight mt-2 text-[2rem] leading-[1.05] font-bold">{title}</h1>
+          <h1 className="title-tight mt-2 text-[2rem] leading-[1.12] font-bold">{title}</h1>
           {sub && <p className="mt-1 text-[0.98rem] leading-snug text-mute">{sub}</p>}
         </header>
       )}
@@ -52,7 +52,7 @@ export function Button({ children, onClick, variant = "primary", className = "",
       whileTap={{ scale: 0.97 }}
       disabled={disabled}
       onClick={onClick}
-      className={`flex items-center justify-center gap-2 rounded-full px-6 font-semibold transition-colors disabled:opacity-35 ${big ? "min-h-16 text-[1.15rem]" : "min-h-14 text-[1.05rem]"} ${v} ${className}`}
+      className={`flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 font-semibold transition-colors disabled:opacity-35 ${big ? "min-h-16 text-[1.15rem]" : "min-h-14 text-[1.05rem]"} ${v} ${className}`}
     >
       {icon && <Icon name={icon} size={big ? 26 : 22} />}
       {children}
@@ -238,7 +238,7 @@ export function StickerBand({ art, title, sub, tone = "bg-card", className = "" 
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className={`relative mb-5 flex min-h-[148px] flex-col justify-start overflow-hidden rounded-[28px] ${tone} p-4 pr-[36%] ${className}`}>
       <p className="title-tight relative z-10 text-[1.3rem] leading-[1.08] font-bold">{title}</p>
       {sub && <p className="relative z-10 mt-1 text-[0.92rem] leading-snug text-mute">{sub}</p>}
-      <motion.span initial={{ y: 40, rotate: 14, opacity: 0 }} animate={{ y: 0, rotate: -6, opacity: 1 }} transition={{ type: "spring", stiffness: 180, damping: 16, delay: 0.08 }}
+      <motion.span initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 180, damping: 16, delay: 0.08 }}
         className="sticker absolute -right-2 -bottom-3 block">{art}</motion.span>
     </motion.div>
   );

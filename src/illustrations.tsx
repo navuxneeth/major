@@ -359,7 +359,7 @@ export function GlassFolder({ id, label, count, papers, onClick, index = 0, plac
         </motion.span>
       </span>
       <span className="mt-2.5 block w-full text-center text-[1.02rem] leading-snug font-semibold">
-        {label} <span className="ml-1 inline-block rounded-full bg-card px-2 py-0.5 align-middle text-[0.82rem] font-semibold text-mute">{count}</span>
+        {label} <span className="ml-1 inline-block rounded-full bg-card px-2 py-0.5 align-middle text-[0.88rem] font-semibold whitespace-nowrap text-mute">{count}</span>
       </span>
     </motion.button>
   );

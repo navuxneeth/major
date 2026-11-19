@@ -4,7 +4,7 @@
   --color-paper: #FFFFFF;
   --color-card: #F4F4F5;
   --color-ink: #111111;
-  --color-mute: #6B6B70;
+  --color-mute: #5E5E63;
   --color-hair: #EBEBED;
   --color-brand: #111111;
   --color-brand-dark: #000000;
@@ -88,3 +88,10 @@ input.bg-transparent:focus-visible { outline: none; }
 @media (prefers-reduced-motion: reduce) {
   .pulse-ring, .mic-bar { animation: none; }
 }
+
+/* Safe area: notch / Dynamic Island on a phone; a drawn status bar in the desktop preview frame */
+#phone-root { --top: max(env(safe-area-inset-top), 12px); }
+@media (min-width: 640px) { #phone-root { --top: 54px; } }
+.pt-safe { padding-top: calc(var(--top) + 8px); }
+/* Very narrow phones: drop the document thumbnail so names and places get the width */
+@media (max-width: 345px) { .doc-thumb { display: none; } }

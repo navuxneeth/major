@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Home as HomeIcon, Search, Plus, Users, Menu, HandHelping, Bell, Sparkles } from "lucide-react";
 import { StoreProvider, useStore } from "./store";
@@ -38,7 +38,7 @@ function Nav() {
           const on = top === i.to;
           return (
             <motion.button key={i.to} whileTap={{ scale: 0.9 }} onClick={() => go(i.to)} aria-current={on ? "page" : undefined}
-              className="relative flex h-14 flex-1 flex-col items-center justify-center gap-0.5 rounded-full text-[0.78rem] font-semibold">
+              className="relative flex h-14 flex-1 flex-col items-center justify-center gap-0.5 rounded-full text-[0.82rem] font-semibold">
               {on && <motion.span layoutId="nav-pill" className="absolute inset-0 rounded-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.08)]" transition={{ type: "spring", stiffness: 420, damping: 32 }} />}
               <i.icon size={22} strokeWidth={on ? 2.5 : 2} className={`relative ${on ? "text-ink" : "text-mute"}`} />
               <span className={`relative ${on ? "text-ink" : "text-mute"}`}>{i.label}</span>
@@ -82,14 +82,15 @@ function routeFor(parts: string[], params: URLSearchParams, role: string) {
 function PhoneApp() {
   const { route, settings, unlocked, go, guide, data } = useStore();
   const scroller = useRef<HTMLDivElement>(null);
-  useEffect(() => { scroller.current?.scrollTo({ top: 0 }); }, [route.path]);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => { scroller.current?.scrollTo({ top: 0 }); setScrolled(false); }, [route.path]);
   const top = route.parts[0] ?? "";
   const hideNav = ["add", "counter", "share", "phone", "lend"].includes(top) || (settings.role === "keeper" && settings.simple);
   const showHelpFab = false && settings.role === "keeper" && !["", "help", "add", "counter", "share", "phone", "lend"].includes(top) && !guide && !settings.simple;
   const lendActive = settings.role === "keeper" && data.lend?.status === "active" && top !== "lend";
   return (
     <div id="phone-root" className="relative h-full w-full overflow-hidden bg-paper">
-      <div ref={scroller} className="no-scrollbar h-full overflow-y-auto">
+      <div ref={scroller} onScroll={(e) => setScrolled((e.currentTarget as HTMLDivElement).scrollTop > 8)} className="no-scrollbar h-full overflow-y-auto">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div key={route.path} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.22, ease: "easeOut" }} className="min-h-full">
             {routeFor(route.parts, route.params, settings.role)}
@@ -108,6 +109,16 @@ function PhoneApp() {
           {settings.lang === "hi" ? "मदद" : "Help"}
         </motion.button>
       )}
+      <div className={`pointer-events-none absolute inset-x-0 top-0 z-[75] bg-white/85 backdrop-blur-xl transition-opacity duration-200 ${scrolled ? "opacity-100" : "opacity-0"}`} style={{ height: "var(--top)" }} aria-hidden />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-[80] hidden h-[54px] items-center justify-between px-8 pt-1 text-[15px] font-semibold sm:flex" aria-hidden>
+        <span>9:41</span>
+        <span className="absolute top-[11px] left-1/2 h-[30px] w-[110px] -translate-x-1/2 rounded-full bg-black" />
+        <span className="flex items-center gap-1.5">
+          <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="#111"/><rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="#111"/><rect x="10" y="3" width="3" height="9" rx="1" fill="#111"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#111"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 11.2 5.6 8.6a3.4 3.4 0 0 1 4.8 0L8 11.2Zm-4.3-4.6a6.1 6.1 0 0 1 8.6 0l1.4-1.5a8.2 8.2 0 0 0-11.4 0l1.4 1.5ZM.8 3.6a10.2 10.2 0 0 1 14.4 0L16.6 2A12.3 12.3 0 0 0-.6 2L.8 3.6Z" fill="#111"/></svg>
+          <svg width="26" height="12" viewBox="0 0 26 12"><rect x="0.5" y="0.5" width="22" height="11" rx="3.5" stroke="#111" opacity=".4" fill="none"/><rect x="2" y="2" width="17" height="8" rx="2" fill="#111"/><rect x="23.5" y="4" width="1.8" height="4" rx=".9" fill="#111" opacity=".4"/></svg>
+        </span>
+      </div>
       {!hideNav && <Nav />}
       <GuideOverlay rootId="phone-root" />
       <Toast />

@@ -271,11 +271,11 @@ export function seed(): AppData {
   return {
     version: 3,
     people: [
-      { id: "sunita", name: "Sunita", nameHi: "सुनीता", relation: "Me", relationHi: "मैं", city: "Nagpur", cityHi: "नागपुर", color: "#E8A33D", owner: true },
-      { id: "ramesh", name: "Ramesh", nameHi: "रमेश", relation: "Husband", relationHi: "पति", city: "Nagpur", cityHi: "नागपुर", color: "#5B7FB5", owner: true },
+      { id: "sunita", name: "Sunita", nameHi: "सुनीता", relation: "Me", relationHi: "मैं", city: "Nagpur", cityHi: "नागपुर", color: "#9A5F0E", owner: true },
+      { id: "ramesh", name: "Ramesh", nameHi: "रमेश", relation: "Husband", relationHi: "पति", city: "Nagpur", cityHi: "नागपुर", color: "#3F5F94", owner: true },
       { id: "rahul", name: "Rahul", nameHi: "राहुल", relation: "Son", relationHi: "बेटा", city: "Bengaluru", cityHi: "बेंगलुरु", color: "#1E5B4F" },
-      { id: "priya", name: "Priya", nameHi: "प्रिया", relation: "Daughter", relationHi: "बेटी", city: "Pune", cityHi: "पुणे", color: "#B5577A" },
-      { id: "meena", name: "Meena", nameHi: "मीना", relation: "Sister", relationHi: "बहन", city: "Nagpur", cityHi: "नागपुर", color: "#7A6AB5" },
+      { id: "priya", name: "Priya", nameHi: "प्रिया", relation: "Daughter", relationHi: "बेटी", city: "Pune", cityHi: "पुणे", color: "#A0436A" },
+      { id: "meena", name: "Meena", nameHi: "मीना", relation: "Sister", relationHi: "बहन", city: "Nagpur", cityHi: "नागपुर", color: "#5E4E9C" },
     ],
     places: [
       {
