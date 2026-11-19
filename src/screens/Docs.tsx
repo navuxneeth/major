@@ -161,9 +161,9 @@ export function DocDetail({ id }: { id: string }) {
       )}
 
       {!doc.paperOnly && (
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          <Button big icon="Maximize" guide="counter-btn" onClick={() => go(`counter/${doc.id}`)}>{t("showCounter")}</Button>
-          <Button big variant="secondary" icon="Share2" guide="share-btn" onClick={() => go(`share/${doc.id}`)}>{t("shareSafely")}</Button>
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          <Button big icon="Maximize" guide="counter-btn" className="w-full px-4" onClick={() => go(`counter/${doc.id}`)}>{t("showCounter")}</Button>
+          <Button big variant="secondary" icon="Share2" guide="share-btn" className="w-full px-4" onClick={() => go(`share/${doc.id}`)}>{t("shareSafely")}</Button>
         </div>
       )}
 

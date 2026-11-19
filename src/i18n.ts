@@ -22,7 +22,7 @@ const S = {
   documents: ["documents", "कागज़"],
   document: ["document", "कागज़"],
   originalKept: ["The original is kept in", "असली कागज़ यहाँ रखा है"],
-  showCounter: ["Show at counter", "काउंटर पर दिखाएँ"],
+  showCounter: ["Full screen", "बड़ा दिखाएँ"],
   shareSafely: ["Share safely", "सुरक्षित भेजें"],
   setReminder: ["Set reminder", "याद दिलाएँ"],
   changePlace: ["Change place", "जगह बदलें"],

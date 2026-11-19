@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import { HandHelping, Smartphone, Check, Plus, Phone, KeyRound, ShieldAlert, Printer, Bell, Users, FlaskConical, RotateCcw, ChevronRight, Lock, HeartHandshake, Info } from "lucide-react";
+import { HandHelping, Smartphone, Check, Plus, Phone, KeyRound, ShieldAlert, Printer, Bell, Users, FlaskConical, RotateCcw, ChevronRight, ChevronDown, Lock, HeartHandshake, Info } from "lucide-react";
 import { CATEGORIES, READY_FOR, type Access, type CategoryId } from "../data";
 import { useStore } from "../store";
 import { matchBundleItem } from "../search";
-import { Avatar } from "../art";
+import { Avatar, PlaceView } from "../art";
 import { Button, Card, Chip, EmptyNote, Icon, Screen, SectionTitle, Sheet, StickerBand } from "../components/ui";
 import { DocRow, LocationDot } from "../components/DocRow";
 import { LangToggle } from "./Home";
@@ -438,6 +438,67 @@ export function More() {
 }
 
 /* ================= PRINT THE ALMIRAH LIST ================= */
+/* What is where: every place, every file in it, and the papers inside. */
+export function Where() {
+  const { data, lang, go, person, docTitle } = useStore();
+  const hi = lang === "hi";
+  const [open, setOpen] = useState<string | null>(null);
+  return (
+    <Screen title={hi ? "क्या कहाँ रखा है" : "What is where"} sub={`${data.files.length} ${hi ? "फ़ाइलें" : "files"} · ${data.places.length} ${hi ? "जगहें" : "places"}`}>
+      <div className="flex flex-col gap-4">
+        {data.places.map((pl) => {
+          const files = data.files.filter((f) => f.placeId === pl.id);
+          if (!files.length) return null;
+          const count = data.docs.filter((d) => files.some((f) => f.id === d.fileId)).length;
+          return (
+            <section key={pl.id} className="overflow-hidden rounded-[22px] bg-white lift">
+              <div className="flex items-baseline justify-between gap-3 px-4 pt-4">
+                <h2 className="text-[1.15rem] font-bold">{hi ? pl.nameHi : pl.name}</h2>
+                <span className="shrink-0 text-[0.94rem] text-mute">{count} {hi ? "कागज़" : count === 1 ? "paper" : "papers"}</span>
+              </div>
+              <div className="mx-4 mt-3 rounded-[16px] bg-[#F6F9F2] px-2 pt-3 pb-2">
+                <PlaceView place={pl} files={data.files} compact person={pl.personId ? person(pl.personId) : undefined} />
+              </div>
+              <ul className="mt-1">
+                {files.map((f, i) => {
+                  const docs = data.docs.filter((d) => d.fileId === f.id);
+                  const spot = pl.spots.find((x) => x.id === f.spotId);
+                  const isOpen = open === f.id;
+                  return (
+                    <li key={f.id} className={i ? "border-t border-[#ECECF0]" : ""}>
+                      <button onClick={() => setOpen(isOpen ? null : f.id)} aria-expanded={isOpen} className="flex min-h-[3.75rem] w-full items-center gap-3 px-4 py-2 text-left">
+                        <span className="h-8 w-6 shrink-0 rounded-[4px]" style={{ background: f.color }} />
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-[1.06rem] leading-snug font-semibold">{hi ? `${f.colorNameHi} फ़ाइल (${f.labelHi})` : `${f.colorName} file (${f.label})`}</span>
+                          <span className="block text-[0.94rem] text-mute">{hi ? spot?.hi : spot?.en} · {docs.length} {hi ? "कागज़" : docs.length === 1 ? "paper" : "papers"}</span>
+                        </span>
+                        <ChevronDown size={20} className={`shrink-0 text-mute transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                      </button>
+                      {isOpen && (
+                        <ul className="px-4 pb-3">
+                          {docs.map((d) => (
+                            <li key={d.id}>
+                              <button onClick={() => go(`doc/${d.id}`)} className="flex min-h-12 w-full items-center gap-3 rounded-xl pl-9 text-left">
+                                <span className="min-w-0 flex-1 text-[1rem]">{docTitle(d)}</span>
+                                <ChevronRight size={18} className="shrink-0 text-mute" />
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          );
+        })}
+      </div>
+      <Button variant="secondary" icon="Printer" className="mx-auto mt-6" onClick={() => go("print")}>{hi ? "यह लिस्ट प्रिंट करें" : "Print this list"}</Button>
+    </Screen>
+  );
+}
+
 export function PrintSheet() {
   const { data, lang, back, file } = useStore();
   const byFile = data.files.map((f) => ({ f, docs: data.docs.filter((d) => d.fileId === f.id) })).filter((x) => x.docs.length);
@@ -447,7 +508,7 @@ export function PrintSheet() {
         <Button variant="secondary" icon="ArrowLeft" onClick={back}>{lang === "hi" ? "पीछे" : "Back"}</Button>
         <Button icon="Printer" onClick={() => window.print()}>{lang === "hi" ? "प्रिंट करें" : "Print"}</Button>
       </div>
-      <h1 className="font-serif text-[2.2rem] leading-none">{lang === "hi" ? "हमारी अलमारी में क्या कहाँ है" : "What is where in our almirah"}</h1>
+      <h1 className="text-[2rem] leading-tight font-bold">{lang === "hi" ? "हमारी अलमारी में क्या कहाँ है" : "What is where in our almirah"}</h1>
       <p className="mt-1 text-mute">Sharma family · {fmtDate(new Date().toISOString(), lang)} · Almari</p>
       {data.places.map((pl) => {
         const groups = byFile.filter((x) => x.f.placeId === pl.id);

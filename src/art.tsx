@@ -142,18 +142,26 @@ export function PlaceView({ place, files, highlight, onPickSpot, onPickFile, com
   person?: Person;
 }) {
   const hl = files.find((f) => f.id === highlight);
+  const BRAND = "#2A6012";
   const spines = (spotId: string, x0: number, yBase: number, h: number, maxW: number) => {
     const list = files.filter((f) => f.placeId === place.id && f.spotId === spotId);
-    const w = 18;
+    const w = 20;
     return list.map((f, i) => {
-      const x = x0 + i * (w + 6);
+      const x = x0 + i * (w + 7);
       if (x + w > x0 + maxW) return null;
       const on = f.id === highlight;
       return (
         <g key={f.id} onClick={onPickFile ? (e) => { e.stopPropagation(); onPickFile(f.id); } : undefined} style={{ cursor: onPickFile ? "pointer" : undefined }}>
-          {on && <circle cx={x + w / 2} cy={yBase - h / 2} r="22" fill={f.color} opacity="0.35" className="pulse-ring" />}
-          <rect x={x} y={yBase - h} width={w} height={h} rx="3" fill={f.color} stroke={on ? INK : "rgba(0,0,0,0.15)"} strokeWidth={on ? 2.5 : 1} />
-          <rect x={x + 4} y={yBase - h + 8} width={w - 8} height="12" rx="2" fill="rgba(255,255,255,0.75)" />
+          {on && <rect x={x - 5} y={yBase - h - 5} width={w + 10} height={h + 10} rx="7" fill="none" stroke={BRAND} strokeWidth="3" />}
+          <rect x={x} y={yBase - h} width={w} height={h} rx="4" fill={f.color} />
+          <rect x={x + 4} y={yBase - h + 9} width={w - 8} height="14" rx="2.5" fill="rgba(255,255,255,0.8)" />
+          <rect x={x + 7} y={yBase - 14} width={w - 14} height="6" rx="3" fill="rgba(0,0,0,0.18)" />
+          {on && (
+            <g transform={`translate(${x + w / 2} ${yBase - h - 12})`}>
+              <path d="M0 0 C-11 -12 -11 -26 0 -26 C11 -26 11 -12 0 0Z" fill={BRAND} />
+              <circle cx="0" cy="-17" r="4.5" fill="#fff" />
+            </g>
+          )}
         </g>
       );
     });
@@ -162,24 +170,26 @@ export function PlaceView({ place, files, highlight, onPickSpot, onPickFile, com
     const isOn = hl && hl.spotId === spotId;
     return (
       <rect
-        x={x} y={y} width={w} height={h} rx="4"
-        fill={isOn ? "rgba(232,163,61,0.18)" : "transparent"}
-        stroke={isOn ? "#E8A33D" : "transparent"} strokeWidth="2" strokeDasharray={isOn ? "5 4" : undefined}
+        x={x} y={y} width={w} height={h} rx="6"
+        fill={isOn ? "#E8F4DA" : "transparent"}
         onClick={onPickSpot ? () => onPickSpot(spotId) : undefined}
         style={{ cursor: onPickSpot ? "pointer" : undefined }}
       />
     );
   };
 
+  const PIN = (x: number, y: number) => (
+    <g transform={`translate(${x} ${y})`}><path d="M0 0 C-11 -12 -11 -26 0 -26 C11 -26 11 -12 0 0Z" fill={BRAND} /><circle cx="0" cy="-17" r="4.5" fill="#fff" /></g>
+  );
   if (place.kind === "person") {
     return (
       <svg viewBox="0 0 300 200" className={compact ? "h-28 w-full" : "h-52 w-full"}>
-        <circle cx="150" cy="80" r="46" fill={person?.color ?? "#1E5B4F"} />
-        <text x="150" y="96" textAnchor="middle" fontSize="44" fontWeight="700" fill="#fff" fontFamily="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif">{(person?.name ?? "?")[0]}</text>
-        <rect x="190" y="104" width="54" height="40" rx="5" fill={hl?.color ?? "#1E5B4F"} stroke={INK} strokeWidth="2" />
-        <path d="M190 112 h54" stroke="rgba(255,255,255,0.6)" strokeWidth="2" />
-        <circle cx="217" cy="124" r="26" fill="#E8A33D" opacity="0.3" className="pulse-ring" />
-        <text x="150" y="170" textAnchor="middle" fontSize="15" fill="#5F5A52" fontFamily="-apple-system, 'SF Pro Text', 'Inter Tight', 'Kohinoor Devanagari', 'Noto Sans Devanagari', Arial, sans-serif">{person ? `${person.city}` : ""}</text>
+        <circle cx="140" cy="86" r="48" fill={person?.color ?? "#1E5B4F"} />
+        <text x="140" y="102" textAnchor="middle" fontSize="44" fontWeight="700" fill="#fff" fontFamily="-apple-system, 'SF Pro Text', 'Inter', 'Noto Sans Devanagari', Arial, sans-serif">{(person?.name ?? "?")[0]}</text>
+        <rect x="178" y="108" width="62" height="44" rx="7" fill={hl?.color ?? "#1E5B4F"} />
+        <rect x="186" y="116" width="46" height="12" rx="3" fill="rgba(255,255,255,0.75)" />
+        {hl && PIN(209, 100)}
+        <text x="140" y="180" textAnchor="middle" fontSize="15" fill="#48484D" fontFamily="-apple-system, 'SF Pro Text', 'Inter', 'Noto Sans Devanagari', Arial, sans-serif">{person ? person.city : ""}</text>
       </svg>
     );
   }
@@ -188,17 +198,19 @@ export function PlaceView({ place, files, highlight, onPickSpot, onPickFile, com
     const s = hl?.spotId;
     return (
       <svg viewBox="0 0 300 220" className={compact ? "h-32 w-full" : "h-56 w-full"}>
-        <rect x="40" y="20" width="220" height="180" rx="8" fill="#C9A47A" stroke={INK} strokeWidth="2" />
-        {[{ id: "d1", y: 36 }, { id: "d2", y: 116 }].map((d) => {
+        <ellipse cx="150" cy="210" rx="110" ry="6" fill="rgba(0,0,0,0.07)" />
+        <rect x="44" y="18" width="212" height="186" rx="12" fill="#E3CFB2" />
+        {[{ id: "d1", y: 32 }, { id: "d2", y: 116 }].map((d) => {
           const open = s === d.id;
           return (
             <g key={d.id} onClick={onPickSpot ? () => onPickSpot(d.id) : undefined} style={{ cursor: onPickSpot ? "pointer" : undefined }}>
-              <rect x={open ? 28 : 54} y={d.y + (open ? 14 : 0)} width={open ? 244 : 192} height="66" rx="5" fill={open ? "#E2C59E" : "#D9B88E"} stroke={INK} strokeWidth="2" />
-              <rect x={open ? 128 : 130} y={d.y + (open ? 42 : 28)} width="44" height="8" rx="4" fill={INK} />
+              <rect x={open ? 30 : 56} y={d.y + (open ? 10 : 0)} width={open ? 240 : 188} height="72" rx="8" fill={open ? "#F1E3CF" : "#D8BF9C"} />
+              <rect x={open ? 126 : 128} y={d.y + (open ? 40 : 30)} width="44" height="9" rx="4.5" fill="#B08D63" />
               {open && hl && (
                 <g>
-                  <circle cx="200" cy={d.y + 40} r="24" fill={hl.color} opacity="0.35" className="pulse-ring" />
-                  <rect x="180" y={d.y + 24} width="44" height="30" rx="3" fill={hl.color} stroke={INK} strokeWidth="2" />
+                  <rect x="182" y={d.y + 24} width="48" height="34" rx="5" fill={hl.color} />
+                  <rect x="188" y={d.y + 30} width="36" height="9" rx="2" fill="rgba(255,255,255,0.75)" />
+                  {PIN(206, d.y + 18)}
                 </g>
               )}
             </g>
@@ -208,59 +220,67 @@ export function PlaceView({ place, files, highlight, onPickSpot, onPickFile, com
     );
   }
 
-  // almirah or cupboard: steel almirah, both doors open
+  // almirah or cupboard: a clean, flat steel almirah with both doors open
   const isCupboard = place.kind === "cupboard";
+  const body = isCupboard ? "#E6D6C3" : "#DCE4E0";
+  const door = isCupboard ? "#CDB596" : "#C3CEC8";
+  const inside = isCupboard ? "#F6EEE4" : "#F4F7F5";
+  const edge = isCupboard ? "#B99D7A" : "#A9B6AF";
   return (
-    <svg viewBox="0 0 300 260" className={compact ? "h-36 w-full" : "h-60 w-full"}>
+    <svg viewBox="0 0 300 268" className={compact ? "h-36 w-full" : "h-60 w-full"}>
+      <ellipse cx="150" cy="258" rx="120" ry="7" fill="rgba(0,0,0,0.07)" />
       {/* open doors */}
-      <path d="M62 14 L22 30 L22 236 L62 250 Z" fill={isCupboard ? "#B88A5E" : "#AEB8BF"} stroke={INK} strokeWidth="2" />
-      <path d="M238 14 L278 30 L278 236 L238 250 Z" fill={isCupboard ? "#B88A5E" : "#AEB8BF"} stroke={INK} strokeWidth="2" />
-      <rect x="30" y="120" width="6" height="26" rx="3" fill={INK} />
-      <rect x="264" y="120" width="6" height="26" rx="3" fill={INK} />
+      <path d="M58 16 L24 30 Q20 31 20 35 L20 232 Q20 236 24 237 L58 250 Z" fill={door} />
+      <path d="M242 16 L276 30 Q280 31 280 35 L280 232 Q280 236 276 237 L242 250 Z" fill={door} />
+      <rect x="28" y="118" width="5" height="30" rx="2.5" fill={edge} />
+      <rect x="267" y="118" width="5" height="30" rx="2.5" fill={edge} />
       {/* body */}
-      <rect x="62" y="14" width="176" height="236" rx="4" fill={isCupboard ? "#E9D7C0" : "#DDE3E7"} stroke={INK} strokeWidth="2" />
+      <rect x="54" y="10" width="192" height="244" rx="10" fill={body} />
+      <rect x="64" y="20" width="172" height="224" rx="6" fill={inside} />
       {isCupboard ? (
         <>
-          <path d="M150 14 V250" stroke={INK} strokeWidth="2" />
-          {spotRect("o1", 66, 18, 80, 228)}
-          {spotRect("o2", 154, 18, 80, 228)}
-          {spines("o1", 74, 120, 70, 70)}
-          {spines("o2", 162, 120, 70, 70)}
-          <path d="M66 122 H234" stroke={INK} strokeWidth="2" />
+          <rect x="148" y="20" width="4" height="224" fill={body} />
+          {spotRect("o1", 68, 24, 76, 216)}
+          {spotRect("o2", 156, 24, 76, 216)}
+          <rect x="64" y="128" width="172" height="5" fill={body} />
+          {spines("o1", 74, 124, 74, 66)}
+          {spines("o2", 162, 124, 74, 66)}
         </>
       ) : (
         <>
-          <path d="M62 92 H238 M62 170 H238" stroke={INK} strokeWidth="2" />
-          {spotRect("s1", 66, 18, 168, 70)}
-          {spotRect("s2", 66, 96, 168, 70)}
-          {spotRect("s3", 66, 174, 100, 72)}
-          {/* clutter so it feels like a real almirah */}
-          <rect x="176" y="56" width="50" height="32" rx="3" fill="#C8BFB0" stroke="rgba(0,0,0,0.2)" />
-          <rect x="190" y="140" width="40" height="26" rx="3" fill="#E7DCCB" stroke="rgba(0,0,0,0.2)" />
+          <rect x="64" y="92" width="172" height="5" fill={body} />
+          <rect x="64" y="170" width="172" height="5" fill={body} />
+          {spotRect("s1", 68, 24, 164, 64)}
+          {spotRect("s2", 68, 101, 164, 65)}
+          {spotRect("s3", 68, 179, 96, 61)}
+          {/* a few folded things, so it feels like a real almirah */}
+          <rect x="178" y="62" width="48" height="26" rx="4" fill="#E4DCCD" />
+          <rect x="178" y="54" width="44" height="10" rx="3" fill="#EDE6DA" />
+          <rect x="188" y="142" width="40" height="24" rx="4" fill="#E9E2D6" />
           {/* locker */}
           <g onClick={onPickSpot ? () => onPickSpot("locker") : undefined} style={{ cursor: onPickSpot ? "pointer" : undefined }}>
-            <rect x="172" y="180" width="60" height="62" rx="3" fill="#8E9AA3" stroke={hl?.spotId === "locker" ? "#E8A33D" : INK} strokeWidth={hl?.spotId === "locker" ? 3 : 2} />
-            <circle cx="202" cy="211" r="6" fill="none" stroke={INK} strokeWidth="2" />
+            <rect x="170" y="182" width="62" height="58" rx="6" fill="#9AA7A0" />
+            <rect x="170" y="182" width="62" height="58" rx="6" fill="none" stroke={hl?.spotId === "locker" ? BRAND : "transparent"} strokeWidth="3" />
+            <circle cx="201" cy="207" r="6" fill="#7E8B84" />
+            <rect x="199.5" y="209" width="3" height="10" rx="1.5" fill="#7E8B84" />
             {hl?.spotId === "locker" && (
-              <>
-                <circle cx="202" cy="211" r="26" fill={hl.color} opacity="0.35" className="pulse-ring" />
-                <rect x="190" y="198" width="24" height="18" rx="3" fill={hl.color} stroke={INK} strokeWidth="1.5" />
-              </>
+              <g transform="translate(201 176)"><path d="M0 0 C-11 -12 -11 -26 0 -26 C11 -26 11 -12 0 0Z" fill={BRAND} /><circle cx="0" cy="-17" r="4.5" fill="#fff" /></g>
             )}
           </g>
-          {spines("s1", 74, 88, 62, 96)}
-          {spines("s2", 74, 166, 62, 110)}
-          {spines("s3", 74, 244, 60, 92)}
+          {spines("s1", 74, 88, 56, 96)}
+          {spines("s2", 74, 166, 56, 104)}
+          {spines("s3", 74, 240, 54, 88)}
         </>
       )}
-      <path d="M70 250 v8 M230 250 v8" stroke={INK} strokeWidth="3" strokeLinecap="round" />
+      <rect x="70" y="252" width="14" height="8" rx="3" fill={edge} />
+      <rect x="216" y="252" width="14" height="8" rx="3" fill={edge} />
       {/* the doors swing open when the page appears */}
       {!onPickSpot && (
         <>
-          <motion.rect x="62" y="14" width="88" height="236" rx="4" fill={isCupboard ? "#B88A5E" : "#AEB8BF"} stroke={INK} strokeWidth="2"
-            style={{ transformOrigin: "62px 132px" }} initial={{ scaleX: 1 }} animate={{ scaleX: 0 }} transition={{ delay: 0.25, duration: 0.7, ease: [0.4, 0, 0.2, 1] }} />
-          <motion.rect x="150" y="14" width="88" height="236" rx="4" fill={isCupboard ? "#B88A5E" : "#AEB8BF"} stroke={INK} strokeWidth="2"
-            style={{ transformOrigin: "238px 132px" }} initial={{ scaleX: 1 }} animate={{ scaleX: 0 }} transition={{ delay: 0.25, duration: 0.7, ease: [0.4, 0, 0.2, 1] }} />
+          <motion.rect x="54" y="10" width="96" height="244" rx="10" fill={door}
+            style={{ transformOrigin: "54px 132px" }} initial={{ scaleX: 1 }} animate={{ scaleX: 0 }} transition={{ delay: 0.25, duration: 0.7, ease: [0.4, 0, 0.2, 1] }} />
+          <motion.rect x="150" y="10" width="96" height="244" rx="10" fill={door}
+            style={{ transformOrigin: "246px 132px" }} initial={{ scaleX: 1 }} animate={{ scaleX: 0 }} transition={{ delay: 0.25, duration: 0.7, ease: [0.4, 0, 0.2, 1] }} />
         </>
       )}
     </svg>

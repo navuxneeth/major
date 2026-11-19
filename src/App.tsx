@@ -7,7 +7,7 @@ import { GuideOverlay } from "./components/Guide";
 import { HelperHome, KeeperHome } from "./screens/Home";
 import { Counter, DocDetail, Find, Share } from "./screens/Docs";
 import { Add } from "./screens/Add";
-import { Ask, Category, Diary, Family, More, PrintSheet, Ready, Reminders, Unwell } from "./screens/Other";
+import { Ask, Category, Diary, Family, More, PrintSheet, Ready, Reminders, Unwell, Where } from "./screens/Other";
 import { Help, PhoneMessages } from "./screens/Help";
 import { Lend } from "./screens/Lend";
 import { Lab } from "./screens/Lab";
@@ -71,6 +71,7 @@ function routeFor(parts: string[], params: URLSearchParams, role: string) {
     case "reminders": return <Reminders />;
     case "unwell": return <Unwell />;
     case "diary": return <Diary />;
+    case "where": return <Where />;
     case "more": return <More />;
     case "help": return <Help />;
     case "phone": return <PhoneMessages />;

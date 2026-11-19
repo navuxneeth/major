@@ -328,7 +328,7 @@ function AlmirahCard() {
   const { data, lang, go } = useStore();
   const hi = lang === "hi";
   return (
-    <StickerCard onClick={() => go("print")}
+    <StickerCard onClick={() => go("where")}
       metaLeft={<><LayoutGrid size={15} /> {data.files.length} {hi ? "फ़ाइलें" : "files"}</>}
       metaRight={<>{data.places.length} {hi ? "जगहें" : "places"}</>}
       title={hi ? "क्या कहाँ रखा है" : "What is where"}
@@ -436,7 +436,7 @@ function WhatIsWhere() {
   const { data, lang, go } = useStore();
   const hi = lang === "hi";
   return (
-    <motion.button whileTap={{ scale: 0.98 }} onClick={() => go("print")} className={`mt-3 flex w-full items-center gap-4 rounded-[22px] p-3 pr-4 text-left ${LIFT}`}>
+    <motion.button whileTap={{ scale: 0.98 }} onClick={() => go("where")} className={`mt-3 flex w-full items-center gap-4 rounded-[22px] p-3 pr-4 text-left ${LIFT}`}>
       <span className="flex h-20 w-20 shrink-0 items-end justify-center overflow-hidden rounded-[18px] bg-brand-soft"><HeroScene className="h-[4.75rem] w-[4.75rem]" /></span>
       <span className="min-w-0 flex-1">
         <span className="block text-[1.12rem] leading-tight font-semibold">{hi ? "क्या कहाँ रखा है" : "What is where"}</span>
